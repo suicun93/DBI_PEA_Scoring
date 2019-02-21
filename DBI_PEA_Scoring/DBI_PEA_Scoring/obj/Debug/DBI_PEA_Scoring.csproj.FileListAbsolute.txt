@@ -10,3 +10,4 @@ C:\Users\hoangduc\Desktop\Project\KhaoThi\DBI_PEA_Score\DBI_PEA_Scoring\DBI_PEA_
 C:\Users\hoangduc\Desktop\Project\KhaoThi\DBI_PEA_Score\DBI_PEA_Scoring\DBI_PEA_Scoring\obj\Debug\DBI_PEA_Scoring.exe
 C:\Users\hoangduc\Desktop\Project\KhaoThi\DBI_PEA_Score\DBI_PEA_Scoring\DBI_PEA_Scoring\obj\Debug\DBI_PEA_Scoring.pdb
 C:\Users\hoangduc\Desktop\Project\KhaoThi\DBI_PEA_Score\DBI_PEA_Scoring\DBI_PEA_Scoring\obj\Debug\DBI_PEA_Scoring.UI.ImportMaterial.resources
+C:\Users\hoangduc\Desktop\Project\KhaoThi\DBI_PEA_Score\DBI_PEA_Scoring\DBI_PEA_Scoring\obj\Debug\DBI_PEA_Scoring.UI.Scoring.resources

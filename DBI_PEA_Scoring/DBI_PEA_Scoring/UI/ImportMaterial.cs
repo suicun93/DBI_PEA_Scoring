@@ -103,12 +103,22 @@ namespace DBI_PEA_Scoring.UI
                 statusImportProgressBar.Value = count;
             }
             secureJsonSerializer = null;
+            browseAnswerButton.Enabled = false;
             MessageBox.Show("Loaded :" + Submitions.Count + " submitions.");
         }
 
         private void getMarkButton_Click(object sender, EventArgs e)
         {
-
+            if (Submitions == null ||
+                QuestionPackage == null ||
+                Submitions.Count == 0 ||
+                QuestionPackage.Count == 0)
+                MessageBox.Show("Not enough information!", "Error");
+            else
+            {
+                (new Scoring(QuestionPackage, Submitions)).Show();
+                this.Hide();
+            }
         }
 
         private void ImportMaterial_FormClosed(object sender, FormClosedEventArgs e)
