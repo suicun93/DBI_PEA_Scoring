@@ -32,6 +32,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.11.0.1\lib\net40\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -44,15 +47,24 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ImportMaterial.cs">
+    <Compile Include="Common\SecureJsonSerializer.cs" />
+    <Compile Include="UI\ImportMaterial.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ImportMaterial.Designer.cs">
+    <Compile Include="UI\ImportMaterial.Designer.cs">
       <DependentUpon>ImportMaterial.cs</DependentUpon>
     </Compile>
+    <Compile Include="Model\Candidate.cs" />
+    <Compile Include="Model\ExamItem.cs" />
+    <Compile Include="Model\Question.cs" />
+    <Compile Include="Model\QuestionsBank.cs" />
+    <Compile Include="Model\Requirement.cs" />
+    <Compile Include="Model\Submition.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="ImportMaterial.resx">
+    <Compile Include="Utils\FileUtils.cs" />
+    <Compile Include="Utils\JsonUtils.cs" />
+    <EmbeddedResource Include="UI\ImportMaterial.resx">
       <DependentUpon>ImportMaterial.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -64,6 +76,7 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -75,10 +88,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Common\" />
-    <Folder Include="Model\" />
     <Folder Include="Network\" />
-    <Folder Include="UI\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

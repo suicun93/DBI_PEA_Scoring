@@ -1,4 +1,4 @@
-﻿namespace DBI_PEA_Scoring
+﻿namespace DBI_PEA_Scoring.UI
 {
     partial class ImportMaterial
     {
@@ -44,42 +44,45 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.Location = new System.Drawing.Point(31, 99);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(94, 15);
+            this.label1.Size = new System.Drawing.Size(81, 13);
             this.label1.TabIndex = 0;
             this.label1.Text = "Import Question";
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label2.Location = new System.Drawing.Point(31, 138);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(123, 15);
+            this.label2.Size = new System.Drawing.Size(106, 13);
             this.label2.TabIndex = 1;
             this.label2.Text = "Import Answer Folder";
             // 
             // questionTextBox
             // 
-            this.questionTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.questionTextBox.Location = new System.Drawing.Point(168, 96);
+            this.questionTextBox.Enabled = false;
+            this.questionTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.questionTextBox.Location = new System.Drawing.Point(143, 96);
             this.questionTextBox.Name = "questionTextBox";
-            this.questionTextBox.Size = new System.Drawing.Size(120, 21);
+            this.questionTextBox.Size = new System.Drawing.Size(163, 20);
             this.questionTextBox.TabIndex = 2;
             // 
             // answerTextBox
             // 
-            this.answerTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.answerTextBox.Location = new System.Drawing.Point(168, 135);
+            this.answerTextBox.Enabled = false;
+            this.answerTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.answerTextBox.Location = new System.Drawing.Point(143, 135);
             this.answerTextBox.Name = "answerTextBox";
-            this.answerTextBox.Size = new System.Drawing.Size(120, 21);
+            this.answerTextBox.Size = new System.Drawing.Size(163, 20);
             this.answerTextBox.TabIndex = 3;
             // 
             // label3
             // 
             this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label3.Location = new System.Drawing.Point(34, 65);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(345, 13);
@@ -88,21 +91,23 @@
             // 
             // browseQuestionButton
             // 
-            this.browseQuestionButton.Location = new System.Drawing.Point(306, 95);
+            this.browseQuestionButton.Location = new System.Drawing.Point(318, 95);
             this.browseQuestionButton.Name = "browseQuestionButton";
-            this.browseQuestionButton.Size = new System.Drawing.Size(75, 23);
+            this.browseQuestionButton.Size = new System.Drawing.Size(63, 23);
             this.browseQuestionButton.TabIndex = 5;
             this.browseQuestionButton.Text = "Browse";
             this.browseQuestionButton.UseVisualStyleBackColor = true;
+            this.browseQuestionButton.Click += new System.EventHandler(this.browseQuestionButton_Click);
             // 
             // browseAnswerButton
             // 
-            this.browseAnswerButton.Location = new System.Drawing.Point(306, 134);
+            this.browseAnswerButton.Location = new System.Drawing.Point(318, 134);
             this.browseAnswerButton.Name = "browseAnswerButton";
-            this.browseAnswerButton.Size = new System.Drawing.Size(75, 23);
+            this.browseAnswerButton.Size = new System.Drawing.Size(63, 23);
             this.browseAnswerButton.TabIndex = 6;
             this.browseAnswerButton.Text = "Browse";
             this.browseAnswerButton.UseVisualStyleBackColor = true;
+            this.browseAnswerButton.Click += new System.EventHandler(this.browseAnswerButton_Click);
             // 
             // label4
             // 
@@ -130,6 +135,7 @@
             this.getMarkButton.TabIndex = 9;
             this.getMarkButton.Text = "Get Marks";
             this.getMarkButton.UseVisualStyleBackColor = true;
+            this.getMarkButton.Click += new System.EventHandler(this.getMarkButton_Click);
             // 
             // statusImportLabel
             // 
@@ -158,7 +164,7 @@
             this.Controls.Add(this.label1);
             this.Name = "ImportMaterial";
             this.Text = "ImportMaterial";
-            this.Load += new System.EventHandler(this.ImportMaterial_Load);
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.ImportMaterial_FormClosed);
             this.ResumeLayout(false);
             this.PerformLayout();
 
