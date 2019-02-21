@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DBI_PEA_Scoring.Entity
+namespace DBI_PEA_Scoring.Model
 {
     [Serializable]
     public class Requirement

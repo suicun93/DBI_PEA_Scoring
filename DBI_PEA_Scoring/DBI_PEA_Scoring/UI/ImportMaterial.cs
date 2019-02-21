@@ -18,8 +18,8 @@ namespace DBI_PEA_Scoring.UI
     {
         public string QuestionPath { get; set; }
         public Uri AnswerPath { get; set; }
-        private List<ExamItem> QuestionPackage = null;
-        private List<Submition> Submitions = null;
+        private List<ExamItem> ListExamItems = null;
+        private List<Submition> ListSubmitions = null;
 
         public ImportMaterial()
         {
@@ -34,9 +34,9 @@ namespace DBI_PEA_Scoring.UI
                 QuestionPath = FileUtils.GetFileLocation();
                 questionTextBox.Text = QuestionPath;
                 // Get QuestionPackage from file
-                QuestionPackage = null;
-                QuestionPackage = JsonUtils.LoadQuestion(QuestionPath) as List<ExamItem>;
-                if (QuestionPackage == null || QuestionPackage.Count == 0)
+                ListExamItems = null;
+                ListExamItems = JsonUtils.LoadQuestion(QuestionPath) as List<ExamItem>;
+                if (ListExamItems == null || ListExamItems.Count == 0)
                     throw new Exception("No question was found!");
                 else
                     MessageBox.Show("Load questions successfully", "Successfully");
@@ -76,7 +76,7 @@ namespace DBI_PEA_Scoring.UI
         private void LoadSubmition(string[] files)
         {
             // Init List submitions
-            Submitions = new List<Submition>();
+            ListSubmitions = new List<Submition>();
             // Setup for status bar
             int submistionCount = files.Count();
             statusImportProgressBar.Maximum = submistionCount;
@@ -91,7 +91,7 @@ namespace DBI_PEA_Scoring.UI
                 try
                 {
                     Submition submition = secureJsonSerializer.Load(file);
-                    Submitions.Add(submition);
+                    ListSubmitions.Add(submition);
                 }
                 catch (Exception e)
                 {
@@ -104,19 +104,19 @@ namespace DBI_PEA_Scoring.UI
             }
             secureJsonSerializer = null;
             browseAnswerButton.Enabled = false;
-            MessageBox.Show("Loaded :" + Submitions.Count + " submitions.");
+            MessageBox.Show("Loaded :" + ListSubmitions.Count + " submitions.");
         }
 
         private void getMarkButton_Click(object sender, EventArgs e)
         {
-            if (Submitions == null ||
-                QuestionPackage == null ||
-                Submitions.Count == 0 ||
-                QuestionPackage.Count == 0)
+            if (ListSubmitions == null ||
+                ListExamItems == null ||
+                ListSubmitions.Count == 0 ||
+                ListExamItems.Count == 0)
                 MessageBox.Show("Not enough information!", "Error");
             else
             {
-                (new Scoring(QuestionPackage, Submitions)).Show();
+                (new Scoring(ListExamItems, ListSubmitions)).Show();
                 this.Hide();
             }
         }

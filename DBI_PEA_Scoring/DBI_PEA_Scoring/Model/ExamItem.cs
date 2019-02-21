@@ -6,15 +6,15 @@ namespace DBI_PEA_Scoring.Model
     [Serializable]
     public class ExamItem
     {
-        public ExamItem(string examItemCode, List<Candidate> examQuestionsList)
+        public ExamItem(string paperNo, List<Candidate> examQuestionsList)
         {
-            ExamItemCode = examItemCode;
+            PaperNo = paperNo;
             ExamQuestionsList = examQuestionsList;
         }
         public ExamItem()
         {
         }
-        public String ExamItemCode { get; set; }
+        public String PaperNo { get; set; }
         public List<Candidate> ExamQuestionsList { get; set; }
     }
 }
