@@ -49,6 +49,7 @@ namespace DBI_PEA_Scoring.Model
         public void ChamDiem()
         {
             Thread.Sleep(30);
+
             for (int i = 0; i < 10; i++)
             {
                 try

@@ -116,7 +116,7 @@ namespace DBI_PEA_Scoring.UI
                 MessageBox.Show("Not enough information!", "Error");
             else
             {
-                (new Scoring(ListExamItems, ListSubmitions)).Show();
+                var Score = new Scoring(ListExamItems, ListSubmitions);
                 this.Hide();
             }
         }

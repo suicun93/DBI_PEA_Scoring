@@ -21,7 +21,7 @@ namespace DBI_PEA_Scoring.UI
             InitializeComponent();
             ListBaiDeCham = new List<BaiChungDeChamDiem>();
             SetupUI();
-            this.Load += new System.EventHandler(ChamDiem);
+            this.Activated += new System.EventHandler(ChamDiem);
             // Merge Question and Submition to ListScore
             foreach (Submition submition in submitions)
             {
@@ -50,7 +50,7 @@ namespace DBI_PEA_Scoring.UI
                 // Add to List Bai de cham
                 ListBaiDeCham.Add(baiChungDeChamDiem);
             }
-            
+            this.Show();
         }
 
         private void SetupUI()
@@ -95,6 +95,7 @@ namespace DBI_PEA_Scoring.UI
                     {
                         dataView.Rows[j].Cells[2 + i].Value = baiDeCham.Points[i];
                     }
+                    dataView.Refresh();
                 }
                 catch (Exception)
                 {

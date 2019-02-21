@@ -48,12 +48,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common\SecureJsonSerializer.cs" />
-    <Compile Include="Model\Candidate.cs" />
-    <Compile Include="Model\ExamItem.cs" />
-    <Compile Include="Model\Question.cs" />
-    <Compile Include="Model\Requirement.cs" />
+    <Compile Include="Model\Teacher\Candidate.cs" />
+    <Compile Include="Model\Teacher\ExamItem.cs" />
+    <Compile Include="Model\Teacher\Question.cs" />
+    <Compile Include="Model\Teacher\Requirement.cs" />
     <Compile Include="Model\Score.cs" />
-    <Compile Include="Model\Submition.cs" />
+    <Compile Include="Model\Student\Submition.cs" />
     <Compile Include="UI\ImportMaterial.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -97,8 +97,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Model\Student\" />
-    <Folder Include="Model\Teacher\" />
     <Folder Include="Network\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
