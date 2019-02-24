@@ -31,8 +31,9 @@
             this.exportButton = new System.Windows.Forms.Button();
             this.quitButton = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
-            this.dataView = new System.Windows.Forms.DataGridView();
-            ((System.ComponentModel.ISupportInitialize)(this.dataView)).BeginInit();
+            this.scoreGridView = new System.Windows.Forms.DataGridView();
+            this.startButton = new System.Windows.Forms.Button();
+            ((System.ComponentModel.ISupportInitialize)(this.scoreGridView)).BeginInit();
             this.SuspendLayout();
             // 
             // exportButton
@@ -60,36 +61,47 @@
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 27.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.ForeColor = System.Drawing.SystemColors.Highlight;
-            this.label1.Location = new System.Drawing.Point(12, 22);
+            this.label1.Location = new System.Drawing.Point(12, 14);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(152, 42);
             this.label1.TabIndex = 2;
             this.label1.Text = "Scoring";
             // 
-            // dataGridView1
+            // scoreGridView
             // 
-            this.dataView.AllowUserToAddRows = false;
-            this.dataView.AllowUserToDeleteRows = false;
-            this.dataView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataView.Location = new System.Drawing.Point(19, 67);
-            this.dataView.Name = "dataGridView1";
-            this.dataView.ReadOnly = true;
-            this.dataView.Size = new System.Drawing.Size(736, 401);
-            this.dataView.TabIndex = 3;
+            this.scoreGridView.AllowUserToAddRows = false;
+            this.scoreGridView.AllowUserToDeleteRows = false;
+            this.scoreGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.scoreGridView.Location = new System.Drawing.Point(19, 67);
+            this.scoreGridView.Name = "scoreGridView";
+            this.scoreGridView.ReadOnly = true;
+            this.scoreGridView.Size = new System.Drawing.Size(736, 401);
+            this.scoreGridView.TabIndex = 3;
+            // 
+            // startButton
+            // 
+            this.startButton.Location = new System.Drawing.Point(651, 33);
+            this.startButton.Name = "startButton";
+            this.startButton.Size = new System.Drawing.Size(104, 23);
+            this.startButton.TabIndex = 4;
+            this.startButton.Text = "Start Get Score";
+            this.startButton.UseVisualStyleBackColor = true;
+            this.startButton.Click += new System.EventHandler(this.ShowPoint);
             // 
             // Scoring
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(767, 509);
-            this.Controls.Add(this.dataView);
+            this.Controls.Add(this.startButton);
+            this.Controls.Add(this.scoreGridView);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.quitButton);
             this.Controls.Add(this.exportButton);
             this.Name = "Scoring";
             this.Text = "Scoring";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Scoring_FormClosed);
-            ((System.ComponentModel.ISupportInitialize)(this.dataView)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.scoreGridView)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -99,6 +111,7 @@
         private System.Windows.Forms.Button exportButton;
         private System.Windows.Forms.Button quitButton;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.DataGridView dataView;
+        private System.Windows.Forms.DataGridView scoreGridView;
+        private System.Windows.Forms.Button startButton;
     }
 }

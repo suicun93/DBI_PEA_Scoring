@@ -14,41 +14,41 @@ namespace DBI_PEA_Scoring.UI
     public partial class Scoring : Form
     {
 
-        private List<BaiChungDeChamDiem> ListBaiDeCham { get; set; }
-        private BindingSource binding = new BindingSource();
-        public Scoring(List<ExamItem> boDe, List<Submition> submitions)
+        private List<Result> ListResults { get; set; }
+        private bool scored = false;
+        public Scoring(List<ExamItem> ListExamItems, List<Submition> ListSubmitions)
         {
             InitializeComponent();
-            ListBaiDeCham = new List<BaiChungDeChamDiem>();
+            ListResults = new List<Result>();
             SetupUI();
-            this.Activated += new System.EventHandler(ChamDiem);
-            // Merge Question and Submition to ListScore
-            foreach (Submition submition in submitions)
+            //this.Activated += new System.EventHandler(ShowPoint);
+            // Merge Question and Submition to ListResults
+            foreach (Submition submition in ListSubmitions)
             {
-                BaiChungDeChamDiem baiChungDeChamDiem = new BaiChungDeChamDiem();
+                Result result = new Result();
                 // Add PaperNo
-                baiChungDeChamDiem.PaperNo = submition.PaperNo;
+                result.PaperNo = submition.PaperNo;
                 // Add StudentID
-                baiChungDeChamDiem.StudentID = submition.StudentID;
+                result.StudentID = submition.StudentID;
                 // Add Answers
                 foreach (string answer in submition.ListAnswer)
                 {
-                    baiChungDeChamDiem.ListAnswers.Add(answer);
+                    result.ListAnswers.Add(answer);
                 }
                 // Add Candidates
-                foreach (ExamItem de in boDe)
+                foreach (ExamItem de in ListExamItems)
                 {
-                    if (de.PaperNo.Equals(baiChungDeChamDiem.PaperNo))
+                    if (de.PaperNo.Equals(result.PaperNo))
                     {
                         foreach (Candidate candidate in de.ExamQuestionsList)
                         {
-                            baiChungDeChamDiem.ListCandidates.Add(candidate);
+                            result.ListCandidates.Add(candidate);
                         }
                         break;
                     }
                 }
-                // Add to List Bai de cham
-                ListBaiDeCham.Add(baiChungDeChamDiem);
+                // Add to List to get score
+                ListResults.Add(result);
             }
             this.Show();
         }
@@ -56,51 +56,40 @@ namespace DBI_PEA_Scoring.UI
         private void SetupUI()
         {
             // Initialize the DataGridView.
-            dataView.AutoGenerateColumns = false;
-            dataView.DataSource = binding;
+            scoreGridView.AutoGenerateColumns = false;
 
             // Initialize and add a text box column for StudentID
             DataGridViewColumn studentColumn = new DataGridViewTextBoxColumn();
             studentColumn.Name = "StudentID";
-            studentColumn.DataPropertyName = "StudentID";
-            dataView.Columns.Add(studentColumn);
+            scoreGridView.Columns.Add(studentColumn);
 
             // Initialize and add a text box column for paperNo
             DataGridViewColumn paperNoColumn = new DataGridViewTextBoxColumn();
             paperNoColumn.Name = "PaperNo";
-            paperNoColumn.DataPropertyName = "PaperNo";
-            dataView.Columns.Add(paperNoColumn);
+            scoreGridView.Columns.Add(paperNoColumn);
 
             // Initialize and add a text box column for score of each answer
             for (int i = 0; i < 10; i++)
             {
                 DataGridViewColumn column = new DataGridViewTextBoxColumn();
                 column.Name = "Answer " + (i + 1).ToString();
-                dataView.Columns.Add(column);
+                scoreGridView.Columns.Add(column);
             }
         }
 
         // Cham diem
-        private void ChamDiem(object sender, EventArgs e)
+        private void ShowPoint(object sender, EventArgs e)
         {
-            // Populate the data source.
-            for (int j = 0; j < ListBaiDeCham.Count; j++)
+            if (!scored)
             {
-                try
+                // Populate the data source.
+                for (int row = 0; row < ListResults.Count; row++)
                 {
-                    BaiChungDeChamDiem baiDeCham = ListBaiDeCham.ElementAt(j);
-                    baiDeCham.ChamDiem();
-                    binding.Add(baiDeCham);
-                    for (int i = 0; i < 10; i++)
-                    {
-                        dataView.Rows[j].Cells[2 + i].Value = baiDeCham.Points[i];
-                    }
-                    dataView.Refresh();
+                    ListResults.ElementAt(row).GetPoint(scoreGridView, row);
                 }
-                catch (Exception)
-                {
-                }
+                scored = true;
             }
+            else MessageBox.Show("Score has already got.");
         }
 
         // sau khi add xong thuc hien cham diem, cham den dau in diem den day!

@@ -92,17 +92,18 @@ namespace DBI_PEA_Scoring.UI
                 {
                     Submition submition = secureJsonSerializer.Load(file);
                     ListSubmitions.Add(submition);
+                    // Change value status bar
+                    count++;
+                    statusImportLabel.Text = "Imported " + count + "/" + submistionCount;
+                    statusImportProgressBar.Value = count;
                 }
                 catch (Exception e)
                 {
                     MessageBox.Show(e.Message);
                 }
-                // Change value status bar
-                count++;
-                statusImportLabel.Text = "Imported " + count + "/" + submistionCount;
-                statusImportProgressBar.Value = count;
             }
             secureJsonSerializer = null;
+            // After loading successfully, diable browse button because jsonSerialize is error if load again.
             browseAnswerButton.Enabled = false;
             MessageBox.Show("Loaded :" + ListSubmitions.Count + " submitions.");
         }
@@ -116,8 +117,8 @@ namespace DBI_PEA_Scoring.UI
                 MessageBox.Show("Not enough information!", "Error");
             else
             {
-                var Score = new Scoring(ListExamItems, ListSubmitions);
                 this.Hide();
+                var Score = new Scoring(ListExamItems, ListSubmitions);
             }
         }
 
