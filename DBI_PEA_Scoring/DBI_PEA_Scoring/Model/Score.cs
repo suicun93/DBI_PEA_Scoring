@@ -93,7 +93,7 @@ namespace DBI_PEA_Scoring.Model
                 try
                 {
                     //bool correct = await Cham(ListCandidates.ElementAt(i), ListAnswers.ElementAt(i));
-                    if (numberOfQuestion > questionOrder + 1)
+                    if (numberOfQuestion > questionOrder)
                         if (Point(ListCandidates.ElementAt(questionOrder), ListAnswers.ElementAt(questionOrder)))
                         {
                             // Exactly -> Log true and return 0 point

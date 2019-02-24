@@ -27,22 +27,35 @@ namespace DBI_PEA_Scoring.Utils
                 InitialCatalog = Constant.listDB[0].InitialCatalog
             };
             SelectType st = new SelectType(builder);
-            General gen = new General();
+            General general = new General();
             //Duplicate 2 new DB for student and teacher
-            gen.DuplicatedDb(builder, Constant.listDB[0].SqlServerDbFolder, 
+            general.DuplicatedDb(builder, Constant.listDB[0].SqlServerDbFolder,
                 Constant.listDB[0].SourceDbName, "DbForTest");
             string dbNameTeacher = "DbForTest_Teacher";
             string dbNameStudent = "DbForTest_Student";
-            //Marking
-            foreach (Requirement req in candidate.Requirements)
+            try
             {
-                if (st.MarkQueryType(req.RequireSort, dbNameTeacher, dbNameStudent,
-                        req.ResultQuery, answer, builder) == false)
+                //Marking
+                foreach (Requirement req in candidate.Requirements)
                 {
-                    return false;
-                };
+                    if (st.MarkQueryType(req.RequireSort, dbNameTeacher, dbNameStudent,
+                            req.ResultQuery, answer, builder) == false)
+                    {
+                        general.DropDatabase(dbNameTeacher, builder);
+                        general.DropDatabase(dbNameStudent, builder);
+                        return false;
+                    }
+                }
+                general.DropDatabase(dbNameTeacher, builder);
+                general.DropDatabase(dbNameStudent, builder);
+                return true;
             }
-            return true;
+            catch (SqlException e)
+            {
+                general.DropDatabase(dbNameTeacher, builder);
+                general.DropDatabase(dbNameStudent, builder);
+                throw e;
+            }
         }
 
         internal static bool TestProcedure(Candidate candidate, string answer)

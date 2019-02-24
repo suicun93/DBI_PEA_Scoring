@@ -8,7 +8,7 @@ namespace DBI_PEA_Scoring.Utils.DaoType
     class SelectType
     {
         public SqlConnectionStringBuilder Builder { get; }
-        public General Gen { get; }
+        public General General { get; }
 
         /// <summary>
         /// Init connection
@@ -17,7 +17,7 @@ namespace DBI_PEA_Scoring.Utils.DaoType
         {
             // Build connection string
             Builder = builder;
-            Gen = new General();
+            General = new General();
         }
 
         /// <summary>
@@ -127,7 +127,7 @@ namespace DBI_PEA_Scoring.Utils.DaoType
         public bool CompareTableNoSort(string db1Name, string db2Name, string queryTable1,
             string queryTable2, SqlConnectionStringBuilder builder)
         {
-            String sql = "USE " + db1Name + "; \n" +
+            string sql = "USE " + db1Name + "; \n" +
                          "WITH T1 as (" + queryTable1 + ") \n" +
                          "select * INTO #TABLE1 from T1;\n" +
                          "USE " + db2Name + ";\n" +
@@ -139,8 +139,6 @@ namespace DBI_PEA_Scoring.Utils.DaoType
                          "\n" +
                          "drop table #TABLE1\n" +
                          "drop table #TABLE2";
-            try
-            {
                 // Connect to SQL
                 using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
                 {
@@ -154,16 +152,7 @@ namespace DBI_PEA_Scoring.Utils.DaoType
                         return false;
                     }
                 }
-            }
-            catch (SqlException)
-            {
-                throw;
-            }
-            finally
-            {
-                //Gen.DropDatabase(db1Name, builder);
-                //Gen.DropDatabase(db2Name, builder);
-            }
+                
         }
     }
 }
