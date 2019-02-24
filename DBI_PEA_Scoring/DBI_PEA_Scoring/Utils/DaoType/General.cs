@@ -5,11 +5,11 @@ namespace DBI_PEA_Scoring.Utils.DaoType
 {
     public class General
     {
-
         /// <summary>
         /// Drop a Database
         /// </summary>
         /// <param name="dbName"></param>
+        /// <param name="builder"></param>
         /// <returns>
         /// message if error
         /// "" if done
@@ -38,13 +38,11 @@ namespace DBI_PEA_Scoring.Utils.DaoType
         /// <summary>
         /// Duplicate a number of a database
         /// </summary>
-        /// <param name="dataSource"></param> Name of server
-        /// <param name="userId"></param> sa
-        /// <param name="password"></param> 123
-        /// <param name="initialCatalog"></param> master
         /// <param name="sourceDbName"></param> DB need to duplicate
-        /// <param name="sqlServerDbFolder"></param> Path to ServerDB: C:\Program Files\Microsoft SQL Server\MSSQL11.SQLEXPRESS\MSSQL\DATA\
-        /// <param name="num"></param> times
+        /// <param name="builder"></param>
+        /// <param name="sqlServerDbFolder"></param>
+        /// <param name="newDbName"></param>
+        /// Path to ServerDB: C:\Program Files\Microsoft SQL Server\MSSQL11.SQLEXPRESS\MSSQL\DATA\
         public bool DuplicatedDb(SqlConnection builder, string sqlServerDbFolder, string sourceDbName, string newDbName)
         {
             try

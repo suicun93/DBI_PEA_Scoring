@@ -7,8 +7,8 @@ namespace DBI_PEA_Scoring.Utils.DaoType
 {
     class QueryType
     {
-        SqlConnectionStringBuilder builder;
-        General gen;
+        private SqlConnectionStringBuilder _builder;
+        private General _gen;
 
         /// <summary>
         /// Init connection
@@ -21,14 +21,14 @@ namespace DBI_PEA_Scoring.Utils.DaoType
         public QueryType(string dataSource, string userId, string password, string initialCatalog)
         {
             // Build connection string
-            builder = new SqlConnectionStringBuilder
+            _builder = new SqlConnectionStringBuilder
             {
                 DataSource = dataSource,
                 UserID = userId,
                 Password = password,
                 InitialCatalog = initialCatalog
             };
-            gen = new General();
+            _gen = new General();
         }
         public string MarkQueryType(bool isSort, string dbTeacherName, string dbStudentName, string queryTeacher,
             string queryStudent, SqlConnectionStringBuilder builder)
@@ -116,9 +116,8 @@ namespace DBI_PEA_Scoring.Utils.DaoType
         /// <param name="db2Name"></param>
         /// <param name="queryTable1"></param>
         /// <param name="queryTable2"></param>
-        /// <param name="dataSource"></param>//name host (localhost)
-        /// <param name="userId"></param>//user server
-        /// <param name="password"></param>//pass server
+        /// <param name="builder"></param>
+        /// //name host (localhost)
         /// <returns>
         /// "true" if correct
         /// "false" if wrong
