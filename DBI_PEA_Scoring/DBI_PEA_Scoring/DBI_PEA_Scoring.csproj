@@ -69,11 +69,13 @@
     <Compile Include="UI\Scoring.Designer.cs">
       <DependentUpon>Scoring.cs</DependentUpon>
     </Compile>
+    <Compile Include="Utils\DaoType\EffectType.cs" />
     <Compile Include="Utils\DaoType\General.cs" />
-    <Compile Include="Utils\DaoType\QueryType.cs" />
     <Compile Include="Utils\DaoType\SchemaType.cs" />
+    <Compile Include="Utils\DaoType\SelectType.cs" />
     <Compile Include="Utils\FileUtils.cs" />
     <Compile Include="Utils\JsonUtils.cs" />
+    <Compile Include="Utils\TestUtils.cs" />
     <EmbeddedResource Include="UI\ImportMaterial.resx">
       <DependentUpon>ImportMaterial.cs</DependentUpon>
     </EmbeddedResource>

@@ -38,33 +38,25 @@ namespace DBI_PEA_Scoring.Utils.DaoType
         /// <param name="queryEffectStudent">query effect on table from student</param>
         /// <param name="queryCheckEffect">query answer to check table effected from teacher</param>
         /// <returns></returns>
-        public string MarkInsUpDelTypeQuery(string dbTeacherName, string dbStudentName,
+        public bool MarkInsUpDelTypeQuery(string dbTeacherName, string dbStudentName,
             string queryEffectTeacher, string queryEffectStudent, string queryCheckEffect)
         {
             queryEffectTeacher = "use " + dbTeacherName + "\n" + queryEffectTeacher + "";
             queryEffectStudent = "use " + dbStudentName + "\n" + queryEffectStudent + "";
-            SelectType selectType = new SelectType(_builder.DataSource, _builder.UserID, _builder.Password,
-                _builder.InitialCatalog);
-            try
+            SelectType selectType = new SelectType(_builder);
+            using (SqlConnection connection = new SqlConnection(_builder.ConnectionString))
             {
-                using (SqlConnection connection = new SqlConnection(_builder.ConnectionString))
+                //Run Effect query
+                using (SqlCommand cmdEffStudent = new SqlCommand(queryEffectStudent, connection))
                 {
-                    //Run Effect query
-                    using (SqlCommand cmdEffStudent = new SqlCommand(queryEffectStudent, connection))
-                    {
-                        cmdEffStudent.ExecuteNonQuery();
-                    }
-                    using (SqlCommand cmdEffTeacher = new SqlCommand(queryEffectTeacher, connection))
-                    {
-                        cmdEffTeacher.ExecuteNonQuery();
-                    }
-                    return selectType.CompareTableNoSort(dbStudentName, dbTeacherName, 
-                        queryCheckEffect, queryCheckEffect, _builder);
+                    cmdEffStudent.ExecuteNonQuery();
                 }
-            }
-            catch (SqlException e)
-            {
-                return e.Message;
+                using (SqlCommand cmdEffTeacher = new SqlCommand(queryEffectTeacher, connection))
+                {
+                    cmdEffTeacher.ExecuteNonQuery();
+                }
+                return selectType.CompareTableNoSort(dbStudentName, dbTeacherName,
+                    queryCheckEffect, queryCheckEffect, _builder);
             }
         }
     }

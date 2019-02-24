@@ -8,7 +8,8 @@ namespace DBI_PEA_Scoring.Model
         public enum RequirementTypes
         {
             ResultSet = 1,
-            Effect = 2
+            Effect = 2,
+            Calculation = 3
         }
 
         public int RequirementId { get; set; }
@@ -20,6 +21,8 @@ namespace DBI_PEA_Scoring.Model
 
         public string EffectTable { get; set; }
         public string CheckEffectQuery { get; set; }
-        public string TriggerTriggerQuery { get; set; }
+        public string ActivateTriggerQuery { get; set; }
+
+        public string OutputParameter { get; set; }
     }
 }

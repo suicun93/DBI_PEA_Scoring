@@ -5,26 +5,15 @@ namespace DBI_PEA_Scoring.Utils.DaoType
 {
     class SchemaType
     {
-        SqlConnectionStringBuilder builder; //connectionString
+        SqlConnectionStringBuilder _builder; //connectionString
         General gen; //Calling General
 
         /// <summary>
         /// Init connection
         /// </summary>
-        /// <param name="dataSource">(something like localhost)</param> 
-        /// <param name="userId">(sa)</param> 
-        /// <param name="password">(123)</param> 
-        /// <param name="initialCatalog">(master)</param> 
-        public SchemaType(string dataSource, string userId, string password, string initialCatalog)
+        public SchemaType(SqlConnectionStringBuilder builder)
         {
-            // Build connection string
-            builder = new SqlConnectionStringBuilder
-            {
-                DataSource = dataSource,
-                UserID = userId,
-                Password = password,
-                InitialCatalog = initialCatalog
-            };
+            _builder = builder;
             gen = new General();
         }
 
@@ -39,7 +28,7 @@ namespace DBI_PEA_Scoring.Utils.DaoType
         /// "true" if correct
         /// "false" if wrong
         /// message error from sqlserver if error</returns>
-        public string MarkSchemaDatabasesType(string dbTeacherName, string dbStudentName, string queryTeacher, string queryStudent)
+        public bool MarkSchemaDatabasesType(string dbTeacherName, string dbStudentName, string queryTeacher, string queryStudent)
         {
             try
             {
@@ -48,7 +37,7 @@ namespace DBI_PEA_Scoring.Utils.DaoType
                 queryTeacher = "USE " + dbTeacherName + "\n" + queryTeacher + "\n";
                 queryStudent = "USE " + dbStudentName + "\n" + queryStudent + "\n";
 
-                using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
+                using (SqlConnection connection = new SqlConnection(_builder.ConnectionString))
                 {
                     connection.Open();
                     using (SqlCommand commandCreateDatabase = new SqlCommand(createDbTeacherQuery, connection))
@@ -68,17 +57,17 @@ namespace DBI_PEA_Scoring.Utils.DaoType
                         commandStudent.ExecuteNonQuery();
                     }
 
-                    string resCompare = CompareTwoDatabases(dbStudentName, dbTeacherName);
-                    gen.DropDatabase(dbStudentName, builder);
-                    gen.DropDatabase(dbTeacherName, builder);
+                    bool resCompare = CompareTwoDatabases(dbStudentName, dbTeacherName);
+                    gen.DropDatabase(dbStudentName, _builder);
+                    gen.DropDatabase(dbTeacherName, _builder);
                     return resCompare;
                 }
             }
-            catch (SqlException e)
+            catch (SqlException)
             {
-                gen.DropDatabase(dbStudentName, builder);
-                gen.DropDatabase(dbTeacherName, builder);
-                return e.Message;
+                gen.DropDatabase(dbStudentName, _builder);
+                gen.DropDatabase(dbTeacherName, _builder);
+                throw;
             }
         }
 
@@ -91,53 +80,49 @@ namespace DBI_PEA_Scoring.Utils.DaoType
         /// "true" if correct
         /// "false" if wrong
         /// message error from sqlserver if error</returns>
-        private string CompareTwoDatabases(string db1Name, string db2Name)
+        private bool CompareTwoDatabases(string db1Name, string db2Name)
         {
-            try
+
+            string checkExistsSpQuery = "USE master\n" +
+                                        "SELECT * FROM sys.objects\n" +
+                                        "WHERE object_id = OBJECT_ID(N'[sp_CompareDb]') AND type IN ( N'P', N'PC' )";
+            string compareQuery = "exec sp_CompareDb " + db1Name + ", " + db2Name + "";
+            // Connect to SQL
+            using (SqlConnection connection = new SqlConnection(_builder.ConnectionString))
             {
-                String checkExistsSpQuery = "USE master\n" +
-                                            "SELECT * FROM sys.objects\n" +
-                                            "WHERE object_id = OBJECT_ID(N'[sp_CompareDb]') AND type IN ( N'P', N'PC' )";
-                String compareQuery = "exec sp_CompareDb " + db1Name + ", " + db2Name + "";
-                // Connect to SQL
-                using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
+                connection.Open();
+                using (SqlCommand command = new SqlCommand(checkExistsSpQuery, connection))
                 {
-                    connection.Open();
-                    using (SqlCommand command = new SqlCommand(checkExistsSpQuery, connection))
+                    //Check exists SP sp_compareDb
+                    if (command.ExecuteScalar() == null)
                     {
-                        //Check exists SP sp_compareDb
-                        if (command.ExecuteScalar() == null)
+                        //Create SP
+                        using (SqlCommand commandCreate = new SqlCommand(createProcCompareDbs, connection))
                         {
-                            //Create SP
-                            using (SqlCommand commandCreate = new SqlCommand(createProcCompareDbs, connection))
-                            {
-                                commandCreate.ExecuteNonQuery();
-                            }
+                            commandCreate.ExecuteNonQuery();
                         }
-                        using (SqlCommand commandCompare = new SqlCommand(compareQuery, connection))
+                    }
+                    using (SqlCommand commandCompare = new SqlCommand(compareQuery, connection))
+                    {
+                        using (SqlDataReader reader = commandCompare.ExecuteReader())
                         {
-                            using (SqlDataReader reader = commandCompare.ExecuteReader())
+                            do
                             {
-                                do
+                                while (reader.HasRows)
                                 {
-                                    while (reader.HasRows)
-                                    {
-                                        return "false";
-                                    }
-                                } while (reader.NextResult());
-                                return "true";
-                            }
+                                    return false;
+                                }
+                            } while (reader.NextResult());
+                            return true;
                         }
                     }
                 }
             }
-            catch (SqlException e)
-            {
-                return e.Message;
-            }
         }
 
-        private string createProcCompareDbs = "CREATE PROC [dbo].[sp_CompareDb]\n" +
+    
+
+    private string createProcCompareDbs = "CREATE PROC [dbo].[sp_CompareDb]\n" +
 "(\n" +
 "	@SourceDB SYSNAME,\n" +
 "	@TargetDb SYSNAME\n" +
@@ -914,5 +899,5 @@ namespace DBI_PEA_Scoring.Utils.DaoType
 "	FROM #FK_RESULTS\n" +
 "END";
 
-    }
+}
 }
