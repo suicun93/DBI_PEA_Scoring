@@ -5,16 +5,16 @@ namespace DBI_PEA_Scoring.Utils.DaoType
 {
     class SchemaType
     {
-        SqlConnectionStringBuilder builder;
-        General gen;
+        SqlConnectionStringBuilder builder; //connectionString
+        General gen; //Calling General
 
         /// <summary>
         /// Init connection
         /// </summary>
-        /// <param name="dataSource"></param> (something like localhost)
-        /// <param name="userId"></param> (sa)
-        /// <param name="password"></param> (123)
-        /// <param name="initialCatalog"></param> (master)
+        /// <param name="dataSource">(something like localhost)</param> 
+        /// <param name="userId">(sa)</param> 
+        /// <param name="password">(123)</param> 
+        /// <param name="initialCatalog">(master)</param> 
         public SchemaType(string dataSource, string userId, string password, string initialCatalog)
         {
             // Build connection string
@@ -31,15 +31,15 @@ namespace DBI_PEA_Scoring.Utils.DaoType
         /// <summary>
         /// Mark Student query
         /// </summary>
-        /// <param name="queryTeacher"></param>
-        /// <param name="queryStudent"></param>
         /// <param name="dbTeacherName"></param>
         /// <param name="dbStudentName"></param>
+        /// <param name="queryTeacher">query from Teacher</param>
+        /// <param name="queryStudent">query from Student</param>
         /// <returns>
         /// "true" if correct
         /// "false" if wrong
         /// message error from sqlserver if error</returns>
-        public string MarkSchemaDatabasesType(string queryTeacher, string queryStudent, string dbTeacherName, string dbStudentName)
+        public string MarkSchemaDatabasesType(string dbTeacherName, string dbStudentName, string queryTeacher, string queryStudent)
         {
             try
             {
@@ -99,7 +99,6 @@ namespace DBI_PEA_Scoring.Utils.DaoType
                                             "SELECT * FROM sys.objects\n" +
                                             "WHERE object_id = OBJECT_ID(N'[sp_CompareDb]') AND type IN ( N'P', N'PC' )";
                 String compareQuery = "exec sp_CompareDb " + db1Name + ", " + db2Name + "";
-
                 // Connect to SQL
                 using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
                 {
@@ -137,8 +136,6 @@ namespace DBI_PEA_Scoring.Utils.DaoType
                 return e.Message;
             }
         }
-
-        
 
         private string createProcCompareDbs = "CREATE PROC [dbo].[sp_CompareDb]\n" +
 "(\n" +

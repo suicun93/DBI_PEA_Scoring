@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace DBI_PEA_Scoring.Utils.DaoType
 {
-    class QueryType
+    class SelectType
     {
         private SqlConnectionStringBuilder _builder;
         private General _gen;
@@ -13,12 +13,12 @@ namespace DBI_PEA_Scoring.Utils.DaoType
         /// <summary>
         /// Init connection
         /// </summary>
-        /// <param name="dataSource"></param> (something like localhost)
-        /// <param name="userId"></param> (sa)
-        /// <param name="password"></param> (123)
-        /// <param name="initialCatalog"></param> (master)
+        /// <param name="dataSource">(something like localhost)</param> 
+        /// <param name="userId">(sa)</param> 
+        /// <param name="password">(123)</param> 
+        /// <param name="initialCatalog">(master)</param> 
         /// 
-        public QueryType(string dataSource, string userId, string password, string initialCatalog)
+        public SelectType(string dataSource, string userId, string password, string initialCatalog)
         {
             // Build connection string
             _builder = new SqlConnectionStringBuilder
@@ -30,6 +30,17 @@ namespace DBI_PEA_Scoring.Utils.DaoType
             };
             _gen = new General();
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="isSort">is this question need sorting</param>
+        /// <param name="dbTeacherName"></param>
+        /// <param name="dbStudentName"></param>
+        /// <param name="queryTeacher"></param>
+        /// <param name="queryStudent"></param>
+        /// <param name="builder"></param>
+        /// <returns></returns>
         public string MarkQueryType(bool isSort, string dbTeacherName, string dbStudentName, string queryTeacher,
             string queryStudent, SqlConnectionStringBuilder builder)
         {
@@ -43,6 +54,19 @@ namespace DBI_PEA_Scoring.Utils.DaoType
             return "false";
         }
 
+        /// <summary>
+        /// Compare tables with sort
+        /// </summary>
+        /// <param name="db1Name"></param>
+        /// <param name="db2Name"></param>
+        /// <param name="queryTable1"></param>
+        /// <param name="queryTable2"></param>
+        /// <param name="builder"></param>
+        /// <returns>
+        /// "true" if correct
+        /// "false" if wrong
+        /// message error from sqlserver if error
+        /// </returns>
         private string CompareTableSort(string db1Name, string db2Name, string queryTable1,
             string queryTable2, SqlConnectionStringBuilder builder)
         {
@@ -90,7 +114,7 @@ namespace DBI_PEA_Scoring.Utils.DaoType
             {
                 return resCheckSchema;
             }
-            
+
         }
 
         /// <summary>
@@ -110,7 +134,7 @@ namespace DBI_PEA_Scoring.Utils.DaoType
 
         ////////////////////////////////////////////////////////////////////
         /// <summary>
-        /// Compare Schema of Database
+        /// Compare Table no sort
         /// </summary>
         /// <param name="db1Name"></param>
         /// <param name="db2Name"></param>
@@ -123,7 +147,7 @@ namespace DBI_PEA_Scoring.Utils.DaoType
         /// "false" if wrong
         /// message error from sqlserver if error
         /// </returns>
-        private string CompareTableNoSort(string db1Name, string db2Name, string queryTable1,
+        public string CompareTableNoSort(string db1Name, string db2Name, string queryTable1,
             string queryTable2, SqlConnectionStringBuilder builder)
         {
             try

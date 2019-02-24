@@ -8,10 +8,10 @@ namespace DBI_PEA_Scoring.Utils.DaoType
         /// <summary>
         /// Drop a Database
         /// </summary>
-        /// <param name="dbName"></param>
-        /// <param name="builder"></param>
+        /// <param name="dbName">Database need to drop</param>
+        /// <param name="builder">String builder</param>
         /// <returns>
-        /// message if error
+        /// "message error" if error
         /// "" if done
         /// </returns>
         public string DropDatabase(string dbName, SqlConnectionStringBuilder builder)
@@ -36,13 +36,13 @@ namespace DBI_PEA_Scoring.Utils.DaoType
         }
 
         /// <summary>
-        /// Duplicate a number of a database
+        /// Create 2 database for marking
         /// </summary>
-        /// <param name="sourceDbName"></param> DB need to duplicate
-        /// <param name="builder"></param>
-        /// <param name="sqlServerDbFolder"></param>
+        /// <param name="sourceDbName">DB need to duplicate</param> 
+        /// <param name="builder">ConnectionString</param>
+        /// <param name="sqlServerDbFolder">Path to ServerDB: C:\Program Files\Microsoft SQL Server\MSSQL11.SQLEXPRESS\MSSQL\DATA\</param>
         /// <param name="newDbName"></param>
-        /// Path to ServerDB: C:\Program Files\Microsoft SQL Server\MSSQL11.SQLEXPRESS\MSSQL\DATA\
+        /// 
         public bool DuplicatedDb(SqlConnection builder, string sqlServerDbFolder, string sourceDbName, string newDbName)
         {
             try
