@@ -1,14 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
 
 namespace DBI_PEA_Scoring.Utils.DaoType
 {
     class SchemaType
     {
         SqlConnectionStringBuilder builder;
+        General gen;
 
         /// <summary>
         /// Init connection
@@ -27,6 +25,7 @@ namespace DBI_PEA_Scoring.Utils.DaoType
                 Password = password,
                 InitialCatalog = initialCatalog
             };
+            gen = new General();
         }
 
         /// <summary>
@@ -40,7 +39,7 @@ namespace DBI_PEA_Scoring.Utils.DaoType
         /// "true" if correct
         /// "false" if wrong
         /// message error from sqlserver if error</returns>
-        public string CheckSchemaOfDatabases(string queryTeacher, string queryStudent, string dbTeacherName, string dbStudentName)
+        public string MarkSchemaDatabasesType(string queryTeacher, string queryStudent, string dbTeacherName, string dbStudentName)
         {
             try
             {
@@ -70,15 +69,15 @@ namespace DBI_PEA_Scoring.Utils.DaoType
                     }
 
                     string resCompare = CompareTwoDatabases(dbStudentName, dbTeacherName);
-                    DropDatabase(dbTeacherName);
-                    DropDatabase(dbStudentName);
+                    gen.DropDatabase(dbStudentName, builder);
+                    gen.DropDatabase(dbTeacherName, builder);
                     return resCompare;
                 }
             }
             catch (SqlException e)
             {
-                DropDatabase(dbTeacherName);
-                DropDatabase(dbStudentName);
+                gen.DropDatabase(dbStudentName, builder);
+                gen.DropDatabase(dbTeacherName, builder);
                 return e.Message;
             }
         }
@@ -139,34 +138,7 @@ namespace DBI_PEA_Scoring.Utils.DaoType
             }
         }
 
-        /// <summary>
-        /// Drop a Database
-        /// </summary>
-        /// <param name="dbName"></param>
-        /// <returns>
-        /// message if error
-        /// "" if done
-        /// </returns>
-        private string DropDatabase(string dbName)
-        {
-            try
-            {
-                using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
-                {
-                    string dropQuery = "use master drop database " + dbName + "";
-                    using (SqlCommand commandDrop = new SqlCommand(dropQuery, connection))
-                    {
-                        connection.Open();
-                        commandDrop.ExecuteNonQuery();
-                        return "";
-                    }
-                }
-            }
-            catch (SqlException e)
-            {
-                return e.ToString();
-            }
-        }
+        
 
         private string createProcCompareDbs = "CREATE PROC [dbo].[sp_CompareDb]\n" +
 "(\n" +

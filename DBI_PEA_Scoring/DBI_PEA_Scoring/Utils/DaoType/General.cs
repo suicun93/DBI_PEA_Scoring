@@ -1,13 +1,40 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
 
 namespace DBI_PEA_Scoring.Utils.DaoType
 {
-    class Duplicate
+    public class General
     {
+
+        /// <summary>
+        /// Drop a Database
+        /// </summary>
+        /// <param name="dbName"></param>
+        /// <returns>
+        /// message if error
+        /// "" if done
+        /// </returns>
+        public string DropDatabase(string dbName, SqlConnectionStringBuilder builder)
+        {
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
+                {
+                    string dropQuery = "use master drop database " + dbName + "";
+                    using (SqlCommand commandDrop = new SqlCommand(dropQuery, connection))
+                    {
+                        connection.Open();
+                        commandDrop.ExecuteNonQuery();
+                        return "";
+                    }
+                }
+            }
+            catch (SqlException e)
+            {
+                return e.ToString();
+            }
+        }
+
         /// <summary>
         /// Duplicate a number of a database
         /// </summary>
@@ -18,19 +45,10 @@ namespace DBI_PEA_Scoring.Utils.DaoType
         /// <param name="sourceDbName"></param> DB need to duplicate
         /// <param name="sqlServerDbFolder"></param> Path to ServerDB: C:\Program Files\Microsoft SQL Server\MSSQL11.SQLEXPRESS\MSSQL\DATA\
         /// <param name="num"></param> times
-        public bool DuplicatedDb(string dataSource, string userId, string password,
-            string initialCatalog, string sqlServerDbFolder, string sourceDbName, string newDbName)
+        public bool DuplicatedDb(SqlConnection builder, string sqlServerDbFolder, string sourceDbName, string newDbName)
         {
             try
             {
-                // Build connection string
-                SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder
-                {
-                    DataSource = dataSource,
-                    UserID = userId,
-                    Password = password,
-                    InitialCatalog = initialCatalog
-                };
                 for (int i = 0; i < 2; i++)
                 {
                     string sql = "declare @sourceDbName nvarchar(50) = '" + sourceDbName + "';\n" +
