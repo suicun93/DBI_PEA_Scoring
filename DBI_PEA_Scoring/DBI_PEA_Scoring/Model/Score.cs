@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DBI_PEA_Scoring.Utils;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,66 +16,117 @@ namespace DBI_PEA_Scoring.Model
         public List<string> ListAnswers { get; set; }
         public List<Candidate> ListCandidates { get; set; }
         public double[] Points { get; set; }
+        public string[] Logs { get; set; }
 
         public Result()
         {
             Points = new double[10];
             ListAnswers = new List<string>();
             ListCandidates = new List<Candidate>();
+            Logs = new string[10];
         }
 
         /// <summary>
         ///  Get Sum of point
         /// </summary>
-        /// <returns></returns>
-        public double Point()
+        /// <returns> Sum of point(double)</returns>
+        public double SumOfPoint()
         {
             double sum = 0;
             foreach (double point in Points)
-            {
                 sum += point;
-            }
             return sum;
         }
 
-        private  bool Cham(Candidate candidate, string answer)
+        /// <summary>
+        /// Count Student's point by question and answer
+        /// </summary>
+        /// <param name="candidate">Question</param>
+        /// <param name="answer">Student's answer</param>
+        /// <returns>
+        ///     True if correct
+        ///     False if incorrect.
+        /// </returns>
+        /// <exception cref="SQLException">
+        ///     if exception was found, throw it for GetPoint function to handle
+        /// </exception>
+        private bool Point(Candidate candidate, string answer)
         {
             // await TaskEx.Delay(100);
             if (String.IsNullOrEmpty(answer))
                 return false;
-            // Cho nay moi xu ly Sql 
-            return true;
+            // Process by Question Type
+            switch (candidate.QuestionType)
+            {
+                //case Candidate.QuestionTypes.Scheme
+                //return TestUtils.TestScheme(candidate, answer);
+                case Candidate.QuestionTypes.Query:
+                    // Query Question
+                    return TestUtils.TestQuery(candidate, answer);
+                case Candidate.QuestionTypes.Procedure:
+                    // Procedure Question
+                    return TestUtils.TestProcedure(candidate, answer);
+                case Candidate.QuestionTypes.Trigger:
+                    // Trigger Question
+                    return TestUtils.TestTrigger(candidate, answer);
+                default:
+                    // Not supported yet
+                    throw new Exception("This question type have not been supported");
+            }
         }
 
         /// <summary>
         /// Get Point function
         /// </summary>
-        public  void GetPoint(DataGridView dataGridView, int row)
+        /// <param name="dataGridView"> Data Grid View to show point of student</param>
+        /// <param name="row">The row number where the student is</param>
+        public void GetPoint(DataGridView dataGridView, int row)
         {
+            // Count number of candidate
+            int numberOfQuestion = ListCandidates.Count;
+            // Prepare 2 first columns
             dataGridView.Rows.Add(1);
             dataGridView.Rows[row].Cells[0].Value = StudentID;
             dataGridView.Rows[row].Cells[1].Value = PaperNo;
-            dataGridView.FirstDisplayedScrollingRowIndex = dataGridView.RowCount - 1;
             for (int questionOrder = 0; questionOrder < 10; questionOrder++)
             {
                 try
                 {
-                    // Cham diem o day
                     //bool correct = await Cham(ListCandidates.ElementAt(i), ListAnswers.ElementAt(i));
-                    if (Cham(ListCandidates.ElementAt(questionOrder), ListAnswers.ElementAt(questionOrder)))
-                        Points[questionOrder] = ListCandidates.ElementAt(questionOrder).Point;
+                    if (numberOfQuestion > questionOrder + 1)
+                        if (Point(ListCandidates.ElementAt(questionOrder), ListAnswers.ElementAt(questionOrder)))
+                        {
+                            // Exactly -> Log true and return 0 point
+                            Points[questionOrder] = ListCandidates.ElementAt(questionOrder).Point;
+                            Logs[questionOrder] = "";
+                        }
+                        else
+                        {
+                            // Wrong -> Log false and return 0 point
+                            Points[questionOrder] = 0;
+                            Logs[questionOrder] = "false";
+                        }
                     else
+                    {
+                        // Not enough candidate 
+                        // It rarely happens, it's this project's demos and faults.
                         Points[questionOrder] = 0;
+                        Logs[questionOrder] = "No candidate was found for question " + questionOrder + " paperNo = " + PaperNo;
+                    }
+                    // Show point of each question
                     dataGridView.Rows[row].Cells[2 + questionOrder].Value = Points[questionOrder].ToString();
                 }
                 catch (Exception e)
                 {
-                    // Thieu candidate hoac answer thi cho 0 luon
+                    // When something's wrong:
+                    // Log error and return 0 point for student.
                     dataGridView.Rows[row].Cells[2 + questionOrder].Value = Points[questionOrder].ToString();
-                    Console.WriteLine(e.Message);
+                    Logs[questionOrder] = e.Message;
                 }
             }
+            // Refresh to show point and scroll view to the last row
             dataGridView.Refresh();
+            dataGridView.FirstDisplayedScrollingRowIndex = dataGridView.RowCount - 1;
         }
     }
 }

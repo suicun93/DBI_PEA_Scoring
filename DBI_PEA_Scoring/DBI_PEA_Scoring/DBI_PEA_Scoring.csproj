@@ -47,6 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Common\Constant.cs" />
     <Compile Include="Common\SecureJsonSerializer.cs" />
     <Compile Include="Model\Teacher\Candidate.cs" />
     <Compile Include="Model\Teacher\ExamItem.cs" />
