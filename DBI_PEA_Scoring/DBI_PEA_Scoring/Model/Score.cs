@@ -58,8 +58,8 @@ namespace DBI_PEA_Scoring.Model
             // Process by Question Type
             switch (candidate.QuestionType)
             {
-                //case Candidate.QuestionTypes.Scheme
-                //return TestUtils.TestScheme(candidate, answer);
+                case Candidate.QuestionTypes.Schema:
+                    return TestUtils.TestSchema(candidate, answer);
                 case Candidate.QuestionTypes.Query:
                     // Query Question
                     return TestUtils.TestQuery(candidate, answer);
