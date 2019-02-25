@@ -69,6 +69,9 @@ namespace DBI_PEA_Scoring.Model
                 case Candidate.QuestionTypes.Trigger:
                     // Trigger Question
                     return TestUtils.TestTrigger(candidate, answer);
+                case Candidate.QuestionTypes.InsDelUpdate:
+                    // Insert/Delete/Update Question
+                    return TestUtils.TestInsertDeleteUpdate(candidate, answer);
                 default:
                     // Not supported yet
                     throw new Exception("This question type have not been supported");
@@ -111,18 +114,18 @@ namespace DBI_PEA_Scoring.Model
                         // Not enough candidate 
                         // It rarely happens, it's this project's demos and faults.
                         Points[questionOrder] = 0;
-                        Logs[questionOrder] = "No candidate was found for question " + questionOrder + " paperNo = " + PaperNo;
+                        Logs[questionOrder] = "No questions found at question " + questionOrder + " paperNo = " + PaperNo;
                     }
-                    // Show point of each question
-                    dataGridView.Rows[row].Cells[2 + questionOrder].Value = Points[questionOrder].ToString();
                 }
                 catch (Exception e)
                 {
                     // When something's wrong:
                     // Log error and return 0 point for student.
-                    dataGridView.Rows[row].Cells[2 + questionOrder].Value = Points[questionOrder].ToString();
+                    Points[questionOrder] = 0;
                     Logs[questionOrder] = e.Message;
                 }
+                // Show point of each question
+                dataGridView.Rows[row].Cells[2 + questionOrder].Value = Points[questionOrder].ToString();
             }
             // Refresh to show point and scroll view to the last row
             dataGridView.Refresh();

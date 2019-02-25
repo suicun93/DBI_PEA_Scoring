@@ -6,7 +6,6 @@ namespace DBI_PEA_Scoring.Utils.DaoType
     class SchemaType
     {
         SqlConnectionStringBuilder _builder; //connectionString
-        General gen; //Calling General
 
         /// <summary>
         /// Init connection
@@ -14,7 +13,6 @@ namespace DBI_PEA_Scoring.Utils.DaoType
         public SchemaType(SqlConnectionStringBuilder builder)
         {
             _builder = builder;
-            gen = new General();
         }
 
         /// <summary>

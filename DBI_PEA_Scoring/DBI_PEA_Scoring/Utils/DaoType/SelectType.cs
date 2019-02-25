@@ -8,7 +8,6 @@ namespace DBI_PEA_Scoring.Utils.DaoType
     class SelectType
     {
         public SqlConnectionStringBuilder Builder { get; }
-        public General General { get; }
 
         /// <summary>
         /// Init connection
@@ -17,7 +16,6 @@ namespace DBI_PEA_Scoring.Utils.DaoType
         {
             // Build connection string
             Builder = builder;
-            General = new General();
         }
 
         /// <summary>

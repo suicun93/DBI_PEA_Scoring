@@ -13,7 +13,7 @@ namespace DBI_PEA_Scoring.Utils.DaoType
         /// "message error" if error
         /// "" if done
         /// </returns>
-        public bool DropDatabase(string dbName, SqlConnectionStringBuilder builder)
+        public static bool DropDatabase(string dbName, SqlConnectionStringBuilder builder)
         {
 
             using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
@@ -37,7 +37,7 @@ namespace DBI_PEA_Scoring.Utils.DaoType
         /// <param name="sqlServerDbFolder">Path to ServerDB: C:\Program Files\Microsoft SQL Server\MSSQL11.SQLEXPRESS\MSSQL\DATA\</param>
         /// <param name="newDbName"></param>
         /// 
-        public bool DuplicatedDb(SqlConnectionStringBuilder builder, string sqlServerDbFolder, string sourceDbName, string newDbName)
+        public static bool DuplicatedDb(SqlConnectionStringBuilder builder, string sqlServerDbFolder, string sourceDbName, string newDbName)
         {
             for (int i = 0; i < 2; i++)
             {
@@ -84,6 +84,22 @@ namespace DBI_PEA_Scoring.Utils.DaoType
                 }
             }
             return true;
+        }
+
+        public static void ExecuteQuery(string dbTeacherName, string dbStudentName, string queryTeacher, string queryStudent, SqlConnectionStringBuilder sqlConnectionStringBuilder)
+        {
+            using (SqlConnection connection = new SqlConnection(sqlConnectionStringBuilder.ConnectionString))
+            {
+                connection.Open();
+                using (SqlCommand command = new SqlCommand(queryTeacher, connection))
+                {
+                    command.ExecuteNonQuery();
+                }
+                using (SqlCommand command = new SqlCommand(queryStudent, connection))
+                {
+                    command.ExecuteNonQuery();
+                }
+            }
         }
     }
 }

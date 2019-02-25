@@ -11,7 +11,8 @@ namespace DBI_PEA_Scoring.Model
             Query = 1,
             Procedure = 2,
             Trigger = 3,
-            Schema = 4
+            Schema = 4,
+            InsDelUpdate = 5
         }
         public int CandidateId { get; set; }
         public int QuestionId { get; set; }
