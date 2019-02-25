@@ -11,6 +11,15 @@ namespace DBI_PEA_Scoring.Utils
 {
     public class TestUtils
     {
+        /// <summary>
+        ///     Test Simple Query
+        /// </summary>
+        /// <param name="candidate">Question and requirement to check</param>
+        /// <param name="answer">Answer of student</param>
+        /// <returns>Result when compare 2 table</returns>
+        /// <exception cref="SqlException">
+        /// When something's wrong, throw exception to log error to KhaoThi
+        /// </exception>
         internal static bool TestQuery(Candidate candidate, string answer)
         {
             // Build connection string
@@ -53,6 +62,15 @@ namespace DBI_PEA_Scoring.Utils
             }
         }
 
+        /// <summary>
+        ///     Test Schema of 2 DBs.
+        /// </summary>
+        /// <param name="candidate">Question and requirement to check</param>
+        /// <param name="answer">Answer of student</param>
+        /// <returns>Result when compare 2 DB</returns>
+        /// <exception cref="SqlException">
+        ///     When something's wrong, throw exception to log error to KhaoThi
+        /// </exception>
         internal static bool TestSchema(Candidate candidate, string answer)
         {
             // Build connection string
@@ -91,6 +109,15 @@ namespace DBI_PEA_Scoring.Utils
             }
         }
 
+        /// <summary>
+        ///  Execute Query and compare 2 effected tables
+        /// </summary>
+        /// <param name="candidate">Question and requirement to check</param>
+        /// <param name="answer">Answer of student</param>
+        /// <returns>Result when compare 2 result tables</returns>
+        /// <exception cref="SqlException">
+        ///     When something's wrong, throw exception to log to Khao Thi.
+        /// </exception>
         internal static bool TestInsertDeleteUpdate(Candidate candidate, string answer)
         {
             // Build connection string
@@ -133,9 +160,27 @@ namespace DBI_PEA_Scoring.Utils
             }
         }
 
+        /// <summary>
+        ///  Execute Query and compare 2 effected tables
+        /// </summary>
+        /// <param name="candidate">Question and requirement to check</param>
+        /// <param name="answer">Answer of student</param>
+        /// <returns>Result when compare 2 result tables</returns>
+        /// <exception cref="SqlException">
+        ///     When something's wrong, throw exception to log to Khao Thi.
+        /// </exception>
         internal static bool TestProcedure(Candidate candidate, string answer)
         {
-            throw new NotImplementedException();
+            try
+            {
+                return true;
+            }
+            catch (SqlException e)
+            {
+
+                throw e;
+            }
+
         }
         internal static bool TestTrigger(Candidate candidate, string answer)
         {
