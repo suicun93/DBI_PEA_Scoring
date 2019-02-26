@@ -8,12 +8,12 @@ namespace DBI_PEA_Scoring.Common
 {
     public class Constant
     {
-        public static DB[] listDB = {new DB(@"C:\Program Files\Microsoft SQL Server\MSSQL11.SQLEXPRESS\MSSQL\DATA\", "sample") };
+        public static Database[] listDB = null;
         public static SqlConnectionStringBuilder SqlConnectionStringBuilder = null;
     }
-    public class DB
+    public class Database
     {
-        public DB(string sqlServerDbFolder, string sourceDbName)
+        public Database(string sqlServerDbFolder, string sourceDbName)
         {
             SqlServerDbFolder = sqlServerDbFolder;
             SourceDbName = sourceDbName;

@@ -32,6 +32,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.SqlServer.ConnectionInfo, Version=11.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.SqlServer.Smo, Version=11.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL" />
     <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.11.0.1\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -70,8 +72,11 @@
       <DependentUpon>Scoring.cs</DependentUpon>
     </Compile>
     <Compile Include="Utils\DaoType\DmlType.cs" />
-    <Compile Include="Utils\DaoType\General.cs" />
+    <Compile Include="Utils\DaoType\General+Compare.cs" />
+    <Compile Include="Utils\DaoType\General+Support.cs" />
+    <Compile Include="Utils\DaoType\General+Execution.cs" />
     <Compile Include="Utils\DaoType\ProcedureType.cs" />
+    <Compile Include="Utils\DaoType\SchemaType+Query.cs" />
     <Compile Include="Utils\DaoType\SchemaType.cs" />
     <Compile Include="Utils\DaoType\SelectType.cs" />
     <Compile Include="Utils\DaoType\TriggerType.cs" />
@@ -93,6 +98,7 @@
     <EmbeddedResource Include="UI\Scoring.resx">
       <DependentUpon>Scoring.cs</DependentUpon>
     </EmbeddedResource>
+    <None Include="App.config" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

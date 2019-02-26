@@ -19,7 +19,8 @@ namespace DBI_PEA_Scoring.UI
     public partial class ImportMaterial : Form
     {
         public string QuestionPath { get; set; }
-        public Uri AnswerPath { get; set; }
+        public string DBPath { get; set; }
+        public string AnswerPath { get; set; }
         private List<ExamItem> ListExamItems = null;
         private List<Submition> ListSubmitions = null;
         private bool importedDB = false;
@@ -55,9 +56,9 @@ namespace DBI_PEA_Scoring.UI
             {
                 // Get directory where student's submittion was saved
                 AnswerPath = FileUtils.GetFolderLocation();
-                answerTextBox.Text = AnswerPath.LocalPath;
+                answerTextBox.Text = AnswerPath;
                 // Get all submition files
-                string[] SubmitionFiles = Directory.GetFiles(AnswerPath.LocalPath, "*.dat");
+                string[] SubmitionFiles = Directory.GetFiles(AnswerPath, "*.dat");
                 if (SubmitionFiles.Count() == 0)
                     throw new Exception("No submittion was found");
                 else
@@ -114,21 +115,16 @@ namespace DBI_PEA_Scoring.UI
             if (ListSubmitions == null || ListExamItems == null || ListSubmitions.Count == 0 || ListExamItems.Count == 0)
                 MessageBox.Show("Not enough information!", "Error");
             else
-                if (importedDB)
-                if (!isConnectedToDB())
-                    MessageBox.Show("Please test connect to Sql Server", "Error");
-                else
-                {
-                    Hide();
-                    var Score = new Scoring(ListExamItems, ListSubmitions);
-                }
-            else
+                if (!importedDB)
                 MessageBox.Show("Enter Database!", "Error");
-        }
-
-        private void ImportMaterial_FormClosed(object sender, FormClosedEventArgs e)
-        {
-            Application.Exit();
+            else
+                if (!isConnectedToDB())
+                MessageBox.Show("Please test connect to Sql Server", "Error");
+            else
+            {
+                Hide();
+                var Score = new Scoring(ListExamItems, ListSubmitions);
+            }
         }
 
         private void checkConnectionButton_Click(object sender, EventArgs e)
@@ -143,29 +139,88 @@ namespace DBI_PEA_Scoring.UI
                 MessageBox.Show("Can not connect, check again.", "Error");
         }
 
-
         private void browseDatabases_Click(object sender, EventArgs e)
         {
-            if (importedDB)
-                MessageBox.Show("Import DB succesfully");
+            try
+            {
+                // Get directory where student's submittion was saved
+                DBPath = FileUtils.GetFolderLocation();
+                dbPathTextBox.Text = DBPath;
+                // Get all submition files
+                string[] DBScriptFiles = Directory.GetFiles(DBPath, "*.sql");
+                if (DBScriptFiles.Count() == 0)
+                    throw new Exception("No DB Script was found");
+                else
+                    // Get SQL Script files path successfully -> process to generate DB
+                    LoadDBScript(DBScriptFiles);
+            }
+            catch (Exception ex)
+            {
+                dbPathTextBox.Text = "";
+                MessageBox.Show("Imported DB Failed\n" + ex.Message, "Error");
+            }
+        }
+
+        private void LoadDBScript(string[] dbScriptFiles)
+        {
+            int DBCreatedCount = 0;
+            foreach (string scriptFile in dbScriptFiles)
+            {
+                DBCreatedCount++;
+                // Run file to generate database
+                try
+                {
+                    RunFile(scriptFile);
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show(e.Message + " at file " + Path.GetFileName(scriptFile), "Error");
+                    throw e;
+                }
+            }
+            // Get DB names and paths into constant
+            try
+            {
+                // run sql 
+                General.GetPathDB(DBCreatedCount);
+                importedDB = true;
+                browseDatabasesButton.Enabled = false;
+                MessageBox.Show("Imported " + Constant.listDB.Length + " DB succesfully");
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        private void RunFile(string url)
+        {
+            FileInfo file = new FileInfo(url);
+            string script = file.OpenText().ReadToEnd();
+            General.ExecuteSingleQuery(script);
         }
         private void statusConnectCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            if (statusConnectCheckBox.Checked)
+            if (isConnectedToDB())
             {
                 usernameTextBox.Enabled = false;
                 passwordTextBox.Enabled = false;
                 serverNameTextBox.Enabled = false;
                 initialCatalogTextBox.Enabled = false;
                 statusConnectCheckBox.ForeColor = Color.Green;
-                statusConnectCheckBox.Enabled = false;
                 statusConnectCheckBox.Text = "Sql Connected";
                 checkConnectionButton.Enabled = false;
+                browseDatabasesButton.Enabled = true;
             }
         }
         private bool isConnectedToDB()
         {
             return statusConnectCheckBox.Checked;
+        }
+
+        private void ImportMaterial_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            Application.Exit();
         }
     }
 }

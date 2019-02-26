@@ -54,25 +54,17 @@ namespace DBI_PEA_Scoring.Utils
         /// /// <exception cref="File not found">
         ///     When no file was found
         /// </exception>
-        public static Uri GetFolderLocation()
+        public static string GetFolderLocation()
         {
             using (var fbd = new FolderBrowserDialog())
             {
                 //Show dialog select a folder
                 DialogResult result = fbd.ShowDialog();
-
                 if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
-                {
                     //Get Files in folder
-                    //string[] files = Directory.GetFiles(fbd.SelectedPath);
-
-                    //System.Windows.Forms.MessageBox.Show("Files found: " + files.Length.ToString(), "Message");
-                    return new Uri(fbd.SelectedPath);
-                }
+                    return fbd.SelectedPath;
                 else
-                {
                     throw new Exception("No folder was found");
-                }
             }
         }
     }

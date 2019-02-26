@@ -1,11 +1,10 @@
-﻿using System.Data;
+﻿using DBI_PEA_Scoring.Common;
+using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
-using DBI_PEA_Scoring.Common;
 
 namespace DBI_PEA_Scoring.Utils.DaoType
 {
-    public class General
+    partial class General
     {
         /// <summary>
         /// Drop a Database
@@ -28,7 +27,6 @@ namespace DBI_PEA_Scoring.Utils.DaoType
                 }
             }
         }
-
 
         /// <summary>
         /// Create 2 database for marking
@@ -86,79 +84,6 @@ namespace DBI_PEA_Scoring.Utils.DaoType
             }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="db1Name">DB of student</param>
-        /// <param name="db2Name">DB of teacher</param>
-        /// <param name="query1">query of student</param>
-        /// <param name="query2">query of teacher</param>
-        public static void ExecuteQuery(string db1Name, string db2Name, string query1, string query2)
-        {
-            try
-            {
-                var builder = Constant.SqlConnectionStringBuilder;
-                query1 = "USE " + db1Name + "; \n" + query1;
-                query2 = "USE " + db2Name + "; \n" + query2;
-                using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
-                {
-                    connection.Open();
-                    using (SqlCommand command = new SqlCommand(query1, connection))
-                    {
-                        command.ExecuteNonQuery();
-                    }
-                    using (SqlCommand command = new SqlCommand(query2, connection))
-                    {
-                        command.ExecuteNonQuery();
-                    }
-                }
-            }
-            catch (SqlException e)
-            {
-                throw e;
-            }
-        }
-
-        ////////////////////////////////////////////////////////////////////
-        /// <summary>
-        /// Compare Table no sort
-        /// </summary>
-        /// <param name="db1Name"></param>
-        /// <param name="db2Name"></param>
-        /// <param name="queryTable1"></param>
-        /// <param name="queryTable2"></param>
-        /// <returns>
-        /// "true" if correct
-        /// "false" if wrong
-        /// message error from sqlserver if error
-        /// </returns>
-        public static bool CompareTableNoSort(string db1Name, string db2Name, string queryTable1,
-            string queryTable2)
-        {
-            var builder = Constant.SqlConnectionStringBuilder;
-            string sql = "USE " + db1Name + "; \n" +
-                         "WITH T1 as (" + queryTable1 + ") \n" +
-                         "select * INTO #TABLE1 from T1;\n" +
-                         "USE " + db2Name + ";\n" +
-                         "WITH T2 as (" + queryTable2 + ") \n" +
-                         "select * INTO #TABLE2 from T2;\n" +
-                         "SELECT * FROM #TABLE1\n" +
-                         "EXCEPT \n" +
-                         "SELECT * FROM #TABLE2\n" +
-                         "\n" +
-                         "drop table #TABLE1\n" +
-                         "drop table #TABLE2";
-            // Connect to SQL
-            using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
-            {
-                connection.Open();
-                using (SqlCommand command = new SqlCommand(sql, connection))
-                {
-                    return command.ExecuteScalar() == null;
-                }
-            }
-        }
-
         public static bool CheckConnection(string dataSource, string userId, string password, string initialCatalog)
         {
             // Save to constant
@@ -184,65 +109,33 @@ namespace DBI_PEA_Scoring.Utils.DaoType
             }
         }
 
-        /// <summary>
-        /// Compare tables with sort
-        /// </summary>
-        /// <param name="db1Name"></param>
-        /// <param name="db2Name"></param>
-        /// <param name="queryTable1"></param>
-        /// <param name="queryTable2"></param>
-        /// <returns>
-        /// "true" if correct
-        /// "false" if wrong
-        /// message error from sqlserver if error
-        /// </returns>
-        public static bool CompareTableSort(string db1Name, string db2Name, string queryTable1,
-            string queryTable2)
+        public static void GetPathDB(int NoOfDB)
         {
+            Constant.listDB = new Database[NoOfDB];
+            var dataTable = new DataTable();
+            var query = "use master \nSELECT name, physical_name as path " +
+                        "FROM sys.master_files " +
+                        "where name in (SELECT TOP " + NoOfDB + " Name FROM sys.databases " +
+                        "ORDER BY create_date desc)";
             var builder = Constant.SqlConnectionStringBuilder;
-            bool resCheckSchema = CompareTableNoSort(db1Name, db2Name, queryTable1, queryTable2);
-            if (resCheckSchema)
+            using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
             {
-                string sql1 = "USE " + db1Name + "; \n" +
-                             queryTable1;
-                string sql2 = "USE " + db2Name + "; \n" +
-                             queryTable2;
-                // Connect to SQL
-                using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
+                connection.Open();
+                using (SqlCommand command = new SqlCommand(query, connection))
                 {
-                    connection.Open();
-                    DataTable dt1 = new DataTable();
-                    DataTable dt2 = new DataTable();
-                    using (SqlCommand command = new SqlCommand(sql1, connection))
-                    {
-                        SqlDataReader reader1 = command.ExecuteReader();
-                        dt1.Load(reader1);
-                    }
-                    using (SqlCommand command = new SqlCommand(sql2, connection))
-                    {
-                        SqlDataReader reader2 = command.ExecuteReader();
-                        dt2.Load(reader2);
-                    }
-                    return !CompareDataTables(dt1, dt2);
+                    SqlDataReader reader = command.ExecuteReader();
+                    dataTable.Load(reader);
                 }
             }
-            return false;
-        }
-
-        /// <summary>
-        /// compare datatables same schema
-        /// </summary>
-        /// <param name="dt1"></param>
-        /// <param name="dt2"></param>
-        /// <returns>
-        /// true = difference
-        /// false = same
-        /// </returns>
-        public static bool CompareDataTables(DataTable dt1, DataTable dt2)
-        {
-            return dt1.AsEnumerable().Except(dt2.AsEnumerable(), DataRowComparer.Default).Any();
+            int count = 0;
+            foreach (DataRow row in dataTable.Rows)
+            {
+                string name, path;
+                name = row["name"].ToString();
+                path = row["path"].ToString();
+                Constant.listDB[count] = new Database(name, System.IO.Path.GetDirectoryName(path));
+                count++;
+            }
         }
     }
 }
-
-

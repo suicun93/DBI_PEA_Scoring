@@ -48,8 +48,8 @@
             this.label7 = new System.Windows.Forms.Label();
             this.serverNameTextBox = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
-            this.browseDatabases = new System.Windows.Forms.Button();
-            this.databaseLinksTextBox = new System.Windows.Forms.TextBox();
+            this.browseDatabasesButton = new System.Windows.Forms.Button();
+            this.dbPathTextBox = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
             this.button3 = new System.Windows.Forms.Button();
             this.label10 = new System.Windows.Forms.Label();
@@ -153,6 +153,7 @@
             // 
             // statusConnectCheckBox
             // 
+            this.statusConnectCheckBox.AutoCheck = false;
             this.statusConnectCheckBox.AutoSize = true;
             this.statusConnectCheckBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.statusConnectCheckBox.ForeColor = System.Drawing.Color.DarkRed;
@@ -250,24 +251,25 @@
             this.label6.TabIndex = 30;
             this.label6.Text = "Server Name";
             // 
-            // browseDatabases
+            // browseDatabasesButton
             // 
-            this.browseDatabases.Location = new System.Drawing.Point(323, 444);
-            this.browseDatabases.Name = "browseDatabases";
-            this.browseDatabases.Size = new System.Drawing.Size(63, 23);
-            this.browseDatabases.TabIndex = 29;
-            this.browseDatabases.Text = "Browse";
-            this.browseDatabases.UseVisualStyleBackColor = true;
-            this.browseDatabases.Click += new System.EventHandler(this.browseDatabases_Click);
+            this.browseDatabasesButton.Enabled = false;
+            this.browseDatabasesButton.Location = new System.Drawing.Point(323, 444);
+            this.browseDatabasesButton.Name = "browseDatabasesButton";
+            this.browseDatabasesButton.Size = new System.Drawing.Size(63, 23);
+            this.browseDatabasesButton.TabIndex = 29;
+            this.browseDatabasesButton.Text = "Browse";
+            this.browseDatabasesButton.UseVisualStyleBackColor = true;
+            this.browseDatabasesButton.Click += new System.EventHandler(this.browseDatabases_Click);
             // 
-            // databaseLinksTextBox
+            // dbPathTextBox
             // 
-            this.databaseLinksTextBox.Enabled = false;
-            this.databaseLinksTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.databaseLinksTextBox.Location = new System.Drawing.Point(149, 446);
-            this.databaseLinksTextBox.Name = "databaseLinksTextBox";
-            this.databaseLinksTextBox.Size = new System.Drawing.Size(163, 20);
-            this.databaseLinksTextBox.TabIndex = 28;
+            this.dbPathTextBox.Enabled = false;
+            this.dbPathTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.dbPathTextBox.Location = new System.Drawing.Point(149, 446);
+            this.dbPathTextBox.Name = "dbPathTextBox";
+            this.dbPathTextBox.Size = new System.Drawing.Size(163, 20);
+            this.dbPathTextBox.TabIndex = 28;
             // 
             // label5
             // 
@@ -331,8 +333,8 @@
             this.Controls.Add(this.label7);
             this.Controls.Add(this.serverNameTextBox);
             this.Controls.Add(this.label6);
-            this.Controls.Add(this.browseDatabases);
-            this.Controls.Add(this.databaseLinksTextBox);
+            this.Controls.Add(this.browseDatabasesButton);
+            this.Controls.Add(this.dbPathTextBox);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.statusImportLabel);
@@ -375,8 +377,8 @@
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.TextBox serverNameTextBox;
         private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.Button browseDatabases;
-        private System.Windows.Forms.TextBox databaseLinksTextBox;
+        private System.Windows.Forms.Button browseDatabasesButton;
+        private System.Windows.Forms.TextBox dbPathTextBox;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Label label10;
