@@ -70,7 +70,7 @@ namespace DBI_PEA_Scoring.Utils.DaoType
                         SqlDataReader reader2 = command.ExecuteReader();
                         dt2.Load(reader2);
                     }
-                    return !CompareDataTables(dt1, dt2)
+                    return !CompareDataTables(dt1, dt2);
                 }
             }
             return false;
