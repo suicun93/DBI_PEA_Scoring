@@ -9,14 +9,13 @@ namespace DBI_PEA_Scoring.Utils.DaoType
         /// Drop a Database
         /// </summary>
         /// <param name="dbName">Database need to drop</param>
-        /// <param name="builder">String builder</param>
         /// <returns>
         /// "message error" if error
         /// "" if done
         /// </returns>
-        public static bool DropDatabase(string dbName, SqlConnectionStringBuilder builder)
+        public static bool DropDatabase(string dbName)
         {
-
+            var builder = Constant.SqlConnectionStringBuilder;
             using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
             {
                 string dropQuery = "use master drop database " + dbName + "";
@@ -34,12 +33,12 @@ namespace DBI_PEA_Scoring.Utils.DaoType
         /// Create 2 database for marking
         /// </summary>
         /// <param name="sourceDbName">DB need to duplicate</param> 
-        /// <param name="builder">ConnectionString</param>
         /// <param name="sqlServerDbFolder">Path to ServerDB: C:\Program Files\Microsoft SQL Server\MSSQL11.SQLEXPRESS\MSSQL\DATA\</param>
-        /// <param name="newDbName"></param>
+        /// <param name="newDbName">Name of new DB</param>
         /// 
-        public static bool DuplicatedDb(SqlConnectionStringBuilder builder, string sqlServerDbFolder, string sourceDbName, string newDbName)
+        public static bool DuplicatedDb(string sqlServerDbFolder, string sourceDbName, string newDbName)
         {
+            var builder = Constant.SqlConnectionStringBuilder;
             for (int i = 0; i < 2; i++)
             {
                 string sql = "declare @sourceDbName nvarchar(50) = '" + sourceDbName + "';\n" +
@@ -87,11 +86,18 @@ namespace DBI_PEA_Scoring.Utils.DaoType
             return true;
         }
 
-        public static void ExecuteQuery(string db1Name, string db2Name, string query1, string query2, SqlConnectionStringBuilder builder)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="db1Name">DB of student</param>
+        /// <param name="db2Name">DB of teacher</param>
+        /// <param name="query1">query of student</param>
+        /// <param name="query2">query of teacher</param>
+        public static void ExecuteQuery(string db1Name, string db2Name, string query1, string query2)
         {
+            var builder = Constant.SqlConnectionStringBuilder;
             query1 = "USE " + db1Name + "; \n" + query1;
             query2 = "USE " + db2Name + "; \n" + query2;
-
             using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
             {
                 connection.Open();
@@ -106,16 +112,17 @@ namespace DBI_PEA_Scoring.Utils.DaoType
             }
         }
 
-        public static bool CheckConnection(string dataSource, string userId, string password)
+        public static bool CheckConnection(string dataSource, string userId, string password, string initialCatalog)
         {
-            // Build connection string
-            SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder
+            // Save to constant
+            Constant.SqlConnectionStringBuilder = new SqlConnectionStringBuilder
             {
-                DataSource = Constant.listDB[0].DataSource,
-                UserID = Constant.listDB[0].UserId,
-                Password = Constant.listDB[0].Password,
-                InitialCatalog = Constant.listDB[0].InitialCatalog
+                DataSource = dataSource,
+                UserID = userId,
+                Password = password,
+                InitialCatalog = initialCatalog
             };
+            var builder = Constant.SqlConnectionStringBuilder;
             using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
             {
                 try

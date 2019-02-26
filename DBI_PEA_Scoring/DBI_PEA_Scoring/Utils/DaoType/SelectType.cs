@@ -2,22 +2,12 @@
 using System.Data.SqlClient;
 using System.Data;
 using System.Linq;
+using DBI_PEA_Scoring.Common;
 
 namespace DBI_PEA_Scoring.Utils.DaoType
 {
-    class SelectType
+    public class SelectType
     {
-        public SqlConnectionStringBuilder Builder { get; }
-
-        /// <summary>
-        /// Init connection
-        /// </summary>
-        public SelectType(SqlConnectionStringBuilder builder)
-        {
-            // Build connection string
-            Builder = builder;
-        }
-
         /// <summary>
         /// Marking Query Select type
         /// </summary>
@@ -26,18 +16,16 @@ namespace DBI_PEA_Scoring.Utils.DaoType
         /// <param name="dbStudentName"></param>
         /// <param name="queryTeacher"></param>
         /// <param name="queryStudent"></param>
-        /// <param name="builder"></param>
         /// <returns></returns>
-        public bool MarkQueryType(bool isSort, string dbTeacherName, string dbStudentName, string queryTeacher,
-            string queryStudent, SqlConnectionStringBuilder builder)
+        public static bool MarkQueryType(bool isSort, string dbTeacherName, string dbStudentName, string queryTeacher,
+            string queryStudent)
         {
-
             switch (isSort)
             {
                 case true:
-                    return CompareTableNoSort(dbTeacherName, dbStudentName, queryTeacher, queryStudent, builder);
+                    return CompareTableNoSort(dbTeacherName, dbStudentName, queryTeacher, queryStudent);
                 case false:
-                    return CompareTableSort(dbTeacherName, dbStudentName, queryTeacher, queryStudent, builder);
+                    return CompareTableSort(dbTeacherName, dbStudentName, queryTeacher, queryStudent);
                 default:
                     return false;
             }
@@ -50,16 +38,16 @@ namespace DBI_PEA_Scoring.Utils.DaoType
         /// <param name="db2Name"></param>
         /// <param name="queryTable1"></param>
         /// <param name="queryTable2"></param>
-        /// <param name="builder"></param>
         /// <returns>
         /// "true" if correct
         /// "false" if wrong
         /// message error from sqlserver if error
         /// </returns>
-        private bool CompareTableSort(string db1Name, string db2Name, string queryTable1,
-            string queryTable2, SqlConnectionStringBuilder builder)
+        private static bool CompareTableSort(string db1Name, string db2Name, string queryTable1,
+            string queryTable2)
         {
-            bool resCheckSchema = CompareTableNoSort(db1Name, db2Name, queryTable1, queryTable2, builder);
+            var builder = Constant.SqlConnectionStringBuilder;
+            bool resCheckSchema = CompareTableNoSort(db1Name, db2Name, queryTable1, queryTable2);
             if (resCheckSchema)
             {
                 string sql1 = "USE " + db1Name + "; \n" +
@@ -82,11 +70,7 @@ namespace DBI_PEA_Scoring.Utils.DaoType
                         SqlDataReader reader2 = command.ExecuteReader();
                         dt2.Load(reader2);
                     }
-                    if (CompareDataTables(dt1, dt2))
-                    {
-                        return false;
-                    }
-                    return true;
+                    return !CompareDataTables(dt1, dt2)
                 }
             }
             return false;
@@ -101,7 +85,7 @@ namespace DBI_PEA_Scoring.Utils.DaoType
         /// true = difference
         /// false = same
         /// </returns>
-        private bool CompareDataTables(DataTable dt1, DataTable dt2)
+        private static bool CompareDataTables(DataTable dt1, DataTable dt2)
         {
             return dt1.AsEnumerable().Except(dt2.AsEnumerable(), DataRowComparer.Default).Any();
         }
@@ -115,16 +99,15 @@ namespace DBI_PEA_Scoring.Utils.DaoType
         /// <param name="db2Name"></param>
         /// <param name="queryTable1"></param>
         /// <param name="queryTable2"></param>
-        /// <param name="builder"></param>
-        /// //name host (localhost)
         /// <returns>
         /// "true" if correct
         /// "false" if wrong
         /// message error from sqlserver if error
         /// </returns>
-        public bool CompareTableNoSort(string db1Name, string db2Name, string queryTable1,
-            string queryTable2, SqlConnectionStringBuilder builder)
+        public static bool CompareTableNoSort(string db1Name, string db2Name, string queryTable1,
+            string queryTable2)
         {
+            var builder = Constant.SqlConnectionStringBuilder;
             string sql = "USE " + db1Name + "; \n" +
                          "WITH T1 as (" + queryTable1 + ") \n" +
                          "select * INTO #TABLE1 from T1;\n" +
@@ -137,20 +120,15 @@ namespace DBI_PEA_Scoring.Utils.DaoType
                          "\n" +
                          "drop table #TABLE1\n" +
                          "drop table #TABLE2";
-                // Connect to SQL
-                using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
+            // Connect to SQL
+            using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
+            {
+                connection.Open();
+                using (SqlCommand command = new SqlCommand(sql, connection))
                 {
-                    connection.Open();
-                    using (SqlCommand command = new SqlCommand(sql, connection))
-                    {
-                        if (command.ExecuteScalar() == null)
-                        {
-                            return true;
-                        }
-                        return false;
-                    }
+                    return command.ExecuteScalar() == null;
                 }
-                
+            }
         }
     }
 }

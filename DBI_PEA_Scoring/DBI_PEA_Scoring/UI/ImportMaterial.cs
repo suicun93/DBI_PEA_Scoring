@@ -1,11 +1,13 @@
 ﻿using DBI_PEA_Scoring.Common;
 using DBI_PEA_Scoring.Model;
 using DBI_PEA_Scoring.Utils;
+using DBI_PEA_Scoring.Utils.DaoType;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.SqlClient;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -20,12 +22,11 @@ namespace DBI_PEA_Scoring.UI
         public Uri AnswerPath { get; set; }
         private List<ExamItem> ListExamItems = null;
         private List<Submition> ListSubmitions = null;
-
+        private bool importedDB = false;
         public ImportMaterial()
         {
             InitializeComponent();
         }
-
         private void browseQuestionButton_Click(object sender, EventArgs e)
         {
             try
@@ -110,21 +111,61 @@ namespace DBI_PEA_Scoring.UI
 
         private void getMarkButton_Click(object sender, EventArgs e)
         {
-            if (ListSubmitions == null ||
-                ListExamItems == null ||
-                ListSubmitions.Count == 0 ||
-                ListExamItems.Count == 0)
+            if (ListSubmitions == null || ListExamItems == null || ListSubmitions.Count == 0 || ListExamItems.Count == 0)
                 MessageBox.Show("Not enough information!", "Error");
             else
-            {
-                this.Hide();
-                var Score = new Scoring(ListExamItems, ListSubmitions);
-            }
+                if (importedDB)
+                if (!isConnectedToDB())
+                    MessageBox.Show("Please test connect to Sql Server", "Error");
+                else
+                {
+                    Hide();
+                    var Score = new Scoring(ListExamItems, ListSubmitions);
+                }
+            else
+                MessageBox.Show("Enter Database!", "Error");
         }
 
         private void ImportMaterial_FormClosed(object sender, FormClosedEventArgs e)
         {
             Application.Exit();
+        }
+
+        private void checkConnectionButton_Click(object sender, EventArgs e)
+        {
+            string username = usernameTextBox.Text;
+            string password = passwordTextBox.Text;
+            string serverName = serverNameTextBox.Text;
+            string initialCatalog = initialCatalogTextBox.Text;
+            if (General.CheckConnection(serverName, username, password, initialCatalog))
+                statusConnectCheckBox.Checked = true;
+            else
+                MessageBox.Show("Can not connect, check again.", "Error");
+        }
+
+
+        private void browseDatabases_Click(object sender, EventArgs e)
+        {
+            if (importedDB)
+                MessageBox.Show("Import DB succesfully");
+        }
+        private void statusConnectCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            if (statusConnectCheckBox.Checked)
+            {
+                usernameTextBox.Enabled = false;
+                passwordTextBox.Enabled = false;
+                serverNameTextBox.Enabled = false;
+                initialCatalogTextBox.Enabled = false;
+                statusConnectCheckBox.ForeColor = Color.Green;
+                statusConnectCheckBox.Enabled = false;
+                statusConnectCheckBox.Text = "Sql Connected";
+                checkConnectionButton.Enabled = false;
+            }
+        }
+        private bool isConnectedToDB()
+        {
+            return statusConnectCheckBox.Checked;
         }
     }
 }

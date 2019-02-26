@@ -1,30 +1,10 @@
-﻿using System.Data.SqlClient;
+﻿using DBI_PEA_Scoring.Common;
+using System.Data.SqlClient;
 
 namespace DBI_PEA_Scoring.Utils.DaoType
 {
     class EffectType
     {
-        readonly SqlConnectionStringBuilder _builder;
-
-        /// <summary>
-        /// Init connection
-        /// </summary>
-        /// <param name="dataSource">(something like localhost)</param> 
-        /// <param name="userId">(sa)</param> 
-        /// <param name="password">(123)</param> 
-        /// <param name="initialCatalog">(master)</param> 
-        public EffectType(string dataSource, string userId, string password, string initialCatalog)
-        {
-            // Build connection string
-            _builder = new SqlConnectionStringBuilder
-            {
-                DataSource = dataSource,
-                UserID = userId,
-                Password = password,
-                InitialCatalog = initialCatalog
-            };
-        }
-
         ///////////////////////////////////////////////////
         ////Insert, Update, Delete statements//////////////
         ///////////////////////////////////////////////////
@@ -41,10 +21,10 @@ namespace DBI_PEA_Scoring.Utils.DaoType
         public bool MarkInsUpDelTypeQuery(string dbTeacherName, string dbStudentName,
             string queryEffectTeacher, string queryEffectStudent, string queryCheckEffect)
         {
+            var builder = Constant.SqlConnectionStringBuilder;
             queryEffectTeacher = "use " + dbTeacherName + "\n" + queryEffectTeacher + "";
             queryEffectStudent = "use " + dbStudentName + "\n" + queryEffectStudent + "";
-            SelectType selectType = new SelectType(_builder);
-            using (SqlConnection connection = new SqlConnection(_builder.ConnectionString))
+            using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
             {
                 //Run Effect query
                 using (SqlCommand cmdEffStudent = new SqlCommand(queryEffectStudent, connection))
@@ -55,8 +35,8 @@ namespace DBI_PEA_Scoring.Utils.DaoType
                 {
                     cmdEffTeacher.ExecuteNonQuery();
                 }
-                return selectType.CompareTableNoSort(dbStudentName, dbTeacherName,
-                    queryCheckEffect, queryCheckEffect, _builder);
+                return SelectType.CompareTableNoSort(dbStudentName, dbTeacherName,
+                    queryCheckEffect, queryCheckEffect);
             }
         }
     }

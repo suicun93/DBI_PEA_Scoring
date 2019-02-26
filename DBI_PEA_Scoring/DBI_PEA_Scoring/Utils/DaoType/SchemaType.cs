@@ -1,20 +1,11 @@
-﻿using System;
+﻿using DBI_PEA_Scoring.Common;
+using System;
 using System.Data.SqlClient;
 
 namespace DBI_PEA_Scoring.Utils.DaoType
 {
     class SchemaType
     {
-        SqlConnectionStringBuilder _builder; //connectionString
-
-        /// <summary>
-        /// Init connection
-        /// </summary>
-        public SchemaType(SqlConnectionStringBuilder builder)
-        {
-            _builder = builder;
-        }
-
         /// <summary>
         /// Mark Student query
         /// </summary>
@@ -26,15 +17,16 @@ namespace DBI_PEA_Scoring.Utils.DaoType
         /// "true" if correct
         /// "false" if wrong
         /// message error from sqlserver if error</returns>
-        public bool MarkSchemaDatabasesType(string dbTeacherName, string dbStudentName, string queryTeacher,
+        public static bool MarkSchemaDatabasesType(string dbTeacherName, string dbStudentName, string queryTeacher,
             string queryStudent)
         {
+            var builder = Constant.SqlConnectionStringBuilder;
             string createDbTeacherQuery = "CREATE DATABASE " + dbTeacherName + "";
             string createDbStudentQuery = "CREATE DATABASE " + dbStudentName + "";
             queryTeacher = "USE " + dbTeacherName + "\n" + queryTeacher + "\n";
             queryStudent = "USE " + dbStudentName + "\n" + queryStudent + "\n";
 
-            using (SqlConnection connection = new SqlConnection(_builder.ConnectionString))
+            using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
             {
                 connection.Open();
                 using (SqlCommand commandCreateDatabase = new SqlCommand(createDbStudentQuery, connection))
@@ -67,15 +59,15 @@ namespace DBI_PEA_Scoring.Utils.DaoType
         /// "true" if correct
         /// "false" if wrong
         /// message error from sqlserver if error</returns>
-        private bool CompareTwoDatabases(string db1Name, string db2Name)
+        private static bool CompareTwoDatabases(string db1Name, string db2Name)
         {
-
             string checkExistsSpQuery = "USE master\n" +
                                         "SELECT * FROM sys.objects\n" +
                                         "WHERE object_id = OBJECT_ID(N'[sp_CompareDb]') AND type IN ( N'P', N'PC' )";
             string compareQuery = "exec sp_CompareDb [" + db1Name + "], [" + db2Name + "]";
+            var builder = Constant.SqlConnectionStringBuilder;
             // Connect to SQL
-            using (SqlConnection connection = new SqlConnection(_builder.ConnectionString))
+            using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
             {
                 connection.Open();
                 using (SqlCommand command = new SqlCommand(checkExistsSpQuery, connection))
@@ -109,7 +101,7 @@ namespace DBI_PEA_Scoring.Utils.DaoType
 
 
 
-        private string createProcCompareDbs = "CREATE PROC [dbo].[sp_CompareDb]\n" +
+        private static string createProcCompareDbs = "CREATE PROC [dbo].[sp_CompareDb]\n" +
                                               "(\n" +
                                               "	@SourceDB SYSNAME,\n" +
                                               "	@TargetDb SYSNAME\n" +

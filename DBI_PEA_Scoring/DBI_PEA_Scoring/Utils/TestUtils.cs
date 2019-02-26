@@ -22,17 +22,8 @@ namespace DBI_PEA_Scoring.Utils
         /// </exception>
         internal static bool TestQuery(Candidate candidate, string answer)
         {
-            // Build connection string
-            SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder
-            {
-                DataSource = Constant.listDB[0].DataSource,
-                UserID = Constant.listDB[0].UserId,
-                Password = Constant.listDB[0].Password,
-                InitialCatalog = Constant.listDB[0].InitialCatalog
-            };
-            SelectType st = new SelectType(builder);
             //Duplicate 2 new DB for student and teacher
-            General.DuplicatedDb(builder, Constant.listDB[0].SqlServerDbFolder,
+            General.DuplicatedDb( Constant.listDB[0].SqlServerDbFolder,
                 Constant.listDB[0].SourceDbName, "DbForTest");
             string dbTeacherName = "DbForTest_Teacher";
             string dbStudentName = "DbForTest_Student";
@@ -42,22 +33,22 @@ namespace DBI_PEA_Scoring.Utils
                 foreach (Requirement req in candidate.Requirements)
                 {
                     // In case question type is Query, requirement type default is result set. 
-                    if (st.MarkQueryType(req.RequireSort, dbTeacherName, dbStudentName,
-                            req.ResultQuery, answer, builder) == false)
+                    if (SelectType.MarkQueryType(req.RequireSort, dbTeacherName, dbStudentName,
+                            req.ResultQuery, answer) == false)
                     {
-                        General.DropDatabase(dbTeacherName, builder);
-                        General.DropDatabase(dbStudentName, builder);
+                        General.DropDatabase(dbTeacherName);
+                        General.DropDatabase(dbStudentName);
                         return false;
                     }
                 }
-                General.DropDatabase(dbTeacherName, builder);
-                General.DropDatabase(dbStudentName, builder);
+                General.DropDatabase(dbTeacherName);
+                General.DropDatabase(dbStudentName);
                 return true;
             }
             catch (SqlException e)
             {
-                General.DropDatabase(dbTeacherName, builder);
-                General.DropDatabase(dbStudentName, builder);
+                General.DropDatabase(dbTeacherName);
+                General.DropDatabase(dbStudentName);
                 throw e;
             }
         }
@@ -73,38 +64,27 @@ namespace DBI_PEA_Scoring.Utils
         /// </exception>
         internal static bool TestSchema(Candidate candidate, string answer)
         {
-            // Build connection string
-            SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder
-            {
-                DataSource = Constant.listDB[0].DataSource,
-                UserID = Constant.listDB[0].UserId,
-                Password = Constant.listDB[0].Password,
-                InitialCatalog = Constant.listDB[0].InitialCatalog
-            };
-            SchemaType st = new SchemaType(builder);
-
             string dbTeacherName = "DbForTest_Teacher";
             string dbStudentName = "DbForTest_Student";
-
             try
             {
                 //Marking
                 foreach (Requirement req in candidate.Requirements)
                 {
-                    if (st.MarkSchemaDatabasesType(dbTeacherName, dbStudentName,
+                    if (SchemaType.MarkSchemaDatabasesType(dbTeacherName, dbStudentName,
                         answer, req.ResultQuery) == false)
                     {
                         return false;
                     }
                 }
-                General.DropDatabase(dbTeacherName, builder);
-                General.DropDatabase(dbStudentName, builder);
+                General.DropDatabase(dbTeacherName);
+                General.DropDatabase(dbStudentName);
                 return true;
             }
             catch (SqlException e)
             {
-                General.DropDatabase(dbTeacherName, builder);
-                General.DropDatabase(dbStudentName, builder);
+                General.DropDatabase(dbTeacherName);
+                General.DropDatabase(dbStudentName);
                 throw e;
             }
         }
@@ -120,15 +100,6 @@ namespace DBI_PEA_Scoring.Utils
         /// </exception>
         internal static bool TestInsertDeleteUpdate(Candidate candidate, string answer)
         {
-            // Build connection string
-            SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder
-            {
-                DataSource = Constant.listDB[0].DataSource,
-                UserID = Constant.listDB[0].UserId,
-                Password = Constant.listDB[0].Password,
-                InitialCatalog = Constant.listDB[0].InitialCatalog
-            };
-            SelectType st = new SelectType(builder);
             string dbTeacherName = "DbForTest_Teacher";
             string dbStudentName = "DbForTest_Student";
             bool noRequireSort = false;
@@ -139,23 +110,23 @@ namespace DBI_PEA_Scoring.Utils
                 foreach (Requirement req in candidate.Requirements)
                 {
                     // Execute query
-                    General.ExecuteQuery(dbTeacherName, dbStudentName, req.ActivateTriggerQuery, answer, builder);
-                    if (st.MarkQueryType(noRequireSort, dbTeacherName, dbStudentName,
-                             req.ResultQuery, req.ResultQuery, builder) == false)
+                    General.ExecuteQuery(dbTeacherName, dbStudentName, req.ActivateTriggerQuery, answer);
+                    if (SelectType.MarkQueryType(noRequireSort, dbTeacherName, dbStudentName,
+                             req.ResultQuery, req.ResultQuery) == false)
                     {
-                        General.DropDatabase(dbTeacherName, builder);
-                        General.DropDatabase(dbStudentName, builder);
+                        General.DropDatabase(dbTeacherName);
+                        General.DropDatabase(dbStudentName);
                         return false;
                     }
                 }
-                General.DropDatabase(dbTeacherName, builder);
-                General.DropDatabase(dbStudentName, builder);
+                General.DropDatabase(dbTeacherName);
+                General.DropDatabase(dbStudentName);
                 return true;
             }
             catch (SqlException e)
             {
-                General.DropDatabase(dbTeacherName, builder);
-                General.DropDatabase(dbStudentName, builder);
+                General.DropDatabase(dbTeacherName);
+                General.DropDatabase(dbStudentName);
                 throw e;
             }
         }
