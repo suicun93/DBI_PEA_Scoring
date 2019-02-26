@@ -3,7 +3,7 @@ using System.Data.SqlClient;
 
 namespace DBI_PEA_Scoring.Utils.DaoType
 {
-    class EffectType
+    class DmlType
     {
         ///////////////////////////////////////////////////
         ////Insert, Update, Delete statements//////////////
@@ -18,7 +18,7 @@ namespace DBI_PEA_Scoring.Utils.DaoType
         /// <param name="queryEffectStudent">query effect on table from student</param>
         /// <param name="queryCheckEffect">query answer to check table effected from teacher</param>
         /// <returns></returns>
-        public bool MarkInsUpDelTypeQuery(string dbTeacherName, string dbStudentName,
+        public bool MarkDMLQuery(string dbTeacherName, string dbStudentName,
             string queryEffectTeacher, string queryEffectStudent, string queryCheckEffect)
         {
             var builder = Constant.SqlConnectionStringBuilder;
@@ -35,7 +35,7 @@ namespace DBI_PEA_Scoring.Utils.DaoType
                 {
                     cmdEffTeacher.ExecuteNonQuery();
                 }
-                return SelectType.CompareTableNoSort(dbStudentName, dbTeacherName,
+                return General.CompareTableNoSort(dbStudentName, dbTeacherName,
                     queryCheckEffect, queryCheckEffect);
             }
         }

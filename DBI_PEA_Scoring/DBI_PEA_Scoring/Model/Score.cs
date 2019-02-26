@@ -53,25 +53,28 @@ namespace DBI_PEA_Scoring.Model
         private bool Point(Candidate candidate, string answer)
         {
             // await TaskEx.Delay(100);
-            if (String.IsNullOrEmpty(answer))
+            if (string.IsNullOrEmpty(answer))
                 return false;
             // Process by Question Type
             switch (candidate.QuestionType)
             {
                 case Candidate.QuestionTypes.Schema:
+                    // Schema Question
                     return TestUtils.TestSchema(candidate, answer);
-                case Candidate.QuestionTypes.Query:
-                    // Query Question
-                    return TestUtils.TestQuery(candidate, answer);
+                case Candidate.QuestionTypes.DML:
+                    // DML: Insert/Delete/Update Question
+                    return TestUtils.TestDML(candidate, answer);
+                case Candidate.QuestionTypes.Select:
+                    //Select Question
+                    return TestUtils.TestSelect(candidate, answer);
                 case Candidate.QuestionTypes.Procedure:
                     // Procedure Question
                     return TestUtils.TestProcedure(candidate, answer);
                 case Candidate.QuestionTypes.Trigger:
                     // Trigger Question
                     return TestUtils.TestTrigger(candidate, answer);
-                case Candidate.QuestionTypes.InsDelUpdate:
-                    // Insert/Delete/Update Question
-                    return TestUtils.TestInsertDeleteUpdate(candidate, answer);
+                    
+                    
                 default:
                     // Not supported yet
                     throw new Exception("This question type have not been supported");

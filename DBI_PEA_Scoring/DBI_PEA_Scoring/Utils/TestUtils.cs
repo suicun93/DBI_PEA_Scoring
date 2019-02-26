@@ -20,7 +20,7 @@ namespace DBI_PEA_Scoring.Utils
         /// <exception cref="SqlException">
         /// When something's wrong, throw exception to log error to KhaoThi
         /// </exception>
-        internal static bool TestQuery(Candidate candidate, string answer)
+        internal static bool TestSelect(Candidate candidate, string answer)
         {
             //Duplicate 2 new DB for student and teacher
             General.DuplicatedDb( Constant.listDB[0].SqlServerDbFolder,
@@ -33,7 +33,7 @@ namespace DBI_PEA_Scoring.Utils
                 foreach (Requirement req in candidate.Requirements)
                 {
                     // In case question type is Query, requirement type default is result set. 
-                    if (SelectType.MarkQueryType(req.RequireSort, dbTeacherName, dbStudentName,
+                    if (SelectType.MarkSelectType(req.RequireSort, dbTeacherName, dbStudentName,
                             req.ResultQuery, answer) == false)
                     {
                         General.DropDatabase(dbTeacherName);
@@ -98,7 +98,7 @@ namespace DBI_PEA_Scoring.Utils
         /// <exception cref="SqlException">
         ///     When something's wrong, throw exception to log to Khao Thi.
         /// </exception>
-        internal static bool TestInsertDeleteUpdate(Candidate candidate, string answer)
+        internal static bool TestDML(Candidate candidate, string answer)
         {
             string dbTeacherName = "DbForTest_Teacher";
             string dbStudentName = "DbForTest_Student";
@@ -111,7 +111,7 @@ namespace DBI_PEA_Scoring.Utils
                 {
                     // Execute query
                     General.ExecuteQuery(dbTeacherName, dbStudentName, req.ActivateTriggerQuery, answer);
-                    if (SelectType.MarkQueryType(noRequireSort, dbTeacherName, dbStudentName,
+                    if (SelectType.MarkSelectType(noRequireSort, dbTeacherName, dbStudentName,
                              req.ResultQuery, req.ResultQuery) == false)
                     {
                         General.DropDatabase(dbTeacherName);

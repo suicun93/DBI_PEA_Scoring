@@ -9,11 +9,11 @@ namespace DBI_PEA_Scoring.Model
         {
             ResultSet = 1,
             Effect = 2,
-            Calculation = 3
+            Parameter = 3
         }
 
         public int RequirementId { get; set; }
-        public int CandidateId { get; set; }
+        public string CandidateId { get; set; }
         public RequirementTypes Type { get; set; }
 
         public string ResultQuery { get; set; }

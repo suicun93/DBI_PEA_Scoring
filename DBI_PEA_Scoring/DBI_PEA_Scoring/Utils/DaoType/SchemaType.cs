@@ -76,7 +76,7 @@ namespace DBI_PEA_Scoring.Utils.DaoType
                     if (command.ExecuteScalar() == null)
                     {
                         //Create SP
-                        using (SqlCommand commandCreate = new SqlCommand(createProcCompareDbs, connection))
+                        using (SqlCommand commandCreate = new SqlCommand(ProcCompareDbs, connection))
                         {
                             commandCreate.ExecuteNonQuery();
                         }
@@ -101,7 +101,7 @@ namespace DBI_PEA_Scoring.Utils.DaoType
 
 
 
-        private static string createProcCompareDbs = "CREATE PROC [dbo].[sp_CompareDb]\n" +
+        private static string ProcCompareDbs = "CREATE PROC [dbo].[sp_CompareDb]\n" +
                                               "(\n" +
                                               "	@SourceDB SYSNAME,\n" +
                                               "	@TargetDb SYSNAME\n" +
