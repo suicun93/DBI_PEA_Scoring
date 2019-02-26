@@ -1,4 +1,5 @@
 ﻿using System.Data.SqlClient;
+using DBI_PEA_Scoring.Common;
 
 namespace DBI_PEA_Scoring.Utils.DaoType
 {
@@ -86,18 +87,45 @@ namespace DBI_PEA_Scoring.Utils.DaoType
             return true;
         }
 
-        public static void ExecuteQuery(string dbTeacherName, string dbStudentName, string queryTeacher, string queryStudent, SqlConnectionStringBuilder sqlConnectionStringBuilder)
+        public static void ExecuteQuery(string db1Name, string db2Name, string query1, string query2, SqlConnectionStringBuilder builder)
         {
-            using (SqlConnection connection = new SqlConnection(sqlConnectionStringBuilder.ConnectionString))
+            query1 = "USE " + db1Name + "; \n" + query1;
+            query2 = "USE " + db2Name + "; \n" + query2;
+
+            using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
             {
                 connection.Open();
-                using (SqlCommand command = new SqlCommand(queryTeacher, connection))
+                using (SqlCommand command = new SqlCommand(query1, connection))
                 {
                     command.ExecuteNonQuery();
                 }
-                using (SqlCommand command = new SqlCommand(queryStudent, connection))
+                using (SqlCommand command = new SqlCommand(query2, connection))
                 {
                     command.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public static bool CheckConnection(string dataSource, string userId, string password)
+        {
+            // Build connection string
+            SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder
+            {
+                DataSource = Constant.listDB[0].DataSource,
+                UserID = Constant.listDB[0].UserId,
+                Password = Constant.listDB[0].Password,
+                InitialCatalog = Constant.listDB[0].InitialCatalog
+            };
+            using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
+            {
+                try
+                {
+                    connection.Open();
+                    return true;
+                }
+                catch
+                {
+                    return false;
                 }
             }
         }
