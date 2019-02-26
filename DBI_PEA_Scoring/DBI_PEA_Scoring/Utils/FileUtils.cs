@@ -1,5 +1,4 @@
-﻿using System;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
 
 namespace DBI_PEA_Scoring.Utils
 {
@@ -40,7 +39,7 @@ namespace DBI_PEA_Scoring.Utils
             if (ofd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 return ofd.FileName;
             else
-                throw new Exception("No file was found");
+                throw new System.Exception("No file was found");
         }
 
 
@@ -64,7 +63,7 @@ namespace DBI_PEA_Scoring.Utils
                     //Get Files in folder
                     return fbd.SelectedPath;
                 else
-                    throw new Exception("No folder was found");
+                    throw new System.Exception("No folder was found");
             }
         }
     }

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace DBI_PEA_Scoring.Model
 {
@@ -18,10 +17,9 @@ namespace DBI_PEA_Scoring.Model
         public string CandidateId { get; set; }
         public string QuestionId { get; set; }
         public QuestionTypes QuestionType { get; set; }
-
         public string Solution { get; set; }
         public string ActivateQuery { get; set; }
-        public List<Requirement> Requirements { get; set; }
+        public System.Collections.Generic.List<Requirement> Requirements { get; set; }
         public double Point { get; set; }
     }
 }

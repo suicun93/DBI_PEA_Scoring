@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
+﻿using System.Data.SqlClient;
 using DBI_PEA_Scoring.Model;
 using DBI_PEA_Scoring.Utils.DaoType;
-using DBI_PEA_Scoring.Common;
 
 namespace DBI_PEA_Scoring.Utils
 {
@@ -23,8 +18,8 @@ namespace DBI_PEA_Scoring.Utils
         internal static bool TestSelect(Candidate candidate, string answer)
         {
             //Duplicate 2 new DB for student and teacher
-            General.DuplicatedDb( Constant.listDB[0].SqlServerDbFolder,
-                Constant.listDB[0].SourceDbName, "DbForTest");
+            General.DuplicatedDb(Common.Constant.listDB[0].SqlServerDbFolder,
+                Common.Constant.listDB[0].SourceDbName, "DbForTest");
             string dbTeacherName = "DbForTest_Teacher";
             string dbStudentName = "DbForTest_Student";
             try

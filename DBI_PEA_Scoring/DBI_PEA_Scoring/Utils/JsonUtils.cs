@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Newtonsoft.Json;
 using System.IO;
 using DBI_PEA_Scoring.Model;
@@ -9,13 +8,13 @@ namespace DBI_PEA_Scoring.Utils
     class JsonUtils
     {
         //Object to JsonString
-        public static String SerializeJson(Object obj)
+        public static string SerializeJson(object obj)
         {
-            String jsonString = JsonConvert.SerializeObject(obj);
+            string jsonString = JsonConvert.SerializeObject(obj);
             return jsonString;
         }
 
-        public static bool WriteJson(Object obj, String path)
+        public static bool WriteJson(object obj, string path)
         {
             try
             {
@@ -28,13 +27,13 @@ namespace DBI_PEA_Scoring.Utils
             }
         }
 
-        public static Object LoadQuestion(string path)
+        public static object LoadQuestion(string path)
         {
             string jsonQuestion = File.ReadAllText(path);
             return JsonConvert.DeserializeObject<List<ExamItem>>(jsonQuestion);
         }
 
-        public static List<Question> DeserializeJson(String localPath)
+        public static List<Question> DeserializeJson(string localPath)
         {
             // read file into a string and deserialize JSON to a type
             return JsonConvert.DeserializeObject<List<Question>>(File.ReadAllText(localPath));

@@ -1,10 +1,6 @@
-﻿using DBI_PEA_Scoring.Common;
-using System;
-using System.Collections.Generic;
-using System.Data;
+﻿using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
-using System.Text;
 
 namespace DBI_PEA_Scoring.Utils.DaoType
 {
@@ -25,7 +21,7 @@ namespace DBI_PEA_Scoring.Utils.DaoType
         public static bool CompareTableNoSort(string db1Name, string db2Name, string queryTable1,
             string queryTable2)
         {
-            var builder = Constant.SqlConnectionStringBuilder;
+            var builder = Common.Constant.SqlConnectionStringBuilder;
             string sql = "USE " + db1Name + "; \n" +
                          "WITH T1 as (" + queryTable1 + ") \n" +
                          "select * INTO #TABLE1 from T1;\n" +
@@ -64,7 +60,7 @@ namespace DBI_PEA_Scoring.Utils.DaoType
         public static bool CompareTableSort(string db1Name, string db2Name, string queryTable1,
             string queryTable2)
         {
-            var builder = Constant.SqlConnectionStringBuilder;
+            var builder = Common.Constant.SqlConnectionStringBuilder;
             bool resCheckSchema = CompareTableNoSort(db1Name, db2Name, queryTable1, queryTable2);
             if (resCheckSchema)
             {

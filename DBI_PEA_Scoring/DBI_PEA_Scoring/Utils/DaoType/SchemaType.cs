@@ -1,6 +1,4 @@
-﻿using DBI_PEA_Scoring.Common;
-using System;
-using System.Data.SqlClient;
+﻿using System.Data.SqlClient;
 
 namespace DBI_PEA_Scoring.Utils.DaoType
 {
@@ -20,7 +18,7 @@ namespace DBI_PEA_Scoring.Utils.DaoType
         public static bool MarkSchemaDatabasesType(string dbTeacherName, string dbStudentName, string queryTeacher,
             string queryStudent)
         {
-            var builder = Constant.SqlConnectionStringBuilder;
+            var builder = Common.Constant.SqlConnectionStringBuilder;
             string createDbTeacherQuery = "CREATE DATABASE " + dbTeacherName + "";
             string createDbStudentQuery = "CREATE DATABASE " + dbStudentName + "";
             queryTeacher = "USE " + dbTeacherName + "\n" + queryTeacher + "\n";
@@ -64,7 +62,7 @@ namespace DBI_PEA_Scoring.Utils.DaoType
                                         "SELECT * FROM sys.objects\n" +
                                         "WHERE object_id = OBJECT_ID(N'[sp_CompareDb]') AND type IN ( N'P', N'PC' )";
             string compareQuery = "exec sp_CompareDb [" + db1Name + "], [" + db2Name + "]";
-            var builder = Constant.SqlConnectionStringBuilder;
+            var builder = Common.Constant.SqlConnectionStringBuilder;
             // Connect to SQL
             using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
             {

@@ -1,8 +1,6 @@
-﻿using System;
-
-namespace DBI_PEA_Scoring.Model
+﻿namespace DBI_PEA_Scoring.Model
 {
-    [Serializable]
+    [System.Serializable]
     public class Requirement
     {
         public enum RequirementTypes

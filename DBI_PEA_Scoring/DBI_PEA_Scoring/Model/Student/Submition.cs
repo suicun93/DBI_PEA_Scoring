@@ -1,5 +1,4 @@
 ﻿using DBI_PEA_Scoring.Common;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -14,12 +13,11 @@ namespace DBI_PEA_Scoring.Model
         public string ExamCode { get; set; }
         public string PaperNo { get; set; }
         public List<string> ListAnswer { get; set; }
-        [JsonIgnore]
+        [Newtonsoft.Json.JsonIgnore]
         public SecureJsonSerializer<Submition> secureJsonSerializer;
 
         public Submition()
         {
-
         }
 
         public Submition(string examCode, string studentID, string paperNo)

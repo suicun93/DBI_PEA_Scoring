@@ -1,9 +1,4 @@
-﻿using System;
-using System.Data.SqlClient;
-using System.Data;
-using System.Linq;
-using DBI_PEA_Scoring.Common;
-
+﻿
 namespace DBI_PEA_Scoring.Utils.DaoType
 {
     public class SelectType

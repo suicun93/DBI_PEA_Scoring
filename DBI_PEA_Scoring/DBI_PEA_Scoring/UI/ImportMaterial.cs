@@ -2,16 +2,11 @@
 using DBI_PEA_Scoring.Model;
 using DBI_PEA_Scoring.Utils;
 using DBI_PEA_Scoring.Utils.DaoType;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Data.SqlClient;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 namespace DBI_PEA_Scoring.UI

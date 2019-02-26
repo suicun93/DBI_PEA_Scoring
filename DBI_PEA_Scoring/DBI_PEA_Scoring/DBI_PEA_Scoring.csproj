@@ -33,6 +33,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.SqlServer.ConnectionInfo, Version=11.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.SqlServer.Management.Sdk.Sfc, Version=11.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.SqlServer.Smo, Version=11.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL" />
     <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.11.0.1\lib\net40\Newtonsoft.Json.dll</HintPath>
@@ -72,9 +73,9 @@
       <DependentUpon>Scoring.cs</DependentUpon>
     </Compile>
     <Compile Include="Utils\DaoType\DmlType.cs" />
-    <Compile Include="Utils\DaoType\General+Compare.cs" />
-    <Compile Include="Utils\DaoType\General+Support.cs" />
-    <Compile Include="Utils\DaoType\General+Execution.cs" />
+    <Compile Include="Utils\DaoType\General\General+Compare.cs" />
+    <Compile Include="Utils\DaoType\General\General+Support.cs" />
+    <Compile Include="Utils\DaoType\General\General+Execution.cs" />
     <Compile Include="Utils\DaoType\ProcedureType.cs" />
     <Compile Include="Utils\DaoType\SchemaType+Query.cs" />
     <Compile Include="Utils\DaoType\SchemaType.cs" />

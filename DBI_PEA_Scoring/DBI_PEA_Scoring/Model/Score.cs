@@ -1,10 +1,6 @@
 ﻿using DBI_PEA_Scoring.Utils;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace DBI_PEA_Scoring.Model
@@ -77,7 +73,7 @@ namespace DBI_PEA_Scoring.Model
                     
                 default:
                     // Not supported yet
-                    throw new Exception("This question type have not been supported");
+                    throw new System.Exception("This question type have not been supported");
             }
         }
 
@@ -120,7 +116,7 @@ namespace DBI_PEA_Scoring.Model
                         Logs[questionOrder] = "No questions found at question " + questionOrder + " paperNo = " + PaperNo;
                     }
                 }
-                catch (Exception e)
+                catch (System.Exception e)
                 {
                     // When something's wrong:
                     // Log error and return 0 point for student.

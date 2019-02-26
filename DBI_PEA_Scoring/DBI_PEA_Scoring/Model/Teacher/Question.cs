@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace DBI_PEA_Scoring.Model
 {
-    [Serializable]
+    [System.Serializable]
     class Question
     {
         public Question(int questionNumber, List<Candidate> candidates)
