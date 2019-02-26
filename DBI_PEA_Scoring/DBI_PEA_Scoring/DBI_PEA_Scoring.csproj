@@ -69,10 +69,12 @@
     <Compile Include="UI\Scoring.Designer.cs">
       <DependentUpon>Scoring.cs</DependentUpon>
     </Compile>
-    <Compile Include="Utils\DaoType\EffectType.cs" />
+    <Compile Include="Utils\DaoType\DmlType.cs" />
     <Compile Include="Utils\DaoType\General.cs" />
+    <Compile Include="Utils\DaoType\ProcedureType.cs" />
     <Compile Include="Utils\DaoType\SchemaType.cs" />
     <Compile Include="Utils\DaoType\SelectType.cs" />
+    <Compile Include="Utils\DaoType\TriggerType.cs" />
     <Compile Include="Utils\FileUtils.cs" />
     <Compile Include="Utils\JsonUtils.cs" />
     <Compile Include="Utils\TestUtils.cs" />

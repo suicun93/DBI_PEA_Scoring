@@ -142,20 +142,66 @@ namespace DBI_PEA_Scoring.Utils
         /// </exception>
         internal static bool TestProcedure(Candidate candidate, string answer)
         {
+            string dbTeacherName = "DbForTest_Teacher";
+            string dbStudentName = "DbForTest_Student";
             try
             {
+                // In case question type is InsertDeleteUpdate, requirement type default is Effect. 
+                //Marking
+                foreach (Requirement req in candidate.Requirements)
+                {
+                    // Execute query
+                    General.ExecuteQuery(dbTeacherName, dbStudentName, req.ActivateTriggerQuery, answer);
+                    if (ProcedureType.MarkProcedureTest(dbTeacherName,dbStudentName, candidate,
+                        answer) == false)
+                    {
+                        General.DropDatabase(dbTeacherName);
+                        General.DropDatabase(dbStudentName);
+                        return false;
+                    }
+                }
+                General.DropDatabase(dbTeacherName);
+                General.DropDatabase(dbStudentName);
                 return true;
             }
             catch (SqlException e)
             {
-
+                General.DropDatabase(dbTeacherName);
+                General.DropDatabase(dbStudentName);
                 throw e;
             }
 
         }
         internal static bool TestTrigger(Candidate candidate, string answer)
         {
-            throw new NotImplementedException();
+            string dbTeacherName = "DbForTest_Teacher";
+            string dbStudentName = "DbForTest_Student";
+            try
+            {
+                // In case question type is InsertDeleteUpdate, requirement type default is Effect. 
+                //Marking
+                foreach (Requirement req in candidate.Requirements)
+                {
+                    // Execute query
+                    General.ExecuteQuery(dbTeacherName, dbStudentName, req.ActivateTriggerQuery, answer);
+                    if (TriggerType.MarkTriggerTest(dbTeacherName, dbStudentName, candidate,
+                        answer) == false)
+                    {
+                        General.DropDatabase(dbTeacherName);
+                        General.DropDatabase(dbStudentName);
+                        return false;
+                    }
+                }
+                General.DropDatabase(dbTeacherName);
+                General.DropDatabase(dbStudentName);
+                return true;
+            }
+            catch (SqlException e)
+            {
+                General.DropDatabase(dbTeacherName);
+                General.DropDatabase(dbStudentName);
+                throw e;
+            }
         }
     }
 }

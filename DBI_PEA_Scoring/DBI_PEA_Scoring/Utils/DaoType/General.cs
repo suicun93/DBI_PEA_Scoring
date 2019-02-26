@@ -15,7 +15,7 @@ namespace DBI_PEA_Scoring.Utils.DaoType
         /// "message error" if error
         /// "" if done
         /// </returns>
-        public static bool DropDatabase(string dbName)
+        public static void DropDatabase(string dbName)
         {
             var builder = Constant.SqlConnectionStringBuilder;
             using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
@@ -25,7 +25,6 @@ namespace DBI_PEA_Scoring.Utils.DaoType
                 {
                     connection.Open();
                     commandDrop.ExecuteNonQuery();
-                    return true;
                 }
             }
         }
@@ -38,7 +37,7 @@ namespace DBI_PEA_Scoring.Utils.DaoType
         /// <param name="sqlServerDbFolder">Path to ServerDB: C:\Program Files\Microsoft SQL Server\MSSQL11.SQLEXPRESS\MSSQL\DATA\</param>
         /// <param name="newDbName">Name of new DB</param>
         /// 
-        public static bool DuplicatedDb(string sqlServerDbFolder, string sourceDbName, string newDbName)
+        public static void DuplicatedDb(string sqlServerDbFolder, string sourceDbName, string newDbName)
         {
             var builder = Constant.SqlConnectionStringBuilder;
             for (int i = 0; i < 2; i++)
@@ -85,7 +84,6 @@ namespace DBI_PEA_Scoring.Utils.DaoType
                     }
                 }
             }
-            return true;
         }
 
         /// <summary>
@@ -97,20 +95,27 @@ namespace DBI_PEA_Scoring.Utils.DaoType
         /// <param name="query2">query of teacher</param>
         public static void ExecuteQuery(string db1Name, string db2Name, string query1, string query2)
         {
-            var builder = Constant.SqlConnectionStringBuilder;
-            query1 = "USE " + db1Name + "; \n" + query1;
-            query2 = "USE " + db2Name + "; \n" + query2;
-            using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
+            try
             {
-                connection.Open();
-                using (SqlCommand command = new SqlCommand(query1, connection))
+                var builder = Constant.SqlConnectionStringBuilder;
+                query1 = "USE " + db1Name + "; \n" + query1;
+                query2 = "USE " + db2Name + "; \n" + query2;
+                using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
                 {
-                    command.ExecuteNonQuery();
+                    connection.Open();
+                    using (SqlCommand command = new SqlCommand(query1, connection))
+                    {
+                        command.ExecuteNonQuery();
+                    }
+                    using (SqlCommand command = new SqlCommand(query2, connection))
+                    {
+                        command.ExecuteNonQuery();
+                    }
                 }
-                using (SqlCommand command = new SqlCommand(query2, connection))
-                {
-                    command.ExecuteNonQuery();
-                }
+            }
+            catch (SqlException e)
+            {
+                throw e;
             }
         }
 
@@ -239,4 +244,5 @@ namespace DBI_PEA_Scoring.Utils.DaoType
         }
     }
 }
+
 
