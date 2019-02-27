@@ -19,7 +19,7 @@ namespace DBI_PEA_Scoring.Utils.DaoType
         {
             try
             {
-                var builder = DBI_PEA_Scoring.Common.Constant.SqlConnectionStringBuilder;
+                var builder = Common.Constant.SqlConnectionStringBuilder;
                 query1 = "USE " + db1Name + "; \n" + query1;
                 query2 = "USE " + db2Name + "; \n" + query2;
                 using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
@@ -49,7 +49,7 @@ namespace DBI_PEA_Scoring.Utils.DaoType
         /// <param name="query">Query to execute</param>
         public static void ExecuteSingleQuery(string query)
         {
-            var builder = DBI_PEA_Scoring.Common.Constant.SqlConnectionStringBuilder;
+            var builder = Common.Constant.SqlConnectionStringBuilder;
             using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
             {
                 connection.Open();

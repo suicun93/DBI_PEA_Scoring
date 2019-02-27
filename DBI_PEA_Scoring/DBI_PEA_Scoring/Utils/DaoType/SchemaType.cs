@@ -18,33 +18,9 @@ namespace DBI_PEA_Scoring.Utils.DaoType
         public static bool MarkSchemaDatabasesType(string dbTeacherName, string dbStudentName, string queryTeacher,
             string queryStudent)
         {
-            var builder = Common.Constant.SqlConnectionStringBuilder;
-            string createDbTeacherQuery = "CREATE DATABASE " + dbTeacherName + "";
-            string createDbStudentQuery = "CREATE DATABASE " + dbStudentName + "";
-            queryTeacher = "USE " + dbTeacherName + "\n" + queryTeacher + "\n";
-            queryStudent = "USE " + dbStudentName + "\n" + queryStudent + "\n";
-
-            using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
-            {
-                connection.Open();
-                using (SqlCommand commandCreateDatabase = new SqlCommand(createDbStudentQuery, connection))
-                {
-                    commandCreateDatabase.ExecuteNonQuery();
-                }
-                using (SqlCommand commandCreateDatabase = new SqlCommand(createDbTeacherQuery, connection))
-                {
-                    commandCreateDatabase.ExecuteNonQuery();
-                }
-                using (SqlCommand commandTeacher = new SqlCommand(queryStudent, connection))
-                {
-                    commandTeacher.ExecuteNonQuery();
-                }
-                using (SqlCommand commandStudent = new SqlCommand(queryTeacher, connection))
-                {
-                    commandStudent.ExecuteNonQuery();
-                }
-                return CompareTwoDatabases(dbStudentName, dbTeacherName);
-            }
+            General.ExecuteSingleQuery(queryStudent);
+            General.ExecuteSingleQuery(queryTeacher);
+            return CompareTwoDatabases(dbStudentName, dbTeacherName);
         }
 
         /// <summary>

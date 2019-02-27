@@ -16,15 +16,21 @@ namespace DBI_PEA_Scoring.Utils.DaoType
         /// </returns>
         public static void DropDatabase(string dbName)
         {
-            var builder = Constant.SqlConnectionStringBuilder;
-            using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
+            try
             {
-                string dropQuery = "use master drop database " + dbName + "";
-                using (SqlCommand commandDrop = new SqlCommand(dropQuery, connection))
+                var builder = Constant.SqlConnectionStringBuilder;
+                using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
                 {
-                    connection.Open();
-                    commandDrop.ExecuteNonQuery();
+                    string dropQuery = "use master drop database " + dbName + "";
+                    using (SqlCommand commandDrop = new SqlCommand(dropQuery, connection))
+                    {
+                        connection.Open();
+                        commandDrop.ExecuteNonQuery();
+                    }
                 }
+            }
+            catch (System.Exception)
+            {
             }
         }
 
@@ -35,7 +41,7 @@ namespace DBI_PEA_Scoring.Utils.DaoType
         /// <param name="sqlServerDbFolder">Path to ServerDB: C:\Program Files\Microsoft SQL Server\MSSQL11.SQLEXPRESS\MSSQL\DATA\</param>
         /// <param name="newDbName">Name of new DB</param>
         /// 
-        public static void DuplicatedDb(string sqlServerDbFolder, string sourceDbName, string newDbName)
+        public static void DuplicatedDb(string sqlServerDbFolder, string sourceDbName)
         {
             var builder = Constant.SqlConnectionStringBuilder;
             for (int i = 0; i < 2; i++)
@@ -46,7 +52,7 @@ namespace DBI_PEA_Scoring.Utils.DaoType
                              "\n" +
                              "declare @sourceDbFile nvarchar(50);\n" +
                              "declare @sourceDbFileLog nvarchar(50);\n" +
-                             "declare @destinationDbName nvarchar(50) = '" + newDbName + "' + '_' + '"
+                             "declare @destinationDbName nvarchar(50) = '" + Constant.newDBName + "' + '_' + '"
                              + ((i % 2 == 0) ? "Student" : "Teacher") + "'\n" +
                              "declare @backupPath nvarchar(400) = @tmpFolder + @destinationDbName + '.bak'\n" +
                              "declare @destMdf nvarchar(100) = @sqlServerDbFolder + @destinationDbName + '.mdf'\n" +

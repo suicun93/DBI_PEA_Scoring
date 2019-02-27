@@ -56,7 +56,7 @@ namespace DBI_PEA_Scoring.Model
             {
                 case Candidate.QuestionTypes.Schema:
                     // Schema Question
-                    return TestUtils.TestSchema(candidate, answer);
+                    return TestUtils.TestSchema(candidate, answer, "dbName");
                 case Candidate.QuestionTypes.DML:
                     // DML: Insert/Delete/Update Question
                     return TestUtils.TestDML(candidate, answer);
@@ -69,11 +69,9 @@ namespace DBI_PEA_Scoring.Model
                 case Candidate.QuestionTypes.Trigger:
                     // Trigger Question
                     return TestUtils.TestTrigger(candidate, answer);
-                    
-                    
                 default:
                     // Not supported yet
-                    throw new System.Exception("This question type have not been supported");
+                    throw new System.Exception("This question type has not been supported yet.");
             }
         }
 
@@ -100,20 +98,18 @@ namespace DBI_PEA_Scoring.Model
                         {
                             // Exactly -> Log true and return 0 point
                             Points[questionOrder] = ListCandidates.ElementAt(questionOrder).Point;
-                            Logs[questionOrder] = "";
+                            Logs[questionOrder] = "True";
                         }
                         else
                         {
                             // Wrong -> Log false and return 0 point
-                            Points[questionOrder] = 0;
-                            Logs[questionOrder] = "false";
+                            throw new System.Exception("False");
                         }
                     else
                     {
                         // Not enough candidate 
                         // It rarely happens, it's this project's demos and faults.
-                        Points[questionOrder] = 0;
-                        Logs[questionOrder] = "No questions found at question " + questionOrder + " paperNo = " + PaperNo;
+                        throw new System.Exception("No questions found at question " + questionOrder + " paperNo = " + PaperNo);
                     }
                 }
                 catch (System.Exception e)

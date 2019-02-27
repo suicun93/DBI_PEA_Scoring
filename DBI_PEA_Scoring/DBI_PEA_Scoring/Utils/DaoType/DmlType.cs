@@ -18,25 +18,18 @@ namespace DBI_PEA_Scoring.Utils.DaoType
         /// <param name="queryEffectStudent">query effect on table from student</param>
         /// <param name="queryCheckEffect">query answer to check table effected from teacher</param>
         /// <returns></returns>
-        public bool MarkDMLQuery(string dbTeacherName, string dbStudentName,
-            string queryEffectTeacher, string queryEffectStudent, string queryCheckEffect)
+        public static bool MarkDMLQuery(string dbTeacherName, string dbStudentName,
+            string queryEffectTeacher, string queryEffectStudent, string queryToCheck)
         {
             var builder = Constant.SqlConnectionStringBuilder;
-            queryEffectTeacher = "use " + dbTeacherName + "\n" + queryEffectTeacher + "";
-            queryEffectStudent = "use " + dbStudentName + "\n" + queryEffectStudent + "";
             using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
             {
-                //Run Effect query
-                using (SqlCommand cmdEffStudent = new SqlCommand(queryEffectStudent, connection))
-                {
-                    cmdEffStudent.ExecuteNonQuery();
-                }
-                using (SqlCommand cmdEffTeacher = new SqlCommand(queryEffectTeacher, connection))
-                {
-                    cmdEffTeacher.ExecuteNonQuery();
-                }
+                // After run query, compare table (no sort)
+                // Execute query
+                General.ExecuteQuery(dbStudentName, dbTeacherName, queryEffectStudent, queryEffectTeacher);
+                // Compare nosort and return result(T/F)
                 return General.CompareTableNoSort(dbStudentName, dbTeacherName,
-                    queryCheckEffect, queryCheckEffect);
+                    queryToCheck, queryToCheck);
             }
         }
     }
