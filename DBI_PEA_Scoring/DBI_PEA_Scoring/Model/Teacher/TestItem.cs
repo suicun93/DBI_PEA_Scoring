@@ -14,7 +14,7 @@ namespace DBI_PEA_Scoring.Model
         public ExamItem()
         {
         }
-        public String PaperNo { get; set; }
+        public string PaperNo { get; set; }
         public List<Candidate> ExamQuestionsList { get; set; }
     }
 }

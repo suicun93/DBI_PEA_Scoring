@@ -15,7 +15,7 @@ namespace DBI_PEA_Scoring.Model
         }
         public string CandidateId { get; set; }
         public string QuestionId { get; set; }
-        public string Content { get; set; }
+        public string QuestionRequirement { get; set; }
         public QuestionTypes QuestionType { get; set; }
         public string Solution { get; set; }
         public string TestQuery { get; set; }
