@@ -33,6 +33,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.scoreGridView = new System.Windows.Forms.DataGridView();
             this.startButton = new System.Windows.Forms.Button();
+            this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             ((System.ComponentModel.ISupportInitialize)(this.scoreGridView)).BeginInit();
             this.SuspendLayout();
             // 
@@ -113,5 +114,6 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.DataGridView scoreGridView;
         private System.Windows.Forms.Button startButton;
+        private System.Windows.Forms.SaveFileDialog saveFileDialog1;
     }
 }

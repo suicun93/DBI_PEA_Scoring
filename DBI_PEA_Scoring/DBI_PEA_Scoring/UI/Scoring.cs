@@ -1,6 +1,8 @@
 ﻿using DBI_PEA_Scoring.Model;
+using DBI_PEA_Scoring.Utils;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -90,16 +92,20 @@ namespace DBI_PEA_Scoring.UI
         // sau khi add xong thuc hien cham diem, cham den dau in diem den day!
         private void exportButton_Click(object sender, EventArgs e)
         {
-            // export data to excel
-            //try
-            //{
-            //    var hi = General.CompareMoreThanOneTableSort("Sample", "Sample2", "insert into Supplier(ContactName, CompanyName) values('Trung Duc', 'FPT')\nSelect * from Product");
-            //    Console.WriteLine(hi);
-            //}
-            //catch (Exception ex)
-            //{
-            //    Console.WriteLine(ex);
-            //}
+            saveFileDialog1.Filter = "Microsoft Excel 97-2003 Add-In (*.doc)|*.doc";
+            saveFileDialog1.FilterIndex = 2;
+            saveFileDialog1.RestoreDirectory = true;
+            if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                string saveFolder = Path.GetDirectoryName(saveFileDialog1.FileName);
+                string savePath = Path.Combine(saveFolder, saveFileDialog1.FileName);
+                double maxPoint = 0;
+                foreach (Candidate candidate in ListResults.ElementAt(0).ListCandidates)
+                {
+                    maxPoint += candidate.Point;
+                }
+                ExcelUtils.ExportResultsExcel(savePath, ListResults, maxPoint);
+            }
         }
 
         private void Scoring_FormClosed(object sender, FormClosedEventArgs e)

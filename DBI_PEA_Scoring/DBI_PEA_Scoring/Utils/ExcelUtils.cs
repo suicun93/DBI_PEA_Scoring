@@ -8,7 +8,7 @@ namespace DBI_PEA_Scoring.Utils
 {
     class ExcelUtils
     {
-        public static void ExportResultsExcel(string path, List<Result> results)
+        public static void ExportResultsExcel(string path, List<Result> results, double maxPoint)
         {
             //Open Excel
             Application excelApp = new Application();
@@ -42,14 +42,11 @@ namespace DBI_PEA_Scoring.Utils
                     sheetResult.Cells[lastRow, 1] = (lastRow - 1);
                     sheetResult.Cells[lastRow, 2] = result.PaperNo;
                     sheetResult.Cells[lastRow, 3] = result.StudentID;
-                    //sheetResult.Cells[lastRow, 4] = result.StudentID;
-                    sheetResult.Cells[lastRow, 4] = "Bổ sung Exam Code sau";
+                    sheetResult.Cells[lastRow, 4] = result.ExamCode;
                     double totalPoints = result.SumOfPoint();
                     sheetResult.Cells[lastRow, 5] = totalPoints;
-                    //double maxPoint = 10.0;
-                    sheetResult.Cells[lastRow, 6] = "Bổ sung Số điểm tối đa";
-                    //sheetResult.Cells[lastRow, 7] = (totalPoints / maxPoint) * 10;
-                    sheetResult.Cells[lastRow, 7] = "Bổ sung điểm chính xác";
+                    sheetResult.Cells[lastRow, 6] = maxPoint;
+                    sheetResult.Cells[lastRow, 7] = (float)(totalPoints / maxPoint) * 10.0;
                     string note = "";
                     for(int i = 0; i < result.Points.Length; i++)
                     {
