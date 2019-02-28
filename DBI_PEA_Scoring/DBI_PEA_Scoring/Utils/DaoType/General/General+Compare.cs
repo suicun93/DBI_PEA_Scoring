@@ -114,31 +114,32 @@ namespace DBI_PEA_Scoring.Utils.DaoType
             using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
             {
                 connection.Open();
+                // Prepare Command
                 SqlCommand sqlCommandStudent = new SqlCommand(sqlStudent, connection);
                 SqlCommand sqlCommandTeacher = new SqlCommand(sqlTeacher, connection);
+
+                // Prepare SqlDataAdapter
                 SqlDataAdapter adapterStudent = new SqlDataAdapter(sqlStudent, connection);
                 SqlDataAdapter adapterTeacher = new SqlDataAdapter(sqlTeacher, connection);
-                try
-                {
-                    DataSet dataSetStudent = new DataSet();
-                    DataSet dataSetTeacher = new DataSet();
-                    adapterStudent.Fill(dataSetStudent);
-                    adapterTeacher.Fill(dataSetTeacher);
-                    // Check count of table of student and teacher is same or not.
-                    if (dataSetTeacher.Tables.Count > dataSetStudent.Tables.Count)
-                        throw new Exception("Less table than teacher's requirement");
-                    else if (dataSetTeacher.Tables.Count < dataSetStudent.Tables.Count)
-                        throw new Exception("More table than teacher's requirement");
-                    // Compare one by one
-                    for (int i = 0; i < dataSetStudent.Tables.Count; i++)
-                        if (TwoDataTableDifferenceDetector(dataSetStudent.Tables[i], dataSetTeacher.Tables[i]))
-                            throw new Exception("Difference detected");
-                    return true;
-                }
-                catch (Exception)
-                {
-                    throw;
-                }
+
+                // Prepare DataSet
+                DataSet dataSetStudent = new DataSet();
+                DataSet dataSetTeacher = new DataSet();
+                
+                // Fill Data adapter to dataset
+                adapterStudent.Fill(dataSetStudent);
+                adapterTeacher.Fill(dataSetTeacher);
+
+                // Check count of table of student and teacher is same or not.
+                if (dataSetTeacher.Tables.Count > dataSetStudent.Tables.Count)
+                    throw new Exception("Less table than teacher's requirement");
+                else if (dataSetTeacher.Tables.Count < dataSetStudent.Tables.Count)
+                    throw new Exception("More table than teacher's requirement");
+                // If Number of table of student and teacher is same, then Compare one by one
+                for (int i = 0; i < dataSetStudent.Tables.Count; i++)
+                    if (TwoDataTableDifferenceDetector(dataSetStudent.Tables[i], dataSetTeacher.Tables[i]))
+                        throw new Exception("Difference detected");
+                return true;
             }
         }
 

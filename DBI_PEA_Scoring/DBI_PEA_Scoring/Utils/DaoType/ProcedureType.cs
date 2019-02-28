@@ -16,7 +16,6 @@ namespace DBI_PEA_Scoring.Utils.DaoType
             Candidate candidate)
         {
             // Run solution of both
-            var builder = Common.Constant.SqlConnectionStringBuilder;
             string queryStudentRun = "Use " + dbStudentName + "\nGO \n" + queryStudent;
             string queryTeacherRun = "Use " + dbTeacherName + "\nGO \n" + candidate.Solution;
             General.ExecuteSingleQuery(queryStudentRun);

@@ -21,19 +21,15 @@ namespace DBI_PEA_Scoring.Utils.DaoType
         public static bool MarkDMLQuery(string dbStudentName, string dbTeacherName,
             string queryEffectStudent, string queryEffectTeacher, string queryToCheck)
         {
-            var builder = Constant.SqlConnectionStringBuilder;
-            using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
-            {
-                // After run query, compare table (no sort)
-                // Execute query
-                string queryStudent = "USE " + dbStudentName + "\nGO \n" + queryEffectStudent;
-                string queryTeacher = "USE " + dbTeacherName + "\nGO \n" + queryEffectTeacher;
-                General.ExecuteSingleQuery(queryEffectStudent);
-                General.ExecuteSingleQuery(queryEffectTeacher);
-                // Compare nosort and return result(T/F)
-                return General.CompareOneTableNoSort(dbStudentName, dbTeacherName,
-                    queryToCheck, queryToCheck);
-            }
+            // After run query, compare table (no sort)
+            // Execute query
+            string queryStudent = "USE " + dbStudentName + "\nGO \n" + queryEffectStudent;
+            string queryTeacher = "USE " + dbTeacherName + "\nGO \n" + queryEffectTeacher;
+            General.ExecuteSingleQuery(queryEffectStudent);
+            General.ExecuteSingleQuery(queryEffectTeacher);
+            // Compare nosort and return result(T/F)
+            return General.CompareOneTableNoSort(dbStudentName, dbTeacherName,
+                queryToCheck, queryToCheck);
         }
     }
 }
