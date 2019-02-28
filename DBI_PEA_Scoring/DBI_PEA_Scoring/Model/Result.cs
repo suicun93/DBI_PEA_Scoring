@@ -1,4 +1,5 @@
 ﻿using DBI_PEA_Scoring.Utils;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
@@ -9,6 +10,7 @@ namespace DBI_PEA_Scoring.Model
     {
         public string StudentID { get; set; }
         public string PaperNo { get; set; }
+        public string ExamCode { get; set; }
         public List<string> ListAnswers { get; set; }
         public List<Candidate> ListCandidates { get; set; }
         public double[] Points { get; set; }
@@ -57,12 +59,12 @@ namespace DBI_PEA_Scoring.Model
                 case Candidate.QuestionTypes.Schema:
                     // Schema Question
                     return TestUtils.TestSchema(candidate, answer);
-                case Candidate.QuestionTypes.DML:
-                    // DML: Insert/Delete/Update Question
-                    return TestUtils.TestDML(candidate, answer);
                 case Candidate.QuestionTypes.Select:
                     //Select Question
                     return TestUtils.TestSelect(candidate, answer);
+                case Candidate.QuestionTypes.DML:
+                    // DML: Insert/Delete/Update Question
+                    return TestUtils.TestInsertDeleteUpdate(candidate, answer);
                 case Candidate.QuestionTypes.Procedure:
                     // Procedure Question
                     return TestUtils.TestProcedure(candidate, answer);
@@ -88,6 +90,9 @@ namespace DBI_PEA_Scoring.Model
             dataGridView.Rows.Add(1);
             dataGridView.Rows[row].Cells[0].Value = StudentID;
             dataGridView.Rows[row].Cells[1].Value = PaperNo;
+            // Select random DB
+            TestUtils.Database = Common.Constant.listDB[(new Random()).Next(1, Common.Constant.listDB.Length) - 1];
+            // Get mark one by one
             for (int questionOrder = 0; questionOrder < 10; questionOrder++)
             {
                 try
@@ -101,16 +106,12 @@ namespace DBI_PEA_Scoring.Model
                             Logs[questionOrder] = "True";
                         }
                         else
-                        {
                             // Wrong -> Log false and return 0 point
                             throw new System.Exception("False");
-                        }
                     else
-                    {
                         // Not enough candidate 
                         // It rarely happens, it's this project's demos and faults.
                         throw new System.Exception("No questions found at question " + questionOrder + " paperNo = " + PaperNo);
-                    }
                 }
                 catch (System.Exception e)
                 {

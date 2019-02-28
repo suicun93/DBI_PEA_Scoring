@@ -18,15 +18,18 @@ namespace DBI_PEA_Scoring.Utils.DaoType
         /// <param name="queryEffectStudent">query effect on table from student</param>
         /// <param name="queryCheckEffect">query answer to check table effected from teacher</param>
         /// <returns></returns>
-        public static bool MarkDMLQuery(string dbTeacherName, string dbStudentName,
-            string queryEffectTeacher, string queryEffectStudent, string queryToCheck)
+        public static bool MarkDMLQuery(string dbStudentName, string dbTeacherName,
+            string queryEffectStudent, string queryEffectTeacher, string queryToCheck)
         {
             var builder = Constant.SqlConnectionStringBuilder;
             using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
             {
                 // After run query, compare table (no sort)
                 // Execute query
-                General.ExecuteQuery(dbStudentName, dbTeacherName, queryEffectStudent, queryEffectTeacher);
+                string queryStudent = "USE " + dbStudentName + "\nGO \n" + queryEffectStudent;
+                string queryTeacher = "USE " + dbTeacherName + "\nGO \n" + queryEffectTeacher;
+                General.ExecuteSingleQuery(queryEffectStudent);
+                General.ExecuteSingleQuery(queryEffectTeacher);
                 // Compare nosort and return result(T/F)
                 return General.CompareOneTableNoSort(dbStudentName, dbTeacherName,
                     queryToCheck, queryToCheck);
