@@ -33,6 +33,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Office.Interop.Excel, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Office.Interop.Excel.15.0.4795.1000\lib\net20\Microsoft.Office.Interop.Excel.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="Microsoft.SqlServer.ConnectionInfo, Version=11.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL" />
@@ -75,6 +76,7 @@
       <DependentUpon>Scoring.cs</DependentUpon>
     </Compile>
     <Compile Include="Utils\DaoType\DmlType.cs" />
+    <Compile Include="Utils\ExcelUtils.cs" />
     <Compile Include="Utils\DaoType\General\General+Compare.cs" />
     <Compile Include="Utils\DaoType\General\General+Support.cs" />
     <Compile Include="Utils\DaoType\General\General+Execution.cs" />
@@ -83,7 +85,6 @@
     <Compile Include="Utils\DaoType\SchemaType.cs" />
     <Compile Include="Utils\DaoType\SelectType.cs" />
     <Compile Include="Utils\DaoType\TriggerType.cs" />
-    <Compile Include="Utils\ExcelUtils.cs" />
     <Compile Include="Utils\FileUtils.cs" />
     <Compile Include="Utils\JsonUtils.cs" />
     <Compile Include="Utils\TestUtils.cs" />
