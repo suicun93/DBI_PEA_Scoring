@@ -17,30 +17,10 @@ namespace DBI_PEA_Scoring.Utils.DaoType
         /// <param name="query2">query of teacher</param>
         public static void ExecuteQuery(string db1Name, string db2Name, string query1, string query2)
         {
-            try
-            {
-                var builder = Common.Constant.SqlConnectionStringBuilder;
-                query1 = "USE " + db1Name + "; \n" + query1;
-                query2 = "USE " + db2Name + "; \n" + query2;
-                using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
-                {
-                    connection.Open();
-                    var server = new Server(new ServerConnection(connection));
-                    server.ConnectionContext.ExecuteNonQuery(query1);
-                    server.ConnectionContext.Disconnect();
-                }
-                using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
-                {
-                    connection.Open();
-                    var server = new Server(new ServerConnection(connection));
-                    server.ConnectionContext.ExecuteNonQuery(query2);
-                    server.ConnectionContext.Disconnect();
-                }
-            }
-            catch (SqlException e)
-            {
-                throw e;
-            }
+            query1 = "USE " + db1Name + " \n go \n" + query1;
+            query2 = "USE " + db2Name + " \n go \n" + query2;
+            ExecuteSingleQuery(query1);
+            ExecuteSingleQuery(query2);
         }
 
         /// <summary>
@@ -54,6 +34,7 @@ namespace DBI_PEA_Scoring.Utils.DaoType
             {
                 connection.Open();
                 var server = new Server(new ServerConnection(connection));
+                server.ConnectionContext.StatementTimeout = Common.Constant.TimeOutInSecond;
                 server.ConnectionContext.ExecuteNonQuery(query);
                 server.ConnectionContext.Disconnect();
             }

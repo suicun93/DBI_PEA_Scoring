@@ -6,45 +6,7 @@ namespace DBI_PEA_Scoring.Utils
 {
     public class TestUtils
     {
-        static Common.Database database = Common.Constant.listDB[0];
-
-        /// <summary>
-        ///     Test Simple Query
-        /// </summary>
-        /// <param name="candidate">Question and requirement to check</param>
-        /// <param name="answer">Answer of student</param>
-        /// <returns>Result when compare 2 table</returns>
-        /// <exception cref="SqlException">
-        ///     When something's wrong, throw exception to log error to KhaoThi
-        /// </exception>
-        internal static bool TestSelect(Candidate candidate, string answer)
-        {
-            //Duplicate 2 new DB for student and teacher
-            General.DuplicatedDb(database.SqlServerDbFolder,
-                database.SourceDbName);
-            string dbTeacherName = Common.Constant.newDBName + "_Teacher";
-            string dbStudentName = Common.Constant.newDBName + "_Student";
-            try
-            {
-                // In case question type is Query, Just 1 requirement type, default is result set. 
-                // We will run solution to check
-                if (SelectType.MarkSelectType(candidate.RequireSort, dbStudentName, dbTeacherName, answer, candidate.Solution) == false)
-                {
-                    General.DropDatabase(dbTeacherName);
-                    General.DropDatabase(dbStudentName);
-                    return false;
-                }
-                General.DropDatabase(dbTeacherName);
-                General.DropDatabase(dbStudentName);
-                return true;
-            }
-            catch (SqlException e)
-            {
-                General.DropDatabase(dbTeacherName);
-                General.DropDatabase(dbStudentName);
-                throw e;
-            }
-        }
+        public static Common.Database Database = null;
 
         /// <summary>
         ///     Test Schema of 2 DBs.
@@ -84,6 +46,42 @@ namespace DBI_PEA_Scoring.Utils
         }
 
         /// <summary>
+        ///     Test Simple Query
+        /// </summary>
+        /// <param name="candidate">Question and requirement to check</param>
+        /// <param name="answer">Answer of student</param>
+        /// <returns>Result when compare 2 table</returns>
+        /// <exception cref="SqlException">
+        ///     When something's wrong, throw exception to log error to KhaoThi
+        /// </exception>
+        internal static bool TestSelect(Candidate candidate, string answer)
+        {
+            string dbTeacherName = Common.Constant.newDBName + "_Teacher";
+            string dbStudentName = Common.Constant.newDBName + "_Student";
+            //Duplicate 2 new DB for student and teacher
+            General.DuplicatedDb(Database.SqlServerDbFolder,
+                Database.SourceDbName);
+            try
+            {
+                // In case question type is Query, Just 1 requirement type, default is result set. 
+                // We will run solution to check
+                if (SelectType.MarkSelectType(candidate.RequireSort, dbStudentName, dbTeacherName, answer, candidate.Solution) == false)
+                {
+                    throw new System.Exception("Student's result and teacher's result are not the same.");
+                }
+                General.DropDatabase(dbTeacherName);
+                General.DropDatabase(dbStudentName);
+                return true;
+            }
+            catch (SqlException e)
+            {
+                General.DropDatabase(dbTeacherName);
+                General.DropDatabase(dbStudentName);
+                throw e;
+            }
+        }
+
+        /// <summary>
         ///  Execute Query and compare 2 effected tables
         /// </summary>
         /// <param name="candidate">Question and requirement to check</param>
@@ -92,23 +90,21 @@ namespace DBI_PEA_Scoring.Utils
         /// <exception cref="SqlException">
         ///     When something's wrong, throw exception to log to Khao Thi.
         /// </exception>
-        internal static bool TestDML(Candidate candidate, string answer)
+        internal static bool TestInsertDeleteUpdate(Candidate candidate, string answer)
         {
             //Duplicate 2 new DB for student and teacher
-            General.DuplicatedDb(database.SqlServerDbFolder,
-                database.SourceDbName);
+            General.DuplicatedDb(Database.SqlServerDbFolder,
+                Database.SourceDbName);
             string dbTeacherName = Common.Constant.newDBName + "_Teacher";
             string dbStudentName = Common.Constant.newDBName + "_Student";
             try
             {
                 // In case question type is DML, Just 1 requirement type, default is result set. 
                 // Run query and compare table.
-                string checkQuery = candidate.Solution;
+                string checkQuery = candidate.TestQuery;
                 if (DmlType.MarkDMLQuery(dbStudentName, dbTeacherName, answer, candidate.Solution, checkQuery) == false)
                 {
-                    General.DropDatabase(dbTeacherName);
-                    General.DropDatabase(dbStudentName);
-                    return false;
+                    throw new System.Exception("Student's result and teacher's result are not the same.");
                 }
                 General.DropDatabase(dbTeacherName);
                 General.DropDatabase(dbStudentName);
@@ -133,21 +129,17 @@ namespace DBI_PEA_Scoring.Utils
         /// </exception>
         internal static bool TestProcedure(Candidate candidate, string answer)
         {
-            //Duplicate 2 new DB for student and teacher
-            General.DuplicatedDb(database.SqlServerDbFolder,
-                database.SourceDbName);
             string dbTeacherName = Common.Constant.newDBName + "_Teacher";
             string dbStudentName = Common.Constant.newDBName + "_Student";
+            //Duplicate 2 new DB for student and teacher
+            General.DuplicatedDb(Database.SqlServerDbFolder, Database.SourceDbName);
             try
             {
-                // In case question type is InsertDeleteUpdate, requirement type default is Effect. 
-                // Execute query
-                if (ProcedureType.MarkProcedureTest(dbTeacherName, dbStudentName, candidate,
-                    answer) == false)
+                // Create procedure then compare 2 multiple result sets by TestQuery
+                if (ProcedureType.MarkProcedureTest(dbStudentName, dbTeacherName, answer,
+                    candidate) == false)
                 {
-                    General.DropDatabase(dbTeacherName);
-                    General.DropDatabase(dbStudentName);
-                    return false;
+                    throw new System.Exception("Student and teacher's result are not matched.");
                 }
                 General.DropDatabase(dbTeacherName);
                 General.DropDatabase(dbStudentName);
@@ -159,7 +151,6 @@ namespace DBI_PEA_Scoring.Utils
                 General.DropDatabase(dbStudentName);
                 throw e;
             }
-
         }
         /// <summary>
         /// 
@@ -172,22 +163,17 @@ namespace DBI_PEA_Scoring.Utils
         /// </exception>
         internal static bool TestTrigger(Candidate candidate, string answer)
         {
-            //Duplicate 2 new DB for student and teacher
-            General.DuplicatedDb(database.SqlServerDbFolder,
-                database.SourceDbName);
             string dbTeacherName = Common.Constant.newDBName + "_Teacher";
             string dbStudentName = Common.Constant.newDBName + "_Student";
+            //Duplicate 2 new DB for student and teacher
+            General.DuplicatedDb(Database.SqlServerDbFolder, Database.SourceDbName);
             try
             {
-                // In case question type is InsertDeleteUpdate, requirement type default is Effect. 
-
-                // Execute query
-                if (TriggerType.MarkTriggerTest(dbTeacherName, dbStudentName, candidate,
-                    answer) == false)
+                // Create trigger then compare 2 multiple result sets by TestQuery
+                if (TriggerType.MarkTriggerTest(dbStudentName, dbTeacherName, answer,
+                    candidate) == false)
                 {
-                    General.DropDatabase(dbTeacherName);
-                    General.DropDatabase(dbStudentName);
-                    return false;
+                    throw new System.Exception("Student and teacher's result are not matched.");
                 }
                 General.DropDatabase(dbTeacherName);
                 General.DropDatabase(dbStudentName);

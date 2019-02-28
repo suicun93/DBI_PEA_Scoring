@@ -7,6 +7,7 @@ namespace DBI_PEA_Scoring.Common
         public static Database[] listDB = null;
         public static SqlConnectionStringBuilder SqlConnectionStringBuilder = null;
         public static string newDBName = "DbForTest";
+        public static int TimeOutInSecond = 2;
     }
     public class Database
     {

@@ -1,6 +1,7 @@
 ﻿using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
+using System;
 
 namespace DBI_PEA_Scoring.Utils.DaoType
 {
@@ -89,21 +90,17 @@ namespace DBI_PEA_Scoring.Utils.DaoType
             }
             return false;
         }
-
         /// <summary>
-        ///     Compare datatables same schema
+        ///     Compare Multiple result set
         /// </summary>
-        /// <param name="dt1"></param>
-        /// <param name="dt2"></param>
+        /// <param name="dbNameStudent">DB Name to check student query</param>
+        /// <param name="dbNameTeacher">DB Name to check teacher query</param>
+        /// <param name="queryToCheck">Query to check from teacher</param>
         /// <returns>
-        /// true = difference
-        /// false = same
+        /// "true" if correct
+        /// "false" if wrong
+        /// message error from sqlserver if error
         /// </returns>
-        public static bool TwoDataTableDifferenceDetector(DataTable dt1, DataTable dt2)
-        {
-            return dt1.AsEnumerable().Except(dt2.AsEnumerable(), DataRowComparer.Default).Any();
-        }
-
         public static bool CompareMoreThanOneTableSort(string dbNameStudent, string dbNameTeacher, string queryToCheck)
         {
             // Prepare Command
@@ -129,48 +126,34 @@ namespace DBI_PEA_Scoring.Utils.DaoType
                     adapterTeacher.Fill(dataSetTeacher);
                     // Check count of table of student and teacher is same or not.
                     if (dataSetTeacher.Tables.Count > dataSetStudent.Tables.Count)
-                        throw new System.Exception("Less table than teacher's requirement");
+                        throw new Exception("Less table than teacher's requirement");
                     else if (dataSetTeacher.Tables.Count < dataSetStudent.Tables.Count)
-                        throw new System.Exception("More table than teacher's requirement");
+                        throw new Exception("More table than teacher's requirement");
                     // Compare one by one
                     for (int i = 0; i < dataSetStudent.Tables.Count; i++)
                         if (TwoDataTableDifferenceDetector(dataSetStudent.Tables[i], dataSetTeacher.Tables[i]))
-                            throw new System.Exception("Difference detected");
+                            throw new Exception("Difference detected");
                     return true;
                 }
-                catch (System.Exception)
+                catch (Exception)
                 {
                     throw;
                 }
             }
         }
 
-        // Solution for multiple comparable tables 
-        // cach 1 dung data set get nhieu bang
-        // Connect to SQL
-        //using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
-        //{
-        //    connection.Open();
-        //    using (SqlDataAdapter adapter = new SqlDataAdapter(sql1, connection))
-        //    {
-        //        DataSet dataSet1 = new DataSet();
-        //        adapter.Fill(dataSet1);
-        //    }
-        //}
-    }
-
-    class PairOfDataTable
-    {
-        DataTable a, b;
-        public PairOfDataTable()
+        /// <summary>
+        ///     Compare datatables same schema
+        /// </summary>
+        /// <param name="dt1"></param>
+        /// <param name="dt2"></param>
+        /// <returns>
+        /// true = difference
+        /// false = same
+        /// </returns>
+        public static bool TwoDataTableDifferenceDetector(DataTable dt1, DataTable dt2)
         {
-            a = new DataTable();
-            b = new DataTable();
-        }
-
-        public bool CompareResult()
-        {
-            return !General.TwoDataTableDifferenceDetector(a, b);
+            return dt1.AsEnumerable().Except(dt2.AsEnumerable(), DataRowComparer.Default).Any();
         }
     }
 }
