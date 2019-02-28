@@ -55,8 +55,7 @@
     <Compile Include="Model\Teacher\Candidate.cs" />
     <Compile Include="Model\Teacher\ExamItem.cs" />
     <Compile Include="Model\Teacher\Question.cs" />
-    <Compile Include="Model\Teacher\Requirement.cs" />
-    <Compile Include="Model\Score.cs" />
+    <Compile Include="Model\Result.cs" />
     <Compile Include="Model\Student\Submition.cs" />
     <Compile Include="UI\ImportMaterial.cs">
       <SubType>Form</SubType>

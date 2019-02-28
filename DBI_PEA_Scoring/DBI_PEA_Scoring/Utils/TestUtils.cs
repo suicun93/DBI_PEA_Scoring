@@ -28,7 +28,7 @@ namespace DBI_PEA_Scoring.Utils
             {
                 // In case question type is Query, Just 1 requirement type, default is result set. 
                 // We will run solution to check
-                if (SelectType.MarkSelectType(candidate.Requirements[0].RequireSort, dbStudentName, dbTeacherName, answer, candidate.Solution) == false)
+                if (SelectType.MarkSelectType(candidate.RequireSort, dbStudentName, dbTeacherName, answer, candidate.Solution) == false)
                 {
                     General.DropDatabase(dbTeacherName);
                     General.DropDatabase(dbStudentName);
@@ -55,18 +55,17 @@ namespace DBI_PEA_Scoring.Utils
         /// <exception cref="SqlException">
         ///     When something's wrong, throw exception to log error to KhaoThi
         /// </exception>
-        internal static bool TestSchema(Candidate candidate, string answer, string dbName)
+        internal static bool TestSchema(Candidate candidate, string answer)
         {
-            string dbTeacherName = "DbForTest_Teacher";
-            string dbStudentName = "DbForTest_Student";
-            // replace by dbName
-            // query teacher = candidate.Solution.Replace(dbName,dbTeacherName)
-            // query student = answer.Replace(dbName,dbTeacherName)
+            string dbTeacherName = "dbTeacherName";
+            string dbStudentName = "dbStudentName";
+            string queryTeacher = candidate.Solution.Replace(candidate.DBName, dbTeacherName);
+            string queryStudent = answer.Replace(candidate.DBName, dbStudentName);
             try
             {
                 // Only check by compare 2 DB
                 if (SchemaType.MarkSchemaDatabasesType(dbStudentName, dbTeacherName,
-                    answer, candidate.Solution) == false)
+                    queryStudent, queryTeacher) == false)
                 {
                     General.DropDatabase(dbTeacherName);
                     General.DropDatabase(dbStudentName);
@@ -104,7 +103,7 @@ namespace DBI_PEA_Scoring.Utils
             {
                 // In case question type is DML, Just 1 requirement type, default is result set. 
                 // Run query and compare table.
-                string checkQuery = candidate.Requirements[0].CheckEffectQuery;
+                string checkQuery = candidate.Solution;
                 if (DmlType.MarkDMLQuery(dbStudentName, dbTeacherName, answer, candidate.Solution, checkQuery) == false)
                 {
                     General.DropDatabase(dbTeacherName);
@@ -142,17 +141,13 @@ namespace DBI_PEA_Scoring.Utils
             try
             {
                 // In case question type is InsertDeleteUpdate, requirement type default is Effect. 
-                //Marking
-                foreach (Requirement req in candidate.Requirements)
+                // Execute query
+                if (ProcedureType.MarkProcedureTest(dbTeacherName, dbStudentName, candidate,
+                    answer) == false)
                 {
-                    // Execute query
-                    if (ProcedureType.MarkProcedureTest(dbTeacherName, dbStudentName, candidate,
-                        answer) == false)
-                    {
-                        General.DropDatabase(dbTeacherName);
-                        General.DropDatabase(dbStudentName);
-                        return false;
-                    }
+                    General.DropDatabase(dbTeacherName);
+                    General.DropDatabase(dbStudentName);
+                    return false;
                 }
                 General.DropDatabase(dbTeacherName);
                 General.DropDatabase(dbStudentName);
@@ -185,17 +180,14 @@ namespace DBI_PEA_Scoring.Utils
             try
             {
                 // In case question type is InsertDeleteUpdate, requirement type default is Effect. 
-                //Marking
-                foreach (Requirement req in candidate.Requirements)
+
+                // Execute query
+                if (TriggerType.MarkTriggerTest(dbTeacherName, dbStudentName, candidate,
+                    answer) == false)
                 {
-                    // Execute query
-                    if (TriggerType.MarkTriggerTest(dbTeacherName, dbStudentName, candidate,
-                        answer) == false)
-                    {
-                        General.DropDatabase(dbTeacherName);
-                        General.DropDatabase(dbStudentName);
-                        return false;
-                    }
+                    General.DropDatabase(dbTeacherName);
+                    General.DropDatabase(dbStudentName);
+                    return false;
                 }
                 General.DropDatabase(dbTeacherName);
                 General.DropDatabase(dbStudentName);

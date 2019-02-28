@@ -56,7 +56,7 @@ namespace DBI_PEA_Scoring.Model
             {
                 case Candidate.QuestionTypes.Schema:
                     // Schema Question
-                    return TestUtils.TestSchema(candidate, answer, "dbName");
+                    return TestUtils.TestSchema(candidate, answer);
                 case Candidate.QuestionTypes.DML:
                     // DML: Insert/Delete/Update Question
                     return TestUtils.TestDML(candidate, answer);

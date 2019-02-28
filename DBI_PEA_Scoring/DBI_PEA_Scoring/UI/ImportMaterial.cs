@@ -107,14 +107,17 @@ namespace DBI_PEA_Scoring.UI
 
         private void getMarkButton_Click(object sender, EventArgs e)
         {
-            if (ListSubmitions == null || ListExamItems == null || ListSubmitions.Count == 0 || ListExamItems.Count == 0)
-                MessageBox.Show("Not enough information!", "Error");
+            if (ListSubmitions == null || ListSubmitions.Count == 0)
+                MessageBox.Show("Please enter results of students", "Error");
             else
-                if (!importedDB)
-                MessageBox.Show("Enter Database!", "Error");
+                if (ListExamItems == null || ListExamItems.Count == 0)
+                MessageBox.Show("Please enter question package", "Error");
             else
                 if (!isConnectedToDB())
                 MessageBox.Show("Please test connect to Sql Server", "Error");
+            else
+                if (!importedDB)
+                MessageBox.Show("Enter Database!", "Error");
             else
             {
                 Hide();

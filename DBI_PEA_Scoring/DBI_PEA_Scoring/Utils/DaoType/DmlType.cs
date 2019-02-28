@@ -28,7 +28,7 @@ namespace DBI_PEA_Scoring.Utils.DaoType
                 // Execute query
                 General.ExecuteQuery(dbStudentName, dbTeacherName, queryEffectStudent, queryEffectTeacher);
                 // Compare nosort and return result(T/F)
-                return General.CompareTableNoSort(dbStudentName, dbTeacherName,
+                return General.CompareOneTableNoSort(dbStudentName, dbTeacherName,
                     queryToCheck, queryToCheck);
             }
         }

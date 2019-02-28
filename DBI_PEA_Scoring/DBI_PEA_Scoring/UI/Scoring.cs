@@ -91,6 +91,15 @@ namespace DBI_PEA_Scoring.UI
         private void exportButton_Click(object sender, EventArgs e)
         {
             // export data to excel
+            //try
+            //{
+            //    var hi = General.CompareMoreThanOneTableSort("Sample", "Sample2", "insert into Supplier(ContactName, CompanyName) values('Trung Duc', 'FPT')\nSelect * from Product");
+            //    Console.WriteLine(hi);
+            //}
+            //catch (Exception ex)
+            //{
+            //    Console.WriteLine(ex);
+            //}
         }
 
         private void Scoring_FormClosed(object sender, FormClosedEventArgs e)

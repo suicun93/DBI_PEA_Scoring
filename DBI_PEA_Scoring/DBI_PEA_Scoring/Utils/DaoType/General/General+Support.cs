@@ -31,6 +31,7 @@ namespace DBI_PEA_Scoring.Utils.DaoType
             }
             catch (System.Exception)
             {
+                // If DB is not exist or some exception here, we let them out.
             }
         }
 

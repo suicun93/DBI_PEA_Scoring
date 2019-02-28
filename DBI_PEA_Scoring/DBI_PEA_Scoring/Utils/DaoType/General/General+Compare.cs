@@ -18,7 +18,7 @@ namespace DBI_PEA_Scoring.Utils.DaoType
         /// "false" if wrong
         /// message error from sqlserver if error
         /// </returns>
-        public static bool CompareTableNoSort(string db1Name, string db2Name, string queryTable1,
+        public static bool CompareOneTableNoSort(string db1Name, string db2Name, string queryTable1,
             string queryTable2)
         {
             var builder = Common.Constant.SqlConnectionStringBuilder;
@@ -57,11 +57,11 @@ namespace DBI_PEA_Scoring.Utils.DaoType
         /// "false" if wrong
         /// message error from sqlserver if error
         /// </returns>
-        public static bool CompareTableSort(string db1Name, string db2Name, string queryTable1,
+        public static bool CompareOneTableSort(string db1Name, string db2Name, string queryTable1,
             string queryTable2)
         {
             var builder = Common.Constant.SqlConnectionStringBuilder;
-            bool resCheckSchema = CompareTableNoSort(db1Name, db2Name, queryTable1, queryTable2);
+            bool resCheckSchema = CompareOneTableNoSort(db1Name, db2Name, queryTable1, queryTable2);
             if (resCheckSchema)
             {
                 string sql1 = "USE " + db1Name + "; \n" +
@@ -84,14 +84,14 @@ namespace DBI_PEA_Scoring.Utils.DaoType
                         SqlDataReader reader2 = command.ExecuteReader();
                         dt2.Load(reader2);
                     }
-                    return !CompareDataTables(dt1, dt2);
+                    return !TwoDataTableDifferenceDetector(dt1, dt2);
                 }
             }
             return false;
         }
 
         /// <summary>
-        /// compare datatables same schema
+        ///     Compare datatables same schema
         /// </summary>
         /// <param name="dt1"></param>
         /// <param name="dt2"></param>
@@ -99,9 +99,78 @@ namespace DBI_PEA_Scoring.Utils.DaoType
         /// true = difference
         /// false = same
         /// </returns>
-        public static bool CompareDataTables(DataTable dt1, DataTable dt2)
+        public static bool TwoDataTableDifferenceDetector(DataTable dt1, DataTable dt2)
         {
             return dt1.AsEnumerable().Except(dt2.AsEnumerable(), DataRowComparer.Default).Any();
+        }
+
+        public static bool CompareMoreThanOneTableSort(string dbNameStudent, string dbNameTeacher, string queryToCheck)
+        {
+            // Prepare Command
+            var builder = Common.Constant.SqlConnectionStringBuilder;
+            builder.MultipleActiveResultSets = true;
+            string sqlStudent = "USE " + dbNameStudent + "; \n" +
+                         queryToCheck;
+            string sqlTeacher = "USE " + dbNameTeacher + "; \n" +
+                         queryToCheck;
+            // Connect and run query to check
+            using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
+            {
+                connection.Open();
+                SqlCommand sqlCommandStudent = new SqlCommand(sqlStudent, connection);
+                SqlCommand sqlCommandTeacher = new SqlCommand(sqlTeacher, connection);
+                SqlDataAdapter adapterStudent = new SqlDataAdapter(sqlStudent, connection);
+                SqlDataAdapter adapterTeacher = new SqlDataAdapter(sqlTeacher, connection);
+                try
+                {
+                    DataSet dataSetStudent = new DataSet();
+                    DataSet dataSetTeacher = new DataSet();
+                    adapterStudent.Fill(dataSetStudent);
+                    adapterTeacher.Fill(dataSetTeacher);
+                    // Check count of table of student and teacher is same or not.
+                    if (dataSetTeacher.Tables.Count > dataSetStudent.Tables.Count)
+                        throw new System.Exception("Less table than teacher's requirement");
+                    else if (dataSetTeacher.Tables.Count < dataSetStudent.Tables.Count)
+                        throw new System.Exception("More table than teacher's requirement");
+                    // Compare one by one
+                    for (int i = 0; i < dataSetStudent.Tables.Count; i++)
+                        if (TwoDataTableDifferenceDetector(dataSetStudent.Tables[i], dataSetTeacher.Tables[i]))
+                            throw new System.Exception("Difference detected");
+                    return true;
+                }
+                catch (System.Exception)
+                {
+                    throw;
+                }
+            }
+        }
+
+        // Solution for multiple comparable tables 
+        // cach 1 dung data set get nhieu bang
+        // Connect to SQL
+        //using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
+        //{
+        //    connection.Open();
+        //    using (SqlDataAdapter adapter = new SqlDataAdapter(sql1, connection))
+        //    {
+        //        DataSet dataSet1 = new DataSet();
+        //        adapter.Fill(dataSet1);
+        //    }
+        //}
+    }
+
+    class PairOfDataTable
+    {
+        DataTable a, b;
+        public PairOfDataTable()
+        {
+            a = new DataTable();
+            b = new DataTable();
+        }
+
+        public bool CompareResult()
+        {
+            return !General.TwoDataTableDifferenceDetector(a, b);
         }
     }
 }
