@@ -1,4 +1,5 @@
 ﻿using DBI_PEA_Scoring.Common;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -26,6 +27,7 @@ namespace DBI_PEA_Scoring.Utils.DaoType
                     using (SqlCommand commandDrop = new SqlCommand(dropQuery, connection))
                     {
                         connection.Open();
+                        commandDrop.CommandTimeout = Constant.TimeOutInSecond;
                         commandDrop.ExecuteNonQuery();
                     }
                 }
@@ -45,50 +47,66 @@ namespace DBI_PEA_Scoring.Utils.DaoType
         /// 
         public static void DuplicatedDb(string sqlServerDbFolder, string sourceDbName)
         {
-            var builder = Constant.SqlConnectionStringBuilder;
-            for (int i = 0; i < 2; i++)
+            try
             {
-                string sql = "declare @sourceDbName nvarchar(50) = '" + sourceDbName + "';\n" +
-                             "declare @tmpFolder nvarchar(50) = 'C:\\Temp\\'\n" +
-                             "declare @sqlServerDbFolder nvarchar(200) = '" + sqlServerDbFolder + "'\n" +
-                             "\n" +
-                             "declare @sourceDbFile nvarchar(50);\n" +
-                             "declare @sourceDbFileLog nvarchar(50);\n" +
-                             "declare @destinationDbName nvarchar(50) = '" + Constant.newDBName + "' + '_' + '"
-                             + ((i % 2 == 0) ? "Student" : "Teacher") + "'\n" +
-                             "declare @backupPath nvarchar(400) = @tmpFolder + @destinationDbName + '.bak'\n" +
-                             "declare @destMdf nvarchar(100) = @sqlServerDbFolder + @destinationDbName + '.mdf'\n" +
-                             "declare @destLdf nvarchar(100) = @sqlServerDbFolder + @destinationDbName + '_log' + '.ldf'\n" +
-                             "\n" +
-                             "SET @sourceDbFile = (SELECT top 1 files.name \n" +
-                             "                    FROM sys.databases dbs \n" +
-                             "                    INNER JOIN sys.master_files files \n" +
-                             "                        ON dbs.database_id = files.database_id \n" +
-                             "                    WHERE dbs.name = @sourceDbName\n" +
-                             "                        AND files.[type] = 0)\n" +
-                             "\n" +
-                             "SET @sourceDbFileLog = (SELECT top 1 files.name \n" +
-                             "                    FROM sys.databases dbs \n" +
-                             "                    INNER JOIN sys.master_files files \n" +
-                             "                        ON dbs.database_id = files.database_id \n" +
-                             "                    WHERE dbs.name = @sourceDbName\n" +
-                             "                        AND files.[type] = 1)\n" +
-                             "\n" +
-                             "BACKUP DATABASE @sourceDbName TO DISK = @backupPath\n" +
-                             "\n" +
-                             "RESTORE DATABASE @destinationDbName FROM DISK = @backupPath\n" +
-                             "WITH REPLACE,\n" +
-                             "   MOVE @sourceDbFile     TO @destMdf,\n" +
-                             "   MOVE @sourceDbFileLog  TO @destLdf";
-                // Connect to SQL
-                using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
+                var builder = Constant.SqlConnectionStringBuilder;
+                for (int i = 0; i < 2; i++)
                 {
-                    connection.Open();
-                    using (SqlCommand command = new SqlCommand(sql, connection))
+                    string sql = "declare @sourceDbName nvarchar(50) = '" + sourceDbName + "';\n" +
+                                 "declare @tmpFolder nvarchar(50) = '%temp%'\n" +
+                                 "declare @sqlServerDbFolder nvarchar(200) = '" + sqlServerDbFolder + "'\n" +
+                                 "\n" +
+                                 "declare @sourceDbFile nvarchar(50);\n" +
+                                 "declare @sourceDbFileLog nvarchar(50);\n" +
+                                 "declare @destinationDbName nvarchar(50) = '" + Constant.newDBName + "' + '_' + '"
+                                 + ((i % 2 == 0) ? "Student" : "Teacher") + "'\n" +
+                                 "declare @backupPath nvarchar(400) = @tmpFolder + @destinationDbName + '.bak'\n" +
+                                 "declare @destMdf nvarchar(100) = @sqlServerDbFolder + @destinationDbName + '.mdf'\n" +
+                                 "declare @destLdf nvarchar(100) = @sqlServerDbFolder + @destinationDbName + '_log' + '.ldf'\n" +
+                                 "\n" +
+                                 "SET @sourceDbFile = (SELECT top 1 files.name \n" +
+                                 "                    FROM sys.databases dbs \n" +
+                                 "                    INNER JOIN sys.master_files files \n" +
+                                 "                        ON dbs.database_id = files.database_id \n" +
+                                 "                    WHERE dbs.name = @sourceDbName\n" +
+                                 "                        AND files.[type] = 0)\n" +
+                                 "\n" +
+                                 "SET @sourceDbFileLog = (SELECT top 1 files.name \n" +
+                                 "                    FROM sys.databases dbs \n" +
+                                 "                    INNER JOIN sys.master_files files \n" +
+                                 "                        ON dbs.database_id = files.database_id \n" +
+                                 "                    WHERE dbs.name = @sourceDbName\n" +
+                                 "                        AND files.[type] = 1)\n" +
+                                 "\n" +
+                                 "BACKUP DATABASE @sourceDbName TO DISK = @backupPath\n" +
+                                 "\n" +
+                                 "RESTORE DATABASE @destinationDbName FROM DISK = @backupPath\n" +
+                                 "WITH REPLACE,\n" +
+                                 "   MOVE @sourceDbFile     TO @destMdf,\n" +
+                                 "   MOVE @sourceDbFileLog  TO @destLdf";
+                    // Connect to SQL
+                    using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
                     {
-                        command.ExecuteNonQuery();
+                        connection.Open();
+                        using (SqlCommand command = new SqlCommand(sql, connection))
+                        {
+                            command.CommandTimeout = Constant.TimeOutInSecond;
+                            command.ExecuteNonQuery();
+                        }
                     }
                 }
+            }
+            catch (System.Exception e)
+            {
+                System.Console.WriteLine(e.Message);
+            }
+        }
+
+        internal static void ClearDatabase()
+        {
+            foreach (Database database in Constant.listDB)
+            {
+                DropDatabase(database.SourceDbName);
             }
         }
 
@@ -107,7 +125,6 @@ namespace DBI_PEA_Scoring.Utils.DaoType
             {
                 try
                 {
-
                     connection.Open();
                     return true;
                 }

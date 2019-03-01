@@ -178,16 +178,17 @@ namespace DBI_PEA_Scoring.UI
                 {
                     // Run file to generate database
                     RunFile(scriptFile);
-                    // Get DB names and paths into constant
-                    General.SavePathDB();
-                    // Success -> change UI
-                    count++;
-                    statusImportDatabaseProgressBar.Value = count;
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
-                    MessageBox.Show(e.Message + " at file " + Path.GetFileName(scriptFile), "Error");
+                    //MessageBox.Show(e.Message + " at file " + Path.GetFileName(scriptFile), "Error");
                 }
+                // Get DB names and paths into constant
+                General.SavePathDB();
+                // Success -> change UI
+                count++;
+                statusImportDatabaseProgressBar.Value = count;
+
             }
             // If no DBs were imported -> throw exception
             if (Constant.listDB == null)

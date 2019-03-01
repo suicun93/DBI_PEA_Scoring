@@ -125,11 +125,12 @@ namespace DBI_PEA_Scoring.Utils.DaoType
                 // Prepare DataSet
                 DataSet dataSetStudent = new DataSet();
                 DataSet dataSetTeacher = new DataSet();
-                
+
                 // Fill Data adapter to dataset
                 adapterStudent.Fill(dataSetStudent);
                 adapterTeacher.Fill(dataSetTeacher);
-
+                connection.Close();
+                
                 // Check count of table of student and teacher is same or not.
                 if (dataSetTeacher.Tables.Count > dataSetStudent.Tables.Count)
                     throw new Exception("Less table than teacher's requirement");
@@ -138,7 +139,9 @@ namespace DBI_PEA_Scoring.Utils.DaoType
                 // If Number of table of student and teacher is same, then Compare one by one
                 for (int i = 0; i < dataSetStudent.Tables.Count; i++)
                     if (TwoDataTableDifferenceDetector(dataSetStudent.Tables[i], dataSetTeacher.Tables[i]))
+                    {
                         throw new Exception("Difference detected");
+                    }
                 return true;
             }
         }
