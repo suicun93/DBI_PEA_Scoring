@@ -77,16 +77,16 @@ namespace DBI_PEA_Scoring.UI
         // Cham diem
         private void ShowPoint(object sender, EventArgs e)
         {
-            if (!scored)
-            {
+            //if (!scored)
+            //{
                 // Populate the data source.
                 for (int row = 0; row < ListResults.Count; row++)
                 {
                     ListResults.ElementAt(row).GetPoint(scoreGridView, row);
                 }
                 scored = true;
-            }
-            else MessageBox.Show("Score has already got.");
+            //}
+            //else MessageBox.Show("Score has already got.");
         }
 
         // sau khi add xong thuc hien cham diem, cham den dau in diem den day!
