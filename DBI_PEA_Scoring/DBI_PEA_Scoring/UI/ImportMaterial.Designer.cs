@@ -36,8 +36,8 @@
             this.browseQuestionButton = new System.Windows.Forms.Button();
             this.browseAnswerButton = new System.Windows.Forms.Button();
             this.label4 = new System.Windows.Forms.Label();
-            this.statusImportProgressBar = new System.Windows.Forms.ProgressBar();
-            this.statusImportLabel = new System.Windows.Forms.Label();
+            this.statusImportAnswerProgressBar = new System.Windows.Forms.ProgressBar();
+            this.statusImportAnswerLabel = new System.Windows.Forms.Label();
             this.statusConnectCheckBox = new System.Windows.Forms.CheckBox();
             this.checkConnectionButton = new System.Windows.Forms.Button();
             this.passwordTextBox = new System.Windows.Forms.TextBox();
@@ -54,6 +54,7 @@
             this.button3 = new System.Windows.Forms.Button();
             this.label10 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
+            this.statusImportDatabaseProgressBar = new System.Windows.Forms.ProgressBar();
             this.SuspendLayout();
             // 
             // label1
@@ -135,21 +136,21 @@
             this.label4.TabIndex = 7;
             this.label4.Text = "Import Material";
             // 
-            // statusImportProgressBar
+            // statusImportAnswerProgressBar
             // 
-            this.statusImportProgressBar.Location = new System.Drawing.Point(33, 195);
-            this.statusImportProgressBar.Name = "statusImportProgressBar";
-            this.statusImportProgressBar.Size = new System.Drawing.Size(347, 23);
-            this.statusImportProgressBar.TabIndex = 8;
+            this.statusImportAnswerProgressBar.Location = new System.Drawing.Point(33, 193);
+            this.statusImportAnswerProgressBar.Name = "statusImportAnswerProgressBar";
+            this.statusImportAnswerProgressBar.Size = new System.Drawing.Size(347, 23);
+            this.statusImportAnswerProgressBar.TabIndex = 8;
             // 
-            // statusImportLabel
+            // statusImportAnswerLabel
             // 
-            this.statusImportLabel.AutoSize = true;
-            this.statusImportLabel.Location = new System.Drawing.Point(168, 175);
-            this.statusImportLabel.Name = "statusImportLabel";
-            this.statusImportLabel.Size = new System.Drawing.Size(76, 13);
-            this.statusImportLabel.TabIndex = 10;
-            this.statusImportLabel.Text = "Importing (0/0)";
+            this.statusImportAnswerLabel.AutoSize = true;
+            this.statusImportAnswerLabel.Location = new System.Drawing.Point(168, 173);
+            this.statusImportAnswerLabel.Name = "statusImportAnswerLabel";
+            this.statusImportAnswerLabel.Size = new System.Drawing.Size(76, 13);
+            this.statusImportAnswerLabel.TabIndex = 10;
+            this.statusImportAnswerLabel.Text = "Importing (0/0)";
             // 
             // statusConnectCheckBox
             // 
@@ -157,7 +158,7 @@
             this.statusConnectCheckBox.AutoSize = true;
             this.statusConnectCheckBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.statusConnectCheckBox.ForeColor = System.Drawing.Color.DarkRed;
-            this.statusConnectCheckBox.Location = new System.Drawing.Point(224, 393);
+            this.statusConnectCheckBox.Location = new System.Drawing.Point(224, 391);
             this.statusConnectCheckBox.Name = "statusConnectCheckBox";
             this.statusConnectCheckBox.Size = new System.Drawing.Size(110, 20);
             this.statusConnectCheckBox.TabIndex = 41;
@@ -167,7 +168,7 @@
             // 
             // checkConnectionButton
             // 
-            this.checkConnectionButton.Location = new System.Drawing.Point(87, 391);
+            this.checkConnectionButton.Location = new System.Drawing.Point(87, 389);
             this.checkConnectionButton.Name = "checkConnectionButton";
             this.checkConnectionButton.Size = new System.Drawing.Size(117, 23);
             this.checkConnectionButton.TabIndex = 40;
@@ -284,7 +285,7 @@
             // button3
             // 
             this.button3.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button3.Location = new System.Drawing.Point(159, 483);
+            this.button3.Location = new System.Drawing.Point(159, 535);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(95, 31);
             this.button3.TabIndex = 26;
@@ -316,11 +317,19 @@
             this.label11.TabIndex = 43;
             this.label11.Text = "label11";
             // 
+            // statusImportDatabaseProgressBar
+            // 
+            this.statusImportDatabaseProgressBar.Location = new System.Drawing.Point(33, 486);
+            this.statusImportDatabaseProgressBar.Name = "statusImportDatabaseProgressBar";
+            this.statusImportDatabaseProgressBar.Size = new System.Drawing.Size(347, 35);
+            this.statusImportDatabaseProgressBar.TabIndex = 44;
+            // 
             // ImportMaterial
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(413, 536);
+            this.ClientSize = new System.Drawing.Size(413, 585);
+            this.Controls.Add(this.statusImportDatabaseProgressBar);
             this.Controls.Add(this.label11);
             this.Controls.Add(this.label10);
             this.Controls.Add(this.statusConnectCheckBox);
@@ -337,8 +346,8 @@
             this.Controls.Add(this.dbPathTextBox);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.button3);
-            this.Controls.Add(this.statusImportLabel);
-            this.Controls.Add(this.statusImportProgressBar);
+            this.Controls.Add(this.statusImportAnswerLabel);
+            this.Controls.Add(this.statusImportAnswerProgressBar);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.browseAnswerButton);
             this.Controls.Add(this.browseQuestionButton);
@@ -365,8 +374,8 @@
         private System.Windows.Forms.Button browseQuestionButton;
         private System.Windows.Forms.Button browseAnswerButton;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.ProgressBar statusImportProgressBar;
-        private System.Windows.Forms.Label statusImportLabel;
+        private System.Windows.Forms.ProgressBar statusImportAnswerProgressBar;
+        private System.Windows.Forms.Label statusImportAnswerLabel;
         private System.Windows.Forms.CheckBox statusConnectCheckBox;
         private System.Windows.Forms.Button checkConnectionButton;
         private System.Windows.Forms.TextBox passwordTextBox;
@@ -383,6 +392,7 @@
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.ProgressBar statusImportDatabaseProgressBar;
     }
 }
 

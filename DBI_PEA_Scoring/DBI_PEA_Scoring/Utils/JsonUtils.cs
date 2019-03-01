@@ -30,7 +30,7 @@ namespace DBI_PEA_Scoring.Utils
         public static object LoadQuestion(string path)
         {
             string jsonQuestion = File.ReadAllText(path);
-            return JsonConvert.DeserializeObject<List<ExamItem>>(jsonQuestion);
+            return JsonConvert.DeserializeObject<List<TestItem>>(jsonQuestion);
         }
 
         public static List<Question> DeserializeJson(string localPath)

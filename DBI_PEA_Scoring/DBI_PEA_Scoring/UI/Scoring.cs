@@ -13,7 +13,7 @@ namespace DBI_PEA_Scoring.UI
 
         private List<Result> ListResults { get; set; }
         private bool scored = false;
-        public Scoring(List<ExamItem> ListExamItems, List<Submition> ListSubmitions)
+        public Scoring(List<TestItem> ListExamItems, List<Submition> ListSubmitions)
         {
             InitializeComponent();
             ListResults = new List<Result>();
@@ -33,7 +33,7 @@ namespace DBI_PEA_Scoring.UI
                     result.ListAnswers.Add(answer);
                 }
                 // Add Candidates
-                foreach (ExamItem de in ListExamItems)
+                foreach (TestItem de in ListExamItems)
                 {
                     if (de.PaperNo.Equals(result.PaperNo))
                     {

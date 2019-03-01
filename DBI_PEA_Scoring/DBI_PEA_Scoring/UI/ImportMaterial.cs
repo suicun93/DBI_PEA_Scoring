@@ -16,7 +16,7 @@ namespace DBI_PEA_Scoring.UI
         public string QuestionPath { get; set; }
         public string DBPath { get; set; }
         public string AnswerPath { get; set; }
-        private List<ExamItem> ListExamItems = null;
+        private List<TestItem> ListExamItems = null;
         private List<Submition> ListSubmitions = null;
         private bool importedDB = false;
         public ImportMaterial()
@@ -32,7 +32,7 @@ namespace DBI_PEA_Scoring.UI
                 questionTextBox.Text = QuestionPath;
                 // Get QuestionPackage from file
                 ListExamItems = null;
-                ListExamItems = JsonUtils.LoadQuestion(QuestionPath) as List<ExamItem>;
+                ListExamItems = JsonUtils.LoadQuestion(QuestionPath) as List<TestItem>;
                 if (ListExamItems == null || ListExamItems.Count == 0)
                     throw new Exception("No question was found!");
                 else
@@ -63,9 +63,9 @@ namespace DBI_PEA_Scoring.UI
             {
                 answerTextBox.Text = "";
                 // Setup for status bar
-                statusImportProgressBar.Maximum = 1;
-                statusImportProgressBar.Value = 0;
-                statusImportLabel.Text = "Imported " + "0/0";
+                statusImportAnswerProgressBar.Maximum = 1;
+                statusImportAnswerProgressBar.Value = 0;
+                statusImportAnswerLabel.Text = "Imported " + "0/0";
                 MessageBox.Show(ex.Message, "Error");
             }
         }
@@ -76,11 +76,11 @@ namespace DBI_PEA_Scoring.UI
             ListSubmitions = new List<Submition>();
             // Setup for status bar
             int submistionCount = files.Count();
-            statusImportProgressBar.Maximum = submistionCount;
-            statusImportProgressBar.Step = 1;
-            statusImportProgressBar.Value = 0;
+            statusImportAnswerProgressBar.Maximum = submistionCount;
+            statusImportAnswerProgressBar.Step = 1;
+            statusImportAnswerProgressBar.Value = 0;
             int count = 0;
-            statusImportLabel.Text = "Imported " + count + "/" + submistionCount;
+            statusImportAnswerLabel.Text = "Imported " + count + "/" + submistionCount;
             // Setup for decrypt answer of student
             SecureJsonSerializer<Submition> secureJsonSerializer = new SecureJsonSerializer<Submition>();
             foreach (string file in files)
@@ -91,8 +91,8 @@ namespace DBI_PEA_Scoring.UI
                     ListSubmitions.Add(submition);
                     // Change value status bar
                     count++;
-                    statusImportLabel.Text = "Imported " + count + "/" + submistionCount;
-                    statusImportProgressBar.Value = count;
+                    statusImportAnswerLabel.Text = "Imported " + count + "/" + submistionCount;
+                    statusImportAnswerProgressBar.Value = count;
                 }
                 catch (Exception e)
                 {
@@ -155,40 +155,51 @@ namespace DBI_PEA_Scoring.UI
             catch (Exception ex)
             {
                 dbPathTextBox.Text = "";
+                statusImportDatabaseProgressBar.Maximum = 0;
+                statusImportDatabaseProgressBar.Step = 1;
+                statusImportDatabaseProgressBar.Value = 0;
                 MessageBox.Show("Imported DB Failed\n" + ex.Message, "Error");
             }
         }
 
         private void LoadDBScript(string[] dbScriptFiles)
         {
-            int DBCreatedCount = 0;
+            // reset listDB
+            Constant.listDB = null;
+            int dbCount = dbScriptFiles.Count();
+            statusImportDatabaseProgressBar.Maximum = dbCount;
+            statusImportDatabaseProgressBar.Step = 1;
+            statusImportDatabaseProgressBar.Value = 0;
+            int count = 0;
+            // Run and save information to local
             foreach (string scriptFile in dbScriptFiles)
             {
-                DBCreatedCount++;
-                // Run file to generate database
                 try
                 {
+                    // Run file to generate database
                     RunFile(scriptFile);
+                    // Get DB names and paths into constant
+                    General.SavePathDB();
+                    // Success -> change UI
+                    count++;
+                    statusImportDatabaseProgressBar.Value = count;
                 }
                 catch (Exception e)
                 {
                     MessageBox.Show(e.Message + " at file " + Path.GetFileName(scriptFile), "Error");
-                    throw e;
                 }
             }
-            // Get DB names and paths into constant
-            try
-            {
-                // run sql 
-                General.GetPathDB(DBCreatedCount);
-                importedDB = true;
-                browseDatabasesButton.Enabled = false;
-                MessageBox.Show("Imported " + Constant.listDB.Length + " DB succesfully");
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            // If no DBs were imported -> throw exception
+            if (Constant.listDB == null)
+                throw new Exception("No DB scripts run");
+            // If Db was imported
+            importedDB = true;
+            browseDatabasesButton.Enabled = false;
+            // Report to user
+            string report = "Imported \n";
+            foreach (Database dbName in Constant.listDB)
+                report += "\t" + dbName.SourceDbName + "\n";
+            MessageBox.Show(report, "Success");
         }
 
         private void RunFile(string url)

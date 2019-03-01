@@ -1,4 +1,5 @@
 ﻿using DBI_PEA_Scoring.Common;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 
@@ -106,6 +107,7 @@ namespace DBI_PEA_Scoring.Utils.DaoType
             {
                 try
                 {
+
                     connection.Open();
                     return true;
                 }
@@ -143,6 +145,43 @@ namespace DBI_PEA_Scoring.Utils.DaoType
                 Constant.listDB[count] = new Database(name, System.IO.Path.GetDirectoryName(path));
                 count++;
             }
+        }
+
+        public static void SavePathDB()
+        {
+            var dataTable = new DataTable();
+            var query = "use master \nSELECT name, physical_name as path " +
+                        "FROM sys.master_files " +
+                        "where name in (SELECT TOP 1 Name FROM sys.databases " +
+                        "ORDER BY create_date desc)";
+            if (Constant.listDB == null)
+                Constant.listDB = new Database[0];
+
+            // Get the newest database created
+            var builder = Constant.SqlConnectionStringBuilder;
+            using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
+            {
+                connection.Open();
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    SqlDataReader reader = command.ExecuteReader();
+                    dataTable.Load(reader);
+                }
+            }
+            string name, path;
+            name = dataTable.Rows[0]["name"].ToString();
+            path = dataTable.Rows[0]["path"].ToString();
+
+            // List database to List
+            List<Database> temp = new List<Database>();
+            foreach (Database database in Constant.listDB)
+            {
+                temp.Add(database);
+            }
+            temp.Add(new Database(path, name));
+
+            // Convert List to array
+            Constant.listDB = temp.ToArray();
         }
     }
 }

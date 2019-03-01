@@ -4,17 +4,10 @@ using System.Collections.Generic;
 namespace DBI_PEA_Scoring.Model
 {
     [Serializable]
-    public class ExamItem
+    public class TestItem
     {
-        public ExamItem(string paperNo, List<Candidate> examQuestionsList)
-        {
-            PaperNo = paperNo;
-            ExamQuestionsList = examQuestionsList;
-        }
-        public ExamItem()
-        {
-        }
         public string PaperNo { get; set; }
         public List<Candidate> ExamQuestionsList { get; set; }
+        public string ExamCode { get; set; }
     }
 }
