@@ -94,20 +94,28 @@ namespace DBI_PEA_Scoring.UI
         // sau khi add xong thuc hien cham diem, cham den dau in diem den day!
         private void exportButton_Click(object sender, EventArgs e)
         {
-            saveFileDialog1.Filter = "Microsoft Excel 97-2003 Add-In (*.doc)|*.doc";
-            saveFileDialog1.FilterIndex = 2;
-            saveFileDialog1.RestoreDirectory = true;
-            if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+            try
             {
-                string saveFolder = Path.GetDirectoryName(saveFileDialog1.FileName);
-                string savePath = Path.Combine(saveFolder, saveFileDialog1.FileName);
-                double maxPoint = 0;
-                foreach (Candidate candidate in ListResults.ElementAt(0).ListCandidates)
+                saveFileDialog1.Filter = "Microsoft Excel 97-2003 Add-In (*.doc)|*.doc";
+                saveFileDialog1.FilterIndex = 2;
+                saveFileDialog1.RestoreDirectory = true;
+                if (saveFileDialog1.ShowDialog() == DialogResult.OK)
                 {
-                    maxPoint += candidate.Point;
+                    string saveFolder = Path.GetDirectoryName(saveFileDialog1.FileName);
+                    string savePath = Path.Combine(saveFolder, saveFileDialog1.FileName);
+                    double maxPoint = 0;
+                    foreach (Candidate candidate in ListResults.ElementAt(0).ListCandidates)
+                    {
+                        maxPoint += candidate.Point;
+                    }
+                    ExcelUtils.ExportResultsExcel(savePath, ListResults, maxPoint);
                 }
-                ExcelUtils.ExportResultsExcel(savePath, ListResults, maxPoint);
             }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message,"Error");
+            }
+           
         }
 
         private void Scoring_FormClosed(object sender, FormClosedEventArgs e)

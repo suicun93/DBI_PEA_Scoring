@@ -11,68 +11,77 @@ namespace DBI_PEA_Scoring.Utils
         public static void ExportResultsExcel(string path, List<Result> results, double maxPoint)
         {
             //Open Excel
-            Application excelApp = new Application();
-            object missing = Missing.Value;
             try
             {
-                excelApp.Visible = false;
-
-                //Open Workbook
-                Workbook book = excelApp.Workbooks.Add(missing);
-
-                //Access Sheet
-                //Worksheet sheetResult = book.Worksheets.Add(missing, missing, missing, missing);
-                Worksheet sheetResult = book.Worksheets[1];
-                sheetResult.Name = "Result";
-                //Insert Title
-                int lastRow = sheetResult.Cells.SpecialCells(XlCellType.xlCellTypeLastCell).Row;
-                sheetResult.Cells[lastRow, 1] = "No";
-                sheetResult.Cells[lastRow, 2] = "Paper No";
-                sheetResult.Cells[lastRow, 3] = "Login";
-                sheetResult.Cells[lastRow, 4] = "Test Name  ";
-                sheetResult.Cells[lastRow, 5] = "Mark";
-                sheetResult.Cells[lastRow, 6] = "Paper Mark";
-                sheetResult.Cells[lastRow, 7] = "Mark(10)";
-                sheetResult.Cells[lastRow, 8] = "Note";
-
-                //Insert Data
-                foreach (var result in results)
+                Application excelApp = new Application();
+                object missing = Missing.Value;
+                try
                 {
-                    lastRow++;
-                    sheetResult.Cells[lastRow, 1] = (lastRow - 1);
-                    sheetResult.Cells[lastRow, 2] = result.PaperNo;
-                    sheetResult.Cells[lastRow, 3] = result.StudentID;
-                    sheetResult.Cells[lastRow, 4] = result.ExamCode;
-                    double totalPoints = result.SumOfPoint();
-                    sheetResult.Cells[lastRow, 5] = totalPoints;
-                    sheetResult.Cells[lastRow, 6] = maxPoint;
-                    sheetResult.Cells[lastRow, 7] = (float)(totalPoints / maxPoint) * 10.0;
-                    string note = "";
-                    for(int i = 0; i < result.Points.Length; i++)
-                    {
-                        if (!double.IsNaN(result.Points[i]))
-                        {
-                            note = string.Concat(note, "[QN=", (i + 1), ", Mark=", result.Points[i], "]");
-                            if (!string.IsNullOrEmpty(result.Logs[i]))
-                            {
-                                note = string.Concat(note, "=>", result.Logs[i], "");
-                            }
-                        }
-                        note = string.Concat(note, ";");
-                    }
-                    sheetResult.Cells[lastRow, 8] = note.Substring(0, note.Length - 1);
+                    excelApp.Visible = false;
 
-                    //Fit columns
-                    sheetResult.Columns.AutoFit();
+                    //Open Workbook
+                    Workbook book = excelApp.Workbooks.Add(missing);
+
+                    //Access Sheet
+                    //Worksheet sheetResult = book.Worksheets.Add(missing, missing, missing, missing);
+                    Worksheet sheetResult = book.Worksheets[1];
+                    sheetResult.Name = "Result";
+                    //Insert Title
+                    int lastRow = sheetResult.Cells.SpecialCells(XlCellType.xlCellTypeLastCell).Row;
+                    sheetResult.Cells[lastRow, 1] = "No";
+                    sheetResult.Cells[lastRow, 2] = "Paper No";
+                    sheetResult.Cells[lastRow, 3] = "Login";
+                    sheetResult.Cells[lastRow, 4] = "Test Name  ";
+                    sheetResult.Cells[lastRow, 5] = "Mark";
+                    sheetResult.Cells[lastRow, 6] = "Paper Mark";
+                    sheetResult.Cells[lastRow, 7] = "Mark(10)";
+                    sheetResult.Cells[lastRow, 8] = "Note";
+
+                    //Insert Data
+                    foreach (var result in results)
+                    {
+                        lastRow++;
+                        sheetResult.Cells[lastRow, 1] = (lastRow - 1);
+                        sheetResult.Cells[lastRow, 2] = result.PaperNo;
+                        sheetResult.Cells[lastRow, 3] = result.StudentID;
+                        sheetResult.Cells[lastRow, 4] = result.ExamCode;
+                        double totalPoints = result.SumOfPoint();
+                        sheetResult.Cells[lastRow, 5] = totalPoints;
+                        sheetResult.Cells[lastRow, 6] = maxPoint;
+                        sheetResult.Cells[lastRow, 7] = (float)(totalPoints / maxPoint) * 10.0;
+                        string note = "";
+                        for (int i = 0; i < result.Points.Length; i++)
+                        {
+                            if (!double.IsNaN(result.Points[i]))
+                            {
+                                note = string.Concat(note, "[QN=", (i + 1), ", Mark=", result.Points[i], "]");
+                                if (!string.IsNullOrEmpty(result.Logs[i]))
+                                {
+                                    note = string.Concat(note, "=>", result.Logs[i], "");
+                                }
+                            }
+                            note = string.Concat(note, ";");
+                        }
+                        sheetResult.Cells[lastRow, 8] = note.Substring(0, note.Length - 1);
+
+                        //Fit columns
+                        sheetResult.Columns.AutoFit();
+                    }
+                    //Saving file to location
+                    sheetResult.SaveAs(path, XlFileFormat.xlAddIn8);
+                    excelApp.Visible = true;
                 }
-                //Saving file to location
-                sheetResult.SaveAs(path, XlFileFormat.xlAddIn8);
-                excelApp.Visible = true;
+                // Should get by type of exception but chua co thoi gian research and debug. -> 2.0
+                catch (Exception e)
+                {
+                    throw new Exception("Export failed.\n " + e.Message);
+                }
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                throw e;
+                throw new Exception("You must install Office to export.\n" + ex.Message);
             }
+
         }
     }
 }
