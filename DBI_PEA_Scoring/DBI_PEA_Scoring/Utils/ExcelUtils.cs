@@ -15,7 +15,7 @@ namespace DBI_PEA_Scoring.Utils
             object missing = Missing.Value;
             try
             {
-                excelApp.Visible = true;
+                excelApp.Visible = false;
 
                 //Open Workbook
                 Workbook book = excelApp.Workbooks.Add(missing);
@@ -64,18 +64,10 @@ namespace DBI_PEA_Scoring.Utils
 
                     //Fit columns
                     sheetResult.Columns.AutoFit();
-                    //sheetResult.Columns[1].ColumnWidth = excelApp.InchesToPoints(8.43);
-                    //sheetResult.Columns[2].ColumnWidtth = excelApp.InchesToPoints(8.43);
-                    //sheetResult.Columns[3].ColumnWidth = excelApp.InchesToPoints(27.86);
-                    //sheetResult.Columns[4].ColumnWidth = excelApp.InchesToPoints(41.86);
-                    //sheetResult.Columns[5].ColumnWidth = excelApp.InchesToPoints(8.43);
-                    //sheetResult.Columns[6].ColumnWidth = excelApp.InchesToPoints(12.86);
-                    //sheetResult.Columns[7].ColumnWidth = excelApp.InchesToPoints(8.43);
-                    //sheetResult.Columns[8].ColumnWidth = excelApp.InchesToPoints(8.43);
-
-                    //Saving file to location
-                    sheetResult.SaveAs(path, XlFileFormat.xlAddIn8);
                 }
+                //Saving file to location
+                sheetResult.SaveAs(path, XlFileFormat.xlAddIn8);
+                excelApp.Visible = true;
             }
             catch (Exception e)
             {
