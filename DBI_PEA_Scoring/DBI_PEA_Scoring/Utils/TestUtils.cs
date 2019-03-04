@@ -57,7 +57,7 @@ namespace DBI_PEA_Scoring.Utils
         /// </exception>
         internal static bool TestSelect(Candidate candidate, string studentId, string answer, int questionOrder)
         {
-            string dbName = studentId + "_" + questionOrder + "_";
+            string dbName = studentId + "_" + questionOrder;
             string dbTeacherName = dbName + "_Teacher";
             string dbStudentName = dbName + "_Student";
             //Duplicate 2 new DB for student and teacher
@@ -94,7 +94,7 @@ namespace DBI_PEA_Scoring.Utils
         /// </exception>
         internal static bool TestInsertDeleteUpdate(Candidate candidate, string studentId, string answer, int questionOrder)
         {
-            string dbName = studentId + "_" + questionOrder + "_";
+            string dbName = studentId + "_" + questionOrder;
             string dbTeacherName = dbName + "_Teacher";
             string dbStudentName = dbName + "_Student";
 
@@ -133,7 +133,7 @@ namespace DBI_PEA_Scoring.Utils
         /// </exception>
         internal static bool TestProcedure(Candidate candidate, string studentId, string answer, int questionOrder)
         {
-            string dbName = studentId + "_" + questionOrder + "_";
+            string dbName = studentId + "_" + questionOrder;
             string dbTeacherName = dbName + "_Teacher";
             string dbStudentName = dbName + "_Student";
             //Duplicate 2 new DB for student and teacher
@@ -169,7 +169,7 @@ namespace DBI_PEA_Scoring.Utils
         /// </exception>
         internal static bool TestTrigger(Candidate candidate, string studentId, string answer, int questionOrder)
         {
-            string dbName = studentId + "_" + questionOrder + "_";
+            string dbName = studentId + "_" + questionOrder;
             string dbTeacherName = dbName + "_Teacher";
             string dbStudentName = dbName + "_Student";
             //Duplicate 2 new DB for student and teacher
