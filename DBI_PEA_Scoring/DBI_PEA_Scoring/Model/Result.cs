@@ -48,7 +48,7 @@ namespace DBI_PEA_Scoring.Model
         /// <exception cref="SQLException">
         ///     if exception was found, throw it for GetPoint function to handle
         /// </exception>
-        private bool Point(Candidate candidate, string answer)
+        private bool Point(Candidate candidate, string answer, int questionOrder)
         {
             // await TaskEx.Delay(100);
             if (string.IsNullOrEmpty(answer))
@@ -58,19 +58,19 @@ namespace DBI_PEA_Scoring.Model
             {
                 case Candidate.QuestionTypes.Schema:
                     // Schema Question
-                    return TestUtils.TestSchema(candidate, answer);
+                    return TestUtils.TestSchema(candidate, StudentID, answer, questionOrder);
                 case Candidate.QuestionTypes.Select:
                     //Select Question
-                    return TestUtils.TestSelect(candidate, answer);
+                    return TestUtils.TestSelect(candidate, StudentID, answer, questionOrder);
                 case Candidate.QuestionTypes.DML:
                     // DML: Insert/Delete/Update Question
-                    return TestUtils.TestInsertDeleteUpdate(candidate, answer);
+                    return TestUtils.TestInsertDeleteUpdate(candidate, StudentID, answer, questionOrder);
                 case Candidate.QuestionTypes.Procedure:
                     // Procedure Question
-                    return TestUtils.TestProcedure(candidate, answer);
+                    return TestUtils.TestProcedure(candidate, StudentID, answer, questionOrder);
                 case Candidate.QuestionTypes.Trigger:
                     // Trigger Question
-                    return TestUtils.TestTrigger(candidate, answer);
+                    return TestUtils.TestTrigger(candidate, StudentID, answer, questionOrder);
                 default:
                     // Not supported yet
                     throw new System.Exception("This question type has not been supported yet.");
@@ -99,7 +99,7 @@ namespace DBI_PEA_Scoring.Model
                 {
                     //bool correct = await Cham(ListCandidates.ElementAt(i), ListAnswers.ElementAt(i));
                     if (numberOfQuestion > questionOrder)
-                        if (Point(ListCandidates.ElementAt(questionOrder), ListAnswers.ElementAt(questionOrder)))
+                        if (Point(ListCandidates.ElementAt(questionOrder), ListAnswers.ElementAt(questionOrder), questionOrder))
                         {
                             // Exactly -> Log true and return 0 point
                             Points[questionOrder] = ListCandidates.ElementAt(questionOrder).Point;

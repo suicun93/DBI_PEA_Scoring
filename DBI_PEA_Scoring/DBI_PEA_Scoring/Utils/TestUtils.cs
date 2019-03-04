@@ -17,10 +17,11 @@ namespace DBI_PEA_Scoring.Utils
         /// <exception cref="SqlException">
         ///     When something's wrong, throw exception to log error to KhaoThi
         /// </exception>
-        internal static bool TestSchema(Candidate candidate, string answer)
+        internal static bool TestSchema(Candidate candidate, string studentId, string answer, int questionOrder)
         {
-            string dbTeacherName = "dbTeacherName";
-            string dbStudentName = "dbStudentName";
+            string dbName = studentId + "_" + questionOrder + "_";
+            string dbTeacherName = dbName + "dbTeacherName";
+            string dbStudentName = dbName + "dbStudentName";
             string queryTeacher = candidate.Solution.Replace(candidate.DBName, dbTeacherName);
             string queryStudent = answer.Replace(candidate.DBName, dbStudentName);
             try
@@ -54,13 +55,14 @@ namespace DBI_PEA_Scoring.Utils
         /// <exception cref="SqlException">
         ///     When something's wrong, throw exception to log error to KhaoThi
         /// </exception>
-        internal static bool TestSelect(Candidate candidate, string answer)
+        internal static bool TestSelect(Candidate candidate, string studentId, string answer, int questionOrder)
         {
-            string dbTeacherName = Common.Constant.newDBName + "_Teacher";
-            string dbStudentName = Common.Constant.newDBName + "_Student";
+            string dbName = studentId + "_" + questionOrder + "_";
+            string dbTeacherName = dbName + "_Teacher";
+            string dbStudentName = dbName + "_Student";
             //Duplicate 2 new DB for student and teacher
             General.DuplicatedDb(Database.SqlServerDbFolder,
-                Database.SourceDbName);
+                Database.SourceDbName, dbName);
             try
             {
                 // In case question type is Query, Just 1 requirement type, default is result set. 
@@ -90,13 +92,15 @@ namespace DBI_PEA_Scoring.Utils
         /// <exception cref="SqlException">
         ///     When something's wrong, throw exception to log to Khao Thi.
         /// </exception>
-        internal static bool TestInsertDeleteUpdate(Candidate candidate, string answer)
+        internal static bool TestInsertDeleteUpdate(Candidate candidate, string studentId, string answer, int questionOrder)
         {
+            string dbName = studentId + "_" + questionOrder + "_";
+            string dbTeacherName = dbName + "_Teacher";
+            string dbStudentName = dbName + "_Student";
+
             //Duplicate 2 new DB for student and teacher
             General.DuplicatedDb(Database.SqlServerDbFolder,
-                Database.SourceDbName);
-            string dbTeacherName = Common.Constant.newDBName + "_Teacher";
-            string dbStudentName = Common.Constant.newDBName + "_Student";
+                Database.SourceDbName, dbName);
             try
             {
                 // In case question type is DML, Just 1 requirement type, default is result set. 
@@ -127,12 +131,14 @@ namespace DBI_PEA_Scoring.Utils
         /// <exception cref="SqlException">
         ///     When something's wrong, throw exception to log to Khao Thi.
         /// </exception>
-        internal static bool TestProcedure(Candidate candidate, string answer)
+        internal static bool TestProcedure(Candidate candidate, string studentId, string answer, int questionOrder)
         {
-            string dbTeacherName = Common.Constant.newDBName + "_Teacher";
-            string dbStudentName = Common.Constant.newDBName + "_Student";
+            string dbName = studentId + "_" + questionOrder + "_";
+            string dbTeacherName = dbName + "_Teacher";
+            string dbStudentName = dbName + "_Student";
             //Duplicate 2 new DB for student and teacher
-            General.DuplicatedDb(Database.SqlServerDbFolder, Database.SourceDbName);
+            General.DuplicatedDb(Database.SqlServerDbFolder,
+                Database.SourceDbName, dbName);
             try
             {
                 // Create procedure then compare 2 multiple result sets by TestQuery
@@ -161,12 +167,14 @@ namespace DBI_PEA_Scoring.Utils
         /// /// <exception cref="SqlException">
         ///     When something's wrong, throw exception to log to Khao Thi.
         /// </exception>
-        internal static bool TestTrigger(Candidate candidate, string answer)
+        internal static bool TestTrigger(Candidate candidate, string studentId, string answer, int questionOrder)
         {
-            string dbTeacherName = Common.Constant.newDBName + "_Teacher";
-            string dbStudentName = Common.Constant.newDBName + "_Student";
+            string dbName = studentId + "_" + questionOrder + "_";
+            string dbTeacherName = dbName + "_Teacher";
+            string dbStudentName = dbName + "_Student";
             //Duplicate 2 new DB for student and teacher
-            General.DuplicatedDb(Database.SqlServerDbFolder, Database.SourceDbName);
+            General.DuplicatedDb(Database.SqlServerDbFolder,
+                Database.SourceDbName, dbName);
             try
             {
                 // Create trigger then compare 2 multiple result sets by TestQuery

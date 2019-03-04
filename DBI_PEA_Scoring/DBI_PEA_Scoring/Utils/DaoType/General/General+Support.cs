@@ -32,7 +32,7 @@ namespace DBI_PEA_Scoring.Utils.DaoType
                     }
                 }
             }
-            catch (System.Exception)
+            catch (Exception)
             {
                 // If DB is not exist or some exception here, we let them out.
             }
@@ -45,7 +45,7 @@ namespace DBI_PEA_Scoring.Utils.DaoType
         /// <param name="sqlServerDbFolder">Path to ServerDB: C:\Program Files\Microsoft SQL Server\MSSQL11.SQLEXPRESS\MSSQL\DATA\</param>
         /// <param name="newDbName">Name of new DB</param>
         /// 
-        public static void DuplicatedDb(string sqlServerDbFolder, string sourceDbName)
+        public static void DuplicatedDb(string sqlServerDbFolder, string sourceDbName, string newDBName)
         {
             try
             {
@@ -58,7 +58,7 @@ namespace DBI_PEA_Scoring.Utils.DaoType
                                  "\n" +
                                  "declare @sourceDbFile nvarchar(50);\n" +
                                  "declare @sourceDbFileLog nvarchar(50);\n" +
-                                 "declare @destinationDbName nvarchar(50) = '" + Constant.newDBName + "' + '_' + '"
+                                 "declare @destinationDbName nvarchar(50) = '" + newDBName + "' + '_' + '"
                                  + ((i % 2 == 0) ? "Student" : "Teacher") + "'\n" +
                                  "declare @backupPath nvarchar(400) = @tmpFolder + @destinationDbName + '.bak'\n" +
                                  "declare @destMdf nvarchar(100) = @sqlServerDbFolder + @destinationDbName + '.mdf'\n" +
@@ -96,9 +96,9 @@ namespace DBI_PEA_Scoring.Utils.DaoType
                     }
                 }
             }
-            catch (System.Exception e)
+            catch (Exception e)
             {
-                System.Console.WriteLine(e.Message);
+                Console.WriteLine(e.Message);
             }
         }
 
