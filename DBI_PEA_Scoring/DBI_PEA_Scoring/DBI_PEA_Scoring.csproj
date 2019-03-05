@@ -61,6 +61,12 @@
     <Compile Include="Model\Result.cs" />
     <Compile Include="Model\Student\Submition.cs" />
     <Compile Include="Model\Teacher\TestItem.cs" />
+    <Compile Include="UI\EditScore.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\EditScore.Designer.cs">
+      <DependentUpon>EditScore.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\ImportMaterial.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -88,6 +94,9 @@
     <Compile Include="Utils\FileUtils.cs" />
     <Compile Include="Utils\JsonUtils.cs" />
     <Compile Include="Utils\TestUtils.cs" />
+    <EmbeddedResource Include="UI\EditScore.resx">
+      <DependentUpon>EditScore.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UI\ImportMaterial.resx">
       <DependentUpon>ImportMaterial.cs</DependentUpon>
     </EmbeddedResource>

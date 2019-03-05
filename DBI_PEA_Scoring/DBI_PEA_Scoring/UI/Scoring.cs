@@ -13,9 +13,13 @@ namespace DBI_PEA_Scoring.UI
 
         private List<Result> ListResults { get; set; }
         private bool scored = false;
-        public Scoring(List<TestItem> ListExamItems, List<Submition> ListSubmitions)
+        private EditScore EditScore;
+        private List<TestItem> ListTestItems = null;
+        public Scoring(List<TestItem> ListTestItems, List<Submition> ListSubmitions)
         {
             InitializeComponent();
+            this.ListTestItems = ListTestItems;
+            // Show Scoring Form and generate Score here
             ListResults = new List<Result>();
             SetupUI();
             //this.Activated += new System.EventHandler(ShowPoint);
@@ -33,7 +37,7 @@ namespace DBI_PEA_Scoring.UI
                     result.ListAnswers.Add(answer);
                 }
                 // Add Candidates
-                foreach (TestItem de in ListExamItems)
+                foreach (TestItem de in ListTestItems)
                 {
                     if (de.PaperNo.Equals(result.PaperNo))
                     {
@@ -47,7 +51,7 @@ namespace DBI_PEA_Scoring.UI
                 // Add to List to get score
                 ListResults.Add(result);
             }
-            this.Show();
+            Show();
         }
 
         private void SetupUI()
@@ -113,9 +117,9 @@ namespace DBI_PEA_Scoring.UI
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message,"Error");
+                MessageBox.Show(ex.Message, "Error");
             }
-           
+
         }
 
         private void Scoring_FormClosed(object sender, FormClosedEventArgs e)
@@ -126,6 +130,13 @@ namespace DBI_PEA_Scoring.UI
         private void quitButton_Click(object sender, EventArgs e)
         {
             Application.Exit();
+        }
+
+        private void editScoreButton_Click(object sender, EventArgs e)
+        {
+            // Edit lai bieu diem cho cac cau hoi
+            EditScore = new EditScore(ListTestItems);
+            EditScore.Show();
         }
     }
 }

@@ -34,12 +34,13 @@
             this.scoreGridView = new System.Windows.Forms.DataGridView();
             this.startButton = new System.Windows.Forms.Button();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
+            this.editScoreButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.scoreGridView)).BeginInit();
             this.SuspendLayout();
             // 
             // exportButton
             // 
-            this.exportButton.Location = new System.Drawing.Point(592, 474);
+            this.exportButton.Location = new System.Drawing.Point(590, 478);
             this.exportButton.Name = "exportButton";
             this.exportButton.Size = new System.Drawing.Size(75, 23);
             this.exportButton.TabIndex = 0;
@@ -49,7 +50,7 @@
             // 
             // quitButton
             // 
-            this.quitButton.Location = new System.Drawing.Point(680, 474);
+            this.quitButton.Location = new System.Drawing.Point(678, 478);
             this.quitButton.Name = "quitButton";
             this.quitButton.Size = new System.Drawing.Size(75, 23);
             this.quitButton.TabIndex = 1;
@@ -89,11 +90,22 @@
             this.startButton.UseVisualStyleBackColor = true;
             this.startButton.Click += new System.EventHandler(this.ShowPoint);
             // 
+            // editScoreButton
+            // 
+            this.editScoreButton.Location = new System.Drawing.Point(502, 478);
+            this.editScoreButton.Name = "editScoreButton";
+            this.editScoreButton.Size = new System.Drawing.Size(75, 23);
+            this.editScoreButton.TabIndex = 5;
+            this.editScoreButton.Text = "Edit Score";
+            this.editScoreButton.UseVisualStyleBackColor = true;
+            this.editScoreButton.Click += new System.EventHandler(this.editScoreButton_Click);
+            // 
             // Scoring
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(767, 509);
+            this.Controls.Add(this.editScoreButton);
             this.Controls.Add(this.startButton);
             this.Controls.Add(this.scoreGridView);
             this.Controls.Add(this.label1);
@@ -115,5 +127,6 @@
         private System.Windows.Forms.DataGridView scoreGridView;
         private System.Windows.Forms.Button startButton;
         private System.Windows.Forms.SaveFileDialog saveFileDialog1;
+        private System.Windows.Forms.Button editScoreButton;
     }
 }

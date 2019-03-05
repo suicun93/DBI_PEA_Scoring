@@ -6,7 +6,7 @@ using System.Windows.Forms;
 
 namespace DBI_PEA_Scoring.Model
 {
-    class Result
+    public class Result
     {
         public string StudentID { get; set; }
         public string PaperNo { get; set; }
@@ -73,7 +73,7 @@ namespace DBI_PEA_Scoring.Model
                     return TestUtils.TestTrigger(candidate, StudentID, answer, questionOrder);
                 default:
                     // Not supported yet
-                    throw new System.Exception("This question type has not been supported yet.");
+                    throw new Exception("This question type has not been supported yet.");
             }
         }
 
@@ -107,13 +107,13 @@ namespace DBI_PEA_Scoring.Model
                         }
                         else
                             // Wrong -> Log false and return 0 point
-                            throw new System.Exception("False");
+                            throw new Exception("False");
                     else
                         // Not enough candidate 
                         // It rarely happens, it's this project's demos and faults.
-                        throw new System.Exception("No questions found at question " + questionOrder + " paperNo = " + PaperNo);
+                        throw new Exception("No questions found at question " + questionOrder + " paperNo = " + PaperNo);
                 }
-                catch (System.Exception e)
+                catch (Exception e)
                 {
                     // When something's wrong:
                     // Log error and return 0 point for student.
