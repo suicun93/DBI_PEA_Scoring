@@ -1,4 +1,5 @@
-﻿using DBI_PEA_Scoring.Model;
+﻿using DBI_PEA_Scoring.Common;
+using DBI_PEA_Scoring.Model;
 using DBI_PEA_Scoring.Utils;
 using System;
 using System.Collections.Generic;
@@ -37,11 +38,11 @@ namespace DBI_PEA_Scoring.UI
                     result.ListAnswers.Add(answer);
                 }
                 // Add Candidates
-                foreach (TestItem de in ListTestItems)
+                foreach (TestItem testItem in ListTestItems)
                 {
-                    if (de.PaperNo.Equals(result.PaperNo))
+                    if (testItem.PaperNo.Equals(result.PaperNo))
                     {
-                        foreach (Candidate candidate in de.ExamQuestionsList)
+                        foreach (Candidate candidate in testItem.ExamQuestionsList)
                         {
                             result.ListCandidates.Add(candidate);
                         }
@@ -51,7 +52,6 @@ namespace DBI_PEA_Scoring.UI
                 // Add to List to get score
                 ListResults.Add(result);
             }
-            Show();
         }
 
         private void SetupUI()
@@ -70,7 +70,7 @@ namespace DBI_PEA_Scoring.UI
             scoreGridView.Columns.Add(paperNoColumn);
 
             // Initialize and add a text box column for score of each answer
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < Constant.NumberOfQuestion; i++)
             {
                 DataGridViewColumn column = new DataGridViewTextBoxColumn();
                 column.Name = "Answer " + (i + 1).ToString();

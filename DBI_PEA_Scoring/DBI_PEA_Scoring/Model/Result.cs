@@ -1,4 +1,5 @@
-﻿using DBI_PEA_Scoring.Utils;
+﻿using DBI_PEA_Scoring.Common;
+using DBI_PEA_Scoring.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,10 +19,10 @@ namespace DBI_PEA_Scoring.Model
 
         public Result()
         {
-            Points = new double[10];
+            Points = new double[Constant.NumberOfQuestion];
             ListAnswers = new List<string>();
             ListCandidates = new List<Candidate>();
-            Logs = new string[10];
+            Logs = new string[Constant.NumberOfQuestion];
         }
 
         /// <summary>
@@ -86,12 +87,29 @@ namespace DBI_PEA_Scoring.Model
         {
             // Count number of candidate
             int numberOfQuestion = ListCandidates.Count;
+
             // Prepare 2 first columns
             dataGridView.Rows.Add(1);
             dataGridView.Rows[row].Cells[0].Value = StudentID;
             dataGridView.Rows[row].Cells[1].Value = PaperNo;
+
+            // Wrong PaperNo
+            if (numberOfQuestion == 0)
+            {
+                Logs[0] = "Wrong Paper No";
+                for (int i = 0; i < Constant.NumberOfQuestion; i++)
+                {
+                    Points[i] = 0;
+                    dataGridView.Rows[row].Cells[2 + i].Value = "0";
+                }
+                // Refresh to show point and scroll view to the last row
+                dataGridView.Refresh();
+                dataGridView.FirstDisplayedScrollingRowIndex = dataGridView.RowCount - 1;
+                return;
+            }
+
             // Select random DB
-            TestUtils.Database = Common.Constant.listDB[(new Random()).Next(1, Common.Constant.listDB.Length) - 1];
+            TestUtils.Database = Constant.listDB[(new Random()).Next(1, Common.Constant.listDB.Length) - 1];
             // Get mark one by one
             for (int questionOrder = 0; questionOrder < 10; questionOrder++)
             {

@@ -16,8 +16,8 @@ namespace DBI_PEA_Scoring.Utils.DaoType
         /// "true" if correct
         /// "false" if wrong
         /// message error from sqlserver if error</returns>
-        public static bool MarkSchemaDatabasesType(string dbTeacherName, string dbStudentName, string queryTeacher,
-            string queryStudent)
+        public static bool MarkSchemaDatabasesType(string dbStudentName, string dbTeacherName, string queryStudent,
+            string queryTeacher)
         {
             try
             {
