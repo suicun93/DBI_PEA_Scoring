@@ -53,7 +53,7 @@ namespace DBI_PEA_Scoring.Model
         {
             // await TaskEx.Delay(100);
             if (string.IsNullOrEmpty(answer))
-                throw new Exception("Empty answer.");
+                throw new Exception("Empty.");
             // Process by Question Type
             switch (candidate.QuestionType)
             {

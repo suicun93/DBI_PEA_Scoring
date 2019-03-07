@@ -52,6 +52,7 @@ namespace DBI_PEA_Scoring.UI
                 // Add to List to get score
                 ListResults.Add(result);
             }
+            Show();
         }
 
         private void SetupUI()

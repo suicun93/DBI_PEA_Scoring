@@ -96,7 +96,7 @@ namespace DBI_PEA_Scoring.Utils.DaoType
                                 } while (reader.NextResult());
                                 if (result.Equals(""))
                                     return true;
-                                return false;
+                                throw new Exception(result);
                             }
                         }
                     }
