@@ -62,7 +62,8 @@ namespace DBI_PEA_Scoring.Utils.DaoType
             string queryTable2)
         {
             var builder = Common.Constant.SqlConnectionStringBuilder;
-            bool resCheckSchema = CompareOneTableNoSort(db1Name, db2Name, queryTable1, queryTable2);
+            //bool resCheckSchema = CompareOneTableNoSort(db1Name, db2Name, queryTable1, queryTable2);
+            bool resCheckSchema = true;
             if (resCheckSchema)
             {
                 string sql1 = "USE " + db1Name + "; \n" +
@@ -106,9 +107,9 @@ namespace DBI_PEA_Scoring.Utils.DaoType
             // Prepare Command
             var builder = Common.Constant.SqlConnectionStringBuilder;
             builder.MultipleActiveResultSets = true;
-            string sqlStudent = "USE " + dbNameStudent + "; \n" +
+            string sqlStudent = "USE " + dbNameStudent + " \n" +
                          queryToCheck;
-            string sqlTeacher = "USE " + dbNameTeacher + "; \n" +
+            string sqlTeacher = "USE " + dbNameTeacher + " \n" +
                          queryToCheck;
             // Connect and run query to check
             using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
@@ -129,8 +130,53 @@ namespace DBI_PEA_Scoring.Utils.DaoType
                 // Fill Data adapter to dataset
                 adapterStudent.Fill(dataSetStudent);
                 adapterTeacher.Fill(dataSetTeacher);
-                connection.Close();
+                ExecuteSingleQuery("Use master");
                 
+                // Check count of table of student and teacher is same or not.
+                if (dataSetTeacher.Tables.Count > dataSetStudent.Tables.Count)
+                    throw new Exception("Less table than teacher's requirement");
+                else if (dataSetTeacher.Tables.Count < dataSetStudent.Tables.Count)
+                    throw new Exception("More table than teacher's requirement");
+                // If Number of table of student and teacher is same, then Compare one by one
+                for (int i = 0; i < dataSetStudent.Tables.Count; i++)
+                    if (TwoDataTableDifferenceDetector(dataSetStudent.Tables[i], dataSetTeacher.Tables[i]))
+                    {
+                        throw new Exception("Difference detected");
+                    }
+                return true;
+            }
+        }
+
+        internal static bool CompareMoreThanOneTableSort(string dbTeacherName, string dbStudentName, string queryTeacher, string queryStudent)
+        {
+            // Prepare Command
+            var builder = Common.Constant.SqlConnectionStringBuilder;
+            builder.MultipleActiveResultSets = true;
+            string sqlStudent = "USE " + dbStudentName + " \n" +
+                         queryStudent;
+            string sqlTeacher = "USE " + dbTeacherName + " \n" +
+                         queryTeacher;
+            // Connect and run query to check
+            using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
+            {
+                connection.Open();
+                // Prepare Command
+                SqlCommand sqlCommandStudent = new SqlCommand(sqlStudent, connection);
+                SqlCommand sqlCommandTeacher = new SqlCommand(sqlTeacher, connection);
+
+                // Prepare SqlDataAdapter
+                SqlDataAdapter adapterStudent = new SqlDataAdapter(sqlStudent, connection);
+                SqlDataAdapter adapterTeacher = new SqlDataAdapter(sqlTeacher, connection);
+
+                // Prepare DataSet
+                DataSet dataSetStudent = new DataSet();
+                DataSet dataSetTeacher = new DataSet();
+
+                // Fill Data adapter to dataset
+                adapterStudent.Fill(dataSetStudent);
+                adapterTeacher.Fill(dataSetTeacher);
+                ExecuteSingleQuery("Use master");
+
                 // Check count of table of student and teacher is same or not.
                 if (dataSetTeacher.Tables.Count > dataSetStudent.Tables.Count)
                     throw new Exception("Less table than teacher's requirement");

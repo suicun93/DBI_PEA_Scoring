@@ -20,21 +20,17 @@ namespace DBI_PEA_Scoring.Utils.DaoType
         {
             try
             {
-                var builder = Constant.SqlConnectionStringBuilder;
-                using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
-                {
-                    string dropQuery = "use master drop database " + dbName + "";
-                    using (SqlCommand commandDrop = new SqlCommand(dropQuery, connection))
-                    {
-                        connection.Open();
-                        commandDrop.CommandTimeout = Constant.TimeOutInSecond;
-                        commandDrop.ExecuteNonQuery();
-                    }
-                }
+
+                string dropQuery = "USE [master]\n" +
+                                    "IF EXISTS(SELECT name FROM sys.databases WHERE name = '" + dbName + "')\n" +
+                                    "alter database " + dbName + " set single_user with rollback immediate\n" +
+                                    "DROP DATABASE " + dbName + "";
+                ExecuteSingleQuery(dropQuery);
             }
             catch (Exception)
             {
                 // If DB is not exist or some exception here, we let them out.
+                Constant.ListDBTemp.Add(dbName);
             }
         }
 
@@ -104,6 +100,10 @@ namespace DBI_PEA_Scoring.Utils.DaoType
 
         internal static void ClearDatabase()
         {
+            foreach (string str in Constant.ListDBTemp)
+            {
+                DropDatabase(str);
+            }
             foreach (Database database in Constant.listDB)
             {
                 DropDatabase(database.SourceDbName);
@@ -130,7 +130,8 @@ namespace DBI_PEA_Scoring.Utils.DaoType
                 }
                 catch
                 {
-                    return false;
+                    throw;
+                    //return false;
                 }
             }
         }

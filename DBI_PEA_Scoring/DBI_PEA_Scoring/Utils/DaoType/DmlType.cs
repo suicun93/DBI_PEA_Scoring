@@ -25,11 +25,11 @@ namespace DBI_PEA_Scoring.Utils.DaoType
             // Execute query
             string queryStudent = "USE " + dbStudentName + "\nGO \n" + queryEffectStudent;
             string queryTeacher = "USE " + dbTeacherName + "\nGO \n" + queryEffectTeacher;
-            General.ExecuteSingleQuery(queryEffectStudent);
-            General.ExecuteSingleQuery(queryEffectTeacher);
+            General.ExecuteSingleQuery(queryStudent);
+            General.ExecuteSingleQuery(queryTeacher);
             // Compare nosort and return result(T/F)
-            return General.CompareOneTableNoSort(dbStudentName, dbTeacherName,
-                queryToCheck, queryToCheck);
+            return General.CompareMoreThanOneTableSort(dbStudentName, dbTeacherName,
+                queryToCheck);
         }
     }
 }

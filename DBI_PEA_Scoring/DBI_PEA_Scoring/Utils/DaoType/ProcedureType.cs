@@ -12,7 +12,7 @@ namespace DBI_PEA_Scoring.Utils.DaoType
         /// <param name="queryStudent">Query of student</param>
         /// <param name="candidate">Query of teacher and query to check</param>
         /// <returns>True if ok and throw exception if something wrong</returns>
-        public static bool MarkProcedureTest(string dbTeacherName, string dbStudentName, string queryStudent,
+        public static bool MarkProcedureTest(string dbStudentName, string dbTeacherName, string queryStudent,
             Candidate candidate)
         {
             // Run solution of both

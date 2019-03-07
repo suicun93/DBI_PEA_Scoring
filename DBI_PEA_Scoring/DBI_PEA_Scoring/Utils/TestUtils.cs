@@ -19,31 +19,32 @@ namespace DBI_PEA_Scoring.Utils
         /// </exception>
         internal static bool TestSchema(Candidate candidate, string studentId, string answer, int questionOrder)
         {
-            string dbName = studentId + "_" + questionOrder + "_";
-            string dbTeacherName = dbName + "dbTeacherName";
-            string dbStudentName = dbName + "dbStudentName";
-            string queryTeacher = candidate.Solution.Replace(candidate.DBName, dbTeacherName);
-            string queryStudent = answer.Replace(candidate.DBName, dbStudentName);
-            try
-            {
-                // Only check by compare 2 DB
-                if (SchemaType.MarkSchemaDatabasesType(dbStudentName, dbTeacherName,
-                    queryStudent, queryTeacher) == false)
-                {
-                    General.DropDatabase(dbTeacherName);
-                    General.DropDatabase(dbStudentName);
-                    return false;
-                }
-                General.DropDatabase(dbTeacherName);
-                General.DropDatabase(dbStudentName);
-                return true;
-            }
-            catch (SqlException e)
-            {
-                General.DropDatabase(dbTeacherName);
-                General.DropDatabase(dbStudentName);
-                throw e;
-            }
+            //string dbName = studentId + "_" + questionOrder + "_";
+            //string dbTeacherName = dbName + "dbTeacherName";
+            //string dbStudentName = dbName + "dbStudentName";
+            //string queryTeacher = candidate.Solution.Replace(candidate.DBName, dbTeacherName);
+            //string queryStudent = answer.Replace(candidate.DBName, dbStudentName);
+            //try
+            //{
+            //    // Only check by compare 2 DB
+            //    if (SchemaType.MarkSchemaDatabasesType(dbStudentName, dbTeacherName,
+            //        queryStudent, queryTeacher) == false)
+            //    {
+            //        General.DropDatabase(dbTeacherName);
+            //        General.DropDatabase(dbStudentName);
+            //        return false;
+            //    }
+            //    General.DropDatabase(dbTeacherName);
+            //    General.DropDatabase(dbStudentName);
+            //    return true;
+            //}
+            //catch (SqlException e)
+            //{
+            //    General.DropDatabase(dbTeacherName);
+            //    General.DropDatabase(dbStudentName);
+            //    throw e;
+            //}
+            return true;
         }
 
         /// <summary>

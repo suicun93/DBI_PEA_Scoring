@@ -18,9 +18,10 @@ namespace DBI_PEA_Scoring.Utils.DaoType
             switch (isSort)
             {
                 case true:
-                    return General.CompareOneTableNoSort(dbTeacherName, dbStudentName, queryTeacher, queryStudent);
+                    //return General.CompareOneTableNoSort(dbTeacherName, dbStudentName, queryTeacher, queryStudent);
+                    return General.CompareMoreThanOneTableSort(dbTeacherName, dbStudentName, queryTeacher, queryStudent);
                 case false:
-                    return General.CompareOneTableSort(dbTeacherName, dbStudentName, queryTeacher, queryStudent);
+                    return General.CompareMoreThanOneTableSort(dbTeacherName, dbStudentName, queryTeacher, queryStudent);
                 default:
                     return false;
             }

@@ -22,6 +22,7 @@ namespace DBI_PEA_Scoring.UI
         public ImportMaterial()
         {
             InitializeComponent();
+            checkConnectionButton_Click(null, null);
         }
         private void browseQuestionButton_Click(object sender, EventArgs e)
         {
@@ -131,10 +132,15 @@ namespace DBI_PEA_Scoring.UI
             string password = passwordTextBox.Text;
             string serverName = serverNameTextBox.Text;
             string initialCatalog = initialCatalogTextBox.Text;
-            if (General.CheckConnection(serverName, username, password, initialCatalog))
-                statusConnectCheckBox.Checked = true;
-            else
-                MessageBox.Show("Can not connect, check again.", "Error");
+            try
+            {
+                if (General.CheckConnection(serverName, username, password, initialCatalog))
+                    statusConnectCheckBox.Checked = true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Can not connect, check again.\n" + ex.Message, "Error");
+            }
         }
 
         private void browseDatabases_Click(object sender, EventArgs e)
