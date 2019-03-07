@@ -20,32 +20,29 @@ namespace DBI_PEA_Scoring.Utils
         /// </exception>
         internal static bool TestSchema(Candidate candidate, string studentId, string answer, int questionOrder)
         {
-            //string dbName = studentId + "_" + questionOrder + "_";
-            //string dbTeacherName = dbName + "dbTeacherName";
-            //string dbStudentName = dbName + "dbStudentName";
-            //string queryTeacher = candidate.Solution.Replace(candidate.DBName, dbTeacherName);
-            //string queryStudent = answer.Replace(candidate.DBName, dbStudentName);
-            //try
-            //{
-            //    // Only check by compare 2 DB
-            //    if (SchemaType.MarkSchemaDatabasesType(dbStudentName, dbTeacherName,
-            //        queryStudent, queryTeacher) == false)
-            //    {
-            //        General.DropDatabase(dbTeacherName);
-            //        General.DropDatabase(dbStudentName);
-            //        return false;
-            //    }
-            //    General.DropDatabase(dbTeacherName);
-            //    General.DropDatabase(dbStudentName);
-            //    return true;
-            //}
-            //catch (SqlException e)
-            //{
-            //    General.DropDatabase(dbTeacherName);
-            //    General.DropDatabase(dbStudentName);
-            //    throw e;
-            //}
-            return true;
+            string dbName = studentId + "_" + questionOrder + "_";
+            string dbTeacherName = dbName + "dbTeacherName";
+            string dbStudentName = dbName + "dbStudentName";
+            string queryTeacher = candidate.Solution.Replace(candidate.DBName, dbTeacherName);
+            string queryStudent = answer.Replace(candidate.DBName, dbStudentName);
+            try
+            {
+                // Only check by compare 2 DB
+                if (SchemaType.MarkSchemaDatabasesType(dbStudentName, dbTeacherName,
+                    queryStudent, queryTeacher) == false)
+                {
+                    General.DropDatabase(dbTeacherName);
+                    General.DropDatabase(dbStudentName);
+                    return false;
+                }
+                return true;
+            }
+            catch (Exception e)
+            {
+                General.DropDatabase(dbTeacherName);
+                General.DropDatabase(dbStudentName);
+                throw e;
+            }
         }
 
         /// <summary>
@@ -69,7 +66,7 @@ namespace DBI_PEA_Scoring.Utils
             {
                 // In case question type is Query, Just 1 requirement type, default is result set. 
                 // We will run solution to check
-                if (SelectType.MarkSelectType(candidate.RequireSort, dbStudentName, dbTeacherName, answer, candidate.Solution) == false)
+                if (SelectType.MarkSelectType(candidate.RequireSort, dbStudentName , dbTeacherName, answer, candidate.Solution) == false)
                 {
                     throw new Exception("Student's result and teacher's result are not the same.");
                 }
@@ -110,7 +107,7 @@ namespace DBI_PEA_Scoring.Utils
                 string checkQuery = candidate.TestQuery;
                 if (DmlType.MarkDMLQuery(dbStudentName, dbTeacherName, answer, candidate.Solution, checkQuery) == false)
                 {
-                    throw new System.Exception("Student's result and teacher's result are not the same.");
+                    throw new Exception("Student's result and teacher's result are not the same.");
                 }
                 General.DropDatabase(dbTeacherName);
                 General.DropDatabase(dbStudentName);
@@ -147,7 +144,7 @@ namespace DBI_PEA_Scoring.Utils
                 if (ProcedureType.MarkProcedureTest(dbStudentName, dbTeacherName, answer,
                     candidate) == false)
                 {
-                    throw new System.Exception("Student and teacher's result are not matched.");
+                    throw new Exception("Student and teacher's result are not matched.");
                 }
                 General.DropDatabase(dbTeacherName);
                 General.DropDatabase(dbStudentName);
@@ -183,7 +180,7 @@ namespace DBI_PEA_Scoring.Utils
                 if (TriggerType.MarkTriggerTest(dbStudentName, dbTeacherName, answer,
                     candidate) == false)
                 {
-                    throw new System.Exception("Student and teacher's result are not matched.");
+                    throw new Exception("Student and teacher's result are not matched.");
                 }
                 General.DropDatabase(dbTeacherName);
                 General.DropDatabase(dbStudentName);

@@ -22,6 +22,7 @@ namespace DBI_PEA_Scoring.UI
         public ImportMaterial()
         {
             InitializeComponent();
+            // Auto Check connection
             checkConnectionButton_Click(null, null);
         }
         private void browseQuestionButton_Click(object sender, EventArgs e)

@@ -49,49 +49,64 @@ namespace DBI_PEA_Scoring.Utils.DaoType
         /// message error from sqlserver if error</returns>
         private static bool CompareTwoDatabases(string db1Name, string db2Name)
         {
-            string checkExistsSpQuery = "USE master\n" +
-                                        "SELECT * FROM sys.objects\n" +
-                                        "WHERE object_id = OBJECT_ID(N'[sp_CompareDb]') AND type IN ( N'P', N'PC' )";
-            string compareQuery = "exec sp_CompareDb [" + db1Name + "], [" + db2Name + "]";
-            var builder = Common.Constant.SqlConnectionStringBuilder;
-            // Connect to SQL
-            using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
+            try
             {
-                connection.Open();
-                using (SqlCommand command = new SqlCommand(checkExistsSpQuery, connection))
+                string checkExistsSpQuery = "USE master\n" +
+                                                        "SELECT * FROM sys.objects\n" +
+                                                        "WHERE object_id = OBJECT_ID(N'[sp_CompareDb]') AND type IN ( N'P', N'PC' )";
+                string compareQuery = "exec sp_CompareDb [" + db1Name + "], [" + db2Name + "]";
+                var builder = Common.Constant.SqlConnectionStringBuilder;
+                // Connect to SQL
+                using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
                 {
-                    //Check exists SP sp_compareDb
-                    if (command.ExecuteScalar() == null)
+                    connection.Open();
+                    using (SqlCommand command = new SqlCommand(checkExistsSpQuery, connection))
                     {
-                        General.ExecuteSingleQuery(ProcCompareDbs);
-                    }
-                    using (SqlCommand commandCompare = new SqlCommand(compareQuery, connection))
-                    {
-                        using (SqlDataReader reader = commandCompare.ExecuteReader())
+                        //Check exists SP sp_compareDb
+                        if (command.ExecuteScalar() == null)
                         {
-                            string result = "";
-                            int i = 0;
-                            do
+                            try
                             {
-                                if (reader.HasRows)
+                                General.ExecuteSingleQuery(ProcCompareDbs);
+                            }
+                            catch (Exception e)
+                            {
+                                throw new Exception("Compare error: " + e.Message);
+                            }
+                        }
+                        using (SqlCommand commandCompare = new SqlCommand(compareQuery, connection))
+                        {
+                            using (SqlDataReader reader = commandCompare.ExecuteReader())
+                            {
+                                string result = "";
+                                int i = 0;
+                                do
                                 {
-                                    if (i++ == 0)
+                                    if (reader.HasRows)
                                     {
-                                        result += "Wrong column_definition. ";
+                                        if (i++ == 0)
+                                        {
+                                            result += "Wrong column_definition. ";
+                                        }
+                                        else
+                                        {
+                                            result += "Wrong table_constraint. ";
+                                        }
                                     }
-                                    else
-                                    {
-                                        result += "Wrong table_constraint. ";
-                                    }
-                                }
-                            } while (reader.NextResult());
-                            if (result.Equals(""))
-                                return true;
-                            return false;
+                                } while (reader.NextResult());
+                                if (result.Equals(""))
+                                    return true;
+                                return false;
+                            }
                         }
                     }
                 }
             }
+            catch (Exception)
+            {
+                throw;
+            }
+
         }
     }
 }

@@ -151,20 +151,20 @@ namespace DBI_PEA_Scoring.Utils.DaoType
 
                 // Check count of table of student and teacher is same or not.
                 if (dataSetTeacher.Tables.Count > dataSetStudent.Tables.Count)
-                    throw new Exception("Less table than teacher's requirement");
+                    throw new Exception("Less table than requirement");
                 else if (dataSetTeacher.Tables.Count < dataSetStudent.Tables.Count)
-                    throw new Exception("More table than teacher's requirement");
+                    throw new Exception("More table than requirement");
                 // If Number of table of student and teacher is same, then Compare one by one
                 for (int i = 0; i < dataSetStudent.Tables.Count; i++)
                     if (TwoDataTableDifferenceDetector(dataSetStudent.Tables[i], dataSetTeacher.Tables[i]))
                     {
-                        throw new Exception("Difference detected");
+                        throw new Exception("Result Not matched");
                     }
                 return true;
             }
         }
 
-        internal static bool CompareMoreThanOneTableSort(string dbTeacherName, string dbStudentName, string queryTeacher, string queryStudent)
+        internal static bool CompareMoreThanOneTableSort(string  dbStudentName, string dbTeacherName, string queryStudent, string  queryTeacher)
         {
             // Prepare Command
             var builder = Common.Constant.SqlConnectionStringBuilder;
@@ -219,7 +219,7 @@ namespace DBI_PEA_Scoring.Utils.DaoType
                 for (int i = 0; i < dataSetStudent.Tables.Count; i++)
                     if (TwoDataTableDifferenceDetector(dataSetStudent.Tables[i], dataSetTeacher.Tables[i]))
                     {
-                        throw new Exception("Difference detected");
+                        throw new Exception("Result Not matched");
                     }
                 return true;
             }

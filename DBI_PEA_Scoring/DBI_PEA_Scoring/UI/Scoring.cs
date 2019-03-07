@@ -100,7 +100,7 @@ namespace DBI_PEA_Scoring.UI
         {
             try
             {
-                saveFileDialog1.Filter = "Microsoft Excel 97-2003 Add-In (*.doc)|*.doc";
+                saveFileDialog1.Filter = "Microsoft Excel 97-2003 Add-In (*.xls)|*.xls";
                 saveFileDialog1.FilterIndex = 2;
                 saveFileDialog1.RestoreDirectory = true;
                 if (saveFileDialog1.ShowDialog() == DialogResult.OK)

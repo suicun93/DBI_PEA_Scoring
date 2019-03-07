@@ -12,16 +12,16 @@ namespace DBI_PEA_Scoring.Utils.DaoType
         /// <param name="queryTeacher"></param>
         /// <param name="queryStudent"></param>
         /// <returns></returns>
-        public static bool MarkSelectType(bool isSort, string dbTeacherName, string dbStudentName, string queryTeacher,
-            string queryStudent)
+        public static bool MarkSelectType(bool isSort, string dbStudentName, string dbTeacherName, string queryStudent,
+            string queryTeacher)
         {
             switch (isSort)
             {
                 case true:
                     //return General.CompareOneTableNoSort(dbTeacherName, dbStudentName, queryTeacher, queryStudent);
-                    return General.CompareMoreThanOneTableSort(dbTeacherName, dbStudentName, queryTeacher, queryStudent);
+                    return General.CompareMoreThanOneTableSort(dbStudentName, dbTeacherName, queryStudent, queryTeacher);
                 case false:
-                    return General.CompareMoreThanOneTableSort(dbTeacherName, dbStudentName, queryTeacher, queryStudent);
+                    return General.CompareMoreThanOneTableSort(dbStudentName, dbTeacherName, queryStudent, queryTeacher);
                 default:
                     return false;
             }
