@@ -48,7 +48,7 @@ namespace DBI_PEA_Scoring.Utils
                         double totalPoints = result.SumOfPoint();
                         sheetResult.Cells[lastRow, 5] = totalPoints;
                         sheetResult.Cells[lastRow, 6] = maxPoint;
-                        sheetResult.Cells[lastRow, 7] = (float)(totalPoints / maxPoint) * 10.0;
+                        sheetResult.Cells[lastRow, 7] = Math.Round((float)(totalPoints / maxPoint) * 10.0, 2);
                         string note = "";
                         for (int i = 0; i < result.Points.Length; i++)
                         {

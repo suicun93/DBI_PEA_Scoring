@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.IO;
 
 namespace DBI_PEA_Scoring.Utils.DaoType
 {
@@ -48,7 +49,7 @@ namespace DBI_PEA_Scoring.Utils.DaoType
                 for (int i = 0; i < 2; i++)
                 {
                     string sql = "declare @sourceDbName nvarchar(50) = '" + sourceDbName + "';\n" +
-                                 "declare @tmpFolder nvarchar(50) = '%temp%'\n" +
+                                 "declare @tmpFolder nvarchar(50) = 'C:\\Temp\\'\n" +
                                  "declare @sqlServerDbFolder nvarchar(200) = '" + sqlServerDbFolder + "'\n" +
                                  "\n" +
                                  "declare @sourceDbFile nvarchar(50);\n" +
@@ -103,10 +104,13 @@ namespace DBI_PEA_Scoring.Utils.DaoType
             {
                 DropDatabase(str);
             }
+            // Clear root database
             foreach (Database database in Constant.listDB)
             {
                 DropDatabase(database.SourceDbName);
             }
+            // Clear C:\temp
+            Directory.Delete(@"C:\Temp", true);
         }
 
         public static bool CheckConnection(string dataSource, string userId, string password, string initialCatalog)

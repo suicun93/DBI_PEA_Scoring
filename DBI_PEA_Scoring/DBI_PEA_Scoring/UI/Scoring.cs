@@ -1,6 +1,7 @@
 ﻿using DBI_PEA_Scoring.Common;
 using DBI_PEA_Scoring.Model;
 using DBI_PEA_Scoring.Utils;
+using DBI_PEA_Scoring.Utils.DaoType;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -22,6 +23,7 @@ namespace DBI_PEA_Scoring.UI
             this.ListTestItems = ListTestItems;
             // Show Scoring Form and generate Score here
             ListResults = new List<Result>();
+            Prepare();
             SetupUI();
             //this.Activated += new System.EventHandler(ShowPoint);
             // Merge Question and Submition to ListResults
@@ -76,6 +78,17 @@ namespace DBI_PEA_Scoring.UI
                 DataGridViewColumn column = new DataGridViewTextBoxColumn();
                 column.Name = "Answer " + (i + 1).ToString();
                 scoreGridView.Columns.Add(column);
+            }
+        }
+
+        // Prepare environment
+        private void Prepare()
+        {
+            General.ExecuteSingleQuery("use master drop proc sp_CompareDb");
+            var dir = "C:\\Temp\\";
+            if (!Directory.Exists(dir))
+            {
+                Directory.CreateDirectory(dir);
             }
         }
 

@@ -75,10 +75,10 @@ namespace DBI_PEA_Scoring.Model
                     {
                         submition = secureJsonSerializer.Load();
                         // Load successfully
-                        this.ListAnswer = new List<string>();
+                        ListAnswer = new List<string>();
                         foreach (var answer in submition.ListAnswer)
                         {
-                            this.ListAnswer.Add(answer);
+                            ListAnswer.Add(answer);
                         }
                     }
                     catch (Exception)
