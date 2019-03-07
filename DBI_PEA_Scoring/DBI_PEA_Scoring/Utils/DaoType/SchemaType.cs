@@ -1,4 +1,5 @@
-﻿using System.Data.SqlClient;
+﻿using System;
+using System.Data.SqlClient;
 
 namespace DBI_PEA_Scoring.Utils.DaoType
 {
@@ -18,8 +19,22 @@ namespace DBI_PEA_Scoring.Utils.DaoType
         public static bool MarkSchemaDatabasesType(string dbTeacherName, string dbStudentName, string queryTeacher,
             string queryStudent)
         {
-            General.ExecuteSingleQuery(queryStudent);
-            General.ExecuteSingleQuery(queryTeacher);
+            try
+            {
+                General.ExecuteSingleQuery(queryStudent);
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Student wrong: " + e.Message);
+            }
+            try
+            {
+                General.ExecuteSingleQuery(queryTeacher);
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Teacher wrong: " + e.Message);
+            }
             return CompareTwoDatabases(dbStudentName, dbTeacherName);
         }
 

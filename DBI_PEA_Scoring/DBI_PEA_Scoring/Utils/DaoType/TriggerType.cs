@@ -1,4 +1,5 @@
 ﻿using DBI_PEA_Scoring.Model;
+using System;
 
 namespace DBI_PEA_Scoring.Utils.DaoType
 {
@@ -18,8 +19,22 @@ namespace DBI_PEA_Scoring.Utils.DaoType
             // Run solution of both
             string queryStudentRun = "Use " + dbStudentName + "\nGO \n" + queryStudent;
             string queryTeacherRun = "Use " + dbTeacherName + "\nGO \n" + candidate.Solution;
-            General.ExecuteSingleQuery(queryStudentRun);
-            General.ExecuteSingleQuery(queryTeacherRun);
+            try
+            {
+                General.ExecuteSingleQuery(queryStudentRun);
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Student wrong: " + e.Message);
+            }
+            try
+            {
+                General.ExecuteSingleQuery(queryTeacherRun);
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Teacher wrong: " + e.Message);
+            }
             // Compare
             return General.CompareMoreThanOneTableSort(dbStudentName, dbTeacherName, candidate.TestQuery);
         }

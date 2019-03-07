@@ -1,4 +1,5 @@
-﻿using System.Data.SqlClient;
+﻿using System;
+using System.Data.SqlClient;
 using DBI_PEA_Scoring.Model;
 using DBI_PEA_Scoring.Utils.DaoType;
 
@@ -53,7 +54,7 @@ namespace DBI_PEA_Scoring.Utils
         /// <param name="candidate">Question and requirement to check</param>
         /// <param name="answer">Answer of student</param>
         /// <returns>Result when compare 2 table</returns>
-        /// <exception cref="SqlException">
+        /// <exception cref="Exception">
         ///     When something's wrong, throw exception to log error to KhaoThi
         /// </exception>
         internal static bool TestSelect(Candidate candidate, string studentId, string answer, int questionOrder)
@@ -70,13 +71,13 @@ namespace DBI_PEA_Scoring.Utils
                 // We will run solution to check
                 if (SelectType.MarkSelectType(candidate.RequireSort, dbStudentName, dbTeacherName, answer, candidate.Solution) == false)
                 {
-                    throw new System.Exception("Student's result and teacher's result are not the same.");
+                    throw new Exception("Student's result and teacher's result are not the same.");
                 }
                 General.DropDatabase(dbTeacherName);
                 General.DropDatabase(dbStudentName);
                 return true;
             }
-            catch (SqlException e)
+            catch (Exception e)
             {
                 General.DropDatabase(dbTeacherName);
                 General.DropDatabase(dbStudentName);
@@ -90,7 +91,7 @@ namespace DBI_PEA_Scoring.Utils
         /// <param name="candidate">Question and requirement to check</param>
         /// <param name="answer">Answer of student</param>
         /// <returns>Result when compare 2 result tables</returns>
-        /// <exception cref="SqlException">
+        /// <exception cref="Exception">
         ///     When something's wrong, throw exception to log to Khao Thi.
         /// </exception>
         internal static bool TestInsertDeleteUpdate(Candidate candidate, string studentId, string answer, int questionOrder)
@@ -115,7 +116,7 @@ namespace DBI_PEA_Scoring.Utils
                 General.DropDatabase(dbStudentName);
                 return true;
             }
-            catch (SqlException e)
+            catch (Exception e)
             {
                 General.DropDatabase(dbTeacherName);
                 General.DropDatabase(dbStudentName);
@@ -129,7 +130,7 @@ namespace DBI_PEA_Scoring.Utils
         /// <param name="candidate">Question and requirement to check</param>
         /// <param name="answer">Answer of student</param>
         /// <returns>Result when compare 2 result tables</returns>
-        /// <exception cref="SqlException">
+        /// <exception cref="Exception">
         ///     When something's wrong, throw exception to log to Khao Thi.
         /// </exception>
         internal static bool TestProcedure(Candidate candidate, string studentId, string answer, int questionOrder)
@@ -152,7 +153,7 @@ namespace DBI_PEA_Scoring.Utils
                 General.DropDatabase(dbStudentName);
                 return true;
             }
-            catch (SqlException e)
+            catch (Exception e)
             {
                 General.DropDatabase(dbTeacherName);
                 General.DropDatabase(dbStudentName);
@@ -165,7 +166,7 @@ namespace DBI_PEA_Scoring.Utils
         /// <param name="candidate">Solution of teacher</param>
         /// <param name="answer">Answer of student</param>
         /// <returns>Result when compare 2 result tables</returns>
-        /// /// <exception cref="SqlException">
+        /// /// <exception cref="Exception">
         ///     When something's wrong, throw exception to log to Khao Thi.
         /// </exception>
         internal static bool TestTrigger(Candidate candidate, string studentId, string answer, int questionOrder)
@@ -188,7 +189,7 @@ namespace DBI_PEA_Scoring.Utils
                 General.DropDatabase(dbStudentName);
                 return true;
             }
-            catch (SqlException e)
+            catch (Exception e)
             {
                 General.DropDatabase(dbTeacherName);
                 General.DropDatabase(dbStudentName);

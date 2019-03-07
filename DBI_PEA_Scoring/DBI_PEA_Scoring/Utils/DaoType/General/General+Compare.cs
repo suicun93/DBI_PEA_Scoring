@@ -2,6 +2,7 @@
 using System.Data.SqlClient;
 using System.Linq;
 using System;
+using DBI_PEA_Scoring.Common;
 
 namespace DBI_PEA_Scoring.Utils.DaoType
 {
@@ -118,6 +119,8 @@ namespace DBI_PEA_Scoring.Utils.DaoType
                 // Prepare Command
                 SqlCommand sqlCommandStudent = new SqlCommand(sqlStudent, connection);
                 SqlCommand sqlCommandTeacher = new SqlCommand(sqlTeacher, connection);
+                sqlCommandStudent.CommandTimeout = Constant.TimeOutInSecond;
+                sqlCommandTeacher.CommandTimeout = Constant.TimeOutInSecond;
 
                 // Prepare SqlDataAdapter
                 SqlDataAdapter adapterStudent = new SqlDataAdapter(sqlStudent, connection);
@@ -128,10 +131,24 @@ namespace DBI_PEA_Scoring.Utils.DaoType
                 DataSet dataSetTeacher = new DataSet();
 
                 // Fill Data adapter to dataset
-                adapterStudent.Fill(dataSetStudent);
-                adapterTeacher.Fill(dataSetTeacher);
-                ExecuteSingleQuery("Use master");
-                
+                try
+                {
+                    adapterStudent.Fill(dataSetStudent);
+                }
+                catch (Exception e)
+                {
+                    throw new Exception("Student wrong: " + e.Message);
+                }
+                try
+                {
+                    adapterTeacher.Fill(dataSetTeacher);
+                }
+                catch (Exception e)
+                {
+                    throw new Exception("Teacher wrong: " + e.Message);
+                }
+                connection.Close();
+
                 // Check count of table of student and teacher is same or not.
                 if (dataSetTeacher.Tables.Count > dataSetStudent.Tables.Count)
                     throw new Exception("Less table than teacher's requirement");
@@ -163,6 +180,8 @@ namespace DBI_PEA_Scoring.Utils.DaoType
                 // Prepare Command
                 SqlCommand sqlCommandStudent = new SqlCommand(sqlStudent, connection);
                 SqlCommand sqlCommandTeacher = new SqlCommand(sqlTeacher, connection);
+                sqlCommandStudent.CommandTimeout = Constant.TimeOutInSecond;
+                sqlCommandTeacher.CommandTimeout = Constant.TimeOutInSecond;
 
                 // Prepare SqlDataAdapter
                 SqlDataAdapter adapterStudent = new SqlDataAdapter(sqlStudent, connection);
@@ -173,9 +192,23 @@ namespace DBI_PEA_Scoring.Utils.DaoType
                 DataSet dataSetTeacher = new DataSet();
 
                 // Fill Data adapter to dataset
-                adapterStudent.Fill(dataSetStudent);
-                adapterTeacher.Fill(dataSetTeacher);
-                ExecuteSingleQuery("Use master");
+                try
+                {
+                    adapterStudent.Fill(dataSetStudent);
+                }
+                catch (Exception e)
+                {
+                    throw new Exception("Student wrong: " + e.Message);
+                }
+                try
+                {
+                    adapterTeacher.Fill(dataSetTeacher);
+                }
+                catch (Exception e)
+                {
+                    throw new Exception("Teacher wrong: " + e.Message);
+                }
+                connection.Close();
 
                 // Check count of table of student and teacher is same or not.
                 if (dataSetTeacher.Tables.Count > dataSetStudent.Tables.Count)

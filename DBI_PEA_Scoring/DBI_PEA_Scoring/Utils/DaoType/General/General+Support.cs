@@ -23,7 +23,6 @@ namespace DBI_PEA_Scoring.Utils.DaoType
 
                 string dropQuery = "USE [master]\n" +
                                     "IF EXISTS(SELECT name FROM sys.databases WHERE name = '" + dbName + "')\n" +
-                                    "alter database " + dbName + " set single_user with rollback immediate\n" +
                                     "DROP DATABASE " + dbName + "";
                 ExecuteSingleQuery(dropQuery);
             }

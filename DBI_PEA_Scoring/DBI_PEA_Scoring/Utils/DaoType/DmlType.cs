@@ -1,4 +1,5 @@
 ﻿using DBI_PEA_Scoring.Common;
+using System;
 using System.Data.SqlClient;
 
 namespace DBI_PEA_Scoring.Utils.DaoType
@@ -25,8 +26,22 @@ namespace DBI_PEA_Scoring.Utils.DaoType
             // Execute query
             string queryStudent = "USE " + dbStudentName + "\nGO \n" + queryEffectStudent;
             string queryTeacher = "USE " + dbTeacherName + "\nGO \n" + queryEffectTeacher;
-            General.ExecuteSingleQuery(queryStudent);
-            General.ExecuteSingleQuery(queryTeacher);
+            try
+            {
+                General.ExecuteSingleQuery(queryStudent);
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Student wrong: " + e.Message);
+            }
+            try
+            {
+                General.ExecuteSingleQuery(queryTeacher);
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Teacher wrong: " + e.Message);
+            }
             // Compare nosort and return result(T/F)
             return General.CompareMoreThanOneTableSort(dbStudentName, dbTeacherName,
                 queryToCheck);
