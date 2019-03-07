@@ -63,24 +63,31 @@ namespace DBI_PEA_Scoring.Utils.DaoType
                     //Check exists SP sp_compareDb
                     if (command.ExecuteScalar() == null)
                     {
-                        //Create SP
-                        using (SqlCommand commandCreate = new SqlCommand(ProcCompareDbs, connection))
-                        {
-                            commandCreate.ExecuteNonQuery();
-                        }
+                        General.ExecuteSingleQuery(ProcCompareDbs);
                     }
                     using (SqlCommand commandCompare = new SqlCommand(compareQuery, connection))
                     {
                         using (SqlDataReader reader = commandCompare.ExecuteReader())
                         {
+                            string result = "";
+                            int i = 0;
                             do
                             {
-                                while (reader.HasRows)
+                                if (reader.HasRows)
                                 {
-                                    return false;
+                                    if (i++ == 0)
+                                    {
+                                        result += "Wrong column_definition. ";
+                                    }
+                                    else
+                                    {
+                                        result += "Wrong table_constraint. ";
+                                    }
                                 }
                             } while (reader.NextResult());
-                            return true;
+                            if (result.Equals(""))
+                                return true;
+                            return false;
                         }
                     }
                 }

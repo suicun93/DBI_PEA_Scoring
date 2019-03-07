@@ -52,3 +52,4 @@ E:\Capstone\DBI_PEA_Scoring\DBI_PEA_Scoring\DBI_PEA_Scoring\bin\Debug\Microsoft.
 E:\Capstone\DBI_PEA_Scoring\DBI_PEA_Scoring\DBI_PEA_Scoring\bin\Debug\Microsoft.SqlServer.Dmf.dll
 E:\Capstone\DBI_PEA_Scoring\DBI_PEA_Scoring\DBI_PEA_Scoring\bin\Debug\Microsoft.SqlServer.ServiceBrokerEnum.dll
 C:\Users\hoangduc\Desktop\Project\KhaoThi\DBI_PEA_Scoring\DBI_PEA_Scoring\obj\Debug\DBI_PEA_Scoring.UI.EditScore.resources
+E:\Capstone\DBI_PEA_Scoring\DBI_PEA_Scoring\DBI_PEA_Scoring\obj\Debug\DBI_PEA_Scoring.UI.EditScore.resources
