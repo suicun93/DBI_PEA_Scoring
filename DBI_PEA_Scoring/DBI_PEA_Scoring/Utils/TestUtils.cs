@@ -31,10 +31,11 @@ namespace DBI_PEA_Scoring.Utils
                 if (SchemaType.MarkSchemaDatabasesType(dbStudentName, dbTeacherName,
                     queryStudent, queryTeacher) == false)
                 {
-                    General.DropDatabase(dbTeacherName);
-                    General.DropDatabase(dbStudentName);
-                    return false;
+                    throw new Exception();
+                    
                 }
+                General.DropDatabase(dbTeacherName);
+                General.DropDatabase(dbStudentName);
                 return true;
             }
             catch (Exception e)
