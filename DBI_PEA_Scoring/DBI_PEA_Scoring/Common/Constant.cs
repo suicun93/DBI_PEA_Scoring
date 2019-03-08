@@ -18,8 +18,16 @@ namespace DBI_PEA_Scoring.Common
             SqlServerDbFolder = sqlServerDbFolder;
             SourceDbName = sourceDbName;
         }
+        public Database(string sqlServerDbFolder, string source, string sourceDbName)
+        {
+            SqlServerDbFolder = sqlServerDbFolder;
+            Source = source;
+            SourceDbName = sourceDbName;
+        }
+
         public string SqlServerDbFolder { get; set; }
         public string SourceDbName { get; set; }
+        public string Source { get; set; }
 
     }
 }

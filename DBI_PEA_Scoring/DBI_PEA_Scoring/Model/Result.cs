@@ -3,6 +3,7 @@ using DBI_PEA_Scoring.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace DBI_PEA_Scoring.Model
@@ -83,16 +84,10 @@ namespace DBI_PEA_Scoring.Model
         /// </summary>
         /// <param name="dataGridView"> Data Grid View to show point of student</param>
         /// <param name="row">The row number where the student is</param>
-        public void GetPoint(DataGridView dataGridView, int row)
+        public void GetPoint()
         {
             // Count number of candidate
             int numberOfQuestion = ListCandidates.Count;
-
-            // Prepare 2 first columns
-            dataGridView.Rows.Add(1);
-            dataGridView.Rows[row].Cells[0].Value = StudentID;
-            dataGridView.Rows[row].Cells[1].Value = PaperNo;
-
             // Wrong PaperNo
             if (numberOfQuestion == 0)
             {
@@ -100,14 +95,10 @@ namespace DBI_PEA_Scoring.Model
                 for (int i = 0; i < Constant.NumberOfQuestion; i++)
                 {
                     Points[i] = 0;
-                    dataGridView.Rows[row].Cells[2 + i].Value = "0";
                 }
-                // Refresh to show point and scroll view to the last row
-                dataGridView.Refresh();
-                dataGridView.FirstDisplayedScrollingRowIndex = dataGridView.RowCount - 1;
+                Thread.Sleep(100);
                 return;
             }
-
             // Select random DB
             TestUtils.Database = Constant.listDB[(new Random()).Next(1, Common.Constant.listDB.Length) - 1];
             // Get mark one by one
@@ -138,12 +129,7 @@ namespace DBI_PEA_Scoring.Model
                     Points[questionOrder] = 0;
                     Logs[questionOrder] = e.Message;
                 }
-                // Show point of each question
-                dataGridView.Rows[row].Cells[2 + questionOrder].Value = Points[questionOrder].ToString();
             }
-            // Refresh to show point and scroll view to the last row
-            dataGridView.Refresh();
-            dataGridView.FirstDisplayedScrollingRowIndex = dataGridView.RowCount - 1;
         }
     }
 }

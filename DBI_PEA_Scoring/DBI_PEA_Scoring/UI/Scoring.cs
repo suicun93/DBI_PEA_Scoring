@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace DBI_PEA_Scoring.UI
@@ -84,7 +85,7 @@ namespace DBI_PEA_Scoring.UI
         // Prepare environment
         private void Prepare()
         {
-            General.ExecuteSingleQuery("use master drop proc sp_CompareDb");
+            //General.ExecuteSingleQuery("use master drop proc sp_CompareDb");
             var dir = "C:\\Temp\\";
             if (!Directory.Exists(dir))
             {
@@ -100,15 +101,38 @@ namespace DBI_PEA_Scoring.UI
                 // Populate the data source.
                 for (int row = 0; row < ListResults.Count; row++)
                 {
-                    ListResults.ElementAt(row).GetPoint(scoreGridView, row);
+                    var CurrentResult = ListResults.ElementAt(row);
+                    // Prepare 2 first columns
+                    scoreGridView.Rows.Add(1);
+                    scoreGridView.Rows[row].Cells[0].Value = CurrentResult.StudentID;
+                    scoreGridView.Rows[row].Cells[1].Value = CurrentResult.PaperNo;
+                    scoreGridView.Refresh();
+                    Input input = new Input(scoreGridView, row, CurrentResult);
+                    ThreadPool.QueueUserWorkItem(new WaitCallback(KetPoint), input);
                 }
+                scoreGridView.Refresh();
                 scored = true;
                 // Delete origin database
-                Utils.DaoType.General.ClearDatabase();
+                //General.ClearDatabase();
             }
             else MessageBox.Show("Score has already got.");
         }
-
+        private void KetPoint(object input)
+        {
+            var temp = input as Input;
+            temp.Result.GetPoint();
+            // Refresh to show point and scroll view to the last row
+            // Show point of each question
+            for (int questionOrder = 0; questionOrder < temp.Result.ListCandidates.Count; questionOrder++)
+            {
+                scoreGridView.Invoke(new MethodInvoker(() =>
+                {
+                    scoreGridView.Rows[temp.Row].Cells[2 + questionOrder].Value = temp.Result.Points[questionOrder].ToString();
+                    scoreGridView.UpdateCellValue(2 + questionOrder, temp.Row);
+                }));
+            }
+        }
+        //delegate void SetTextCallback(Result result);
         // sau khi add xong thuc hien cham diem, cham den dau in diem den day!
         private void exportButton_Click(object sender, EventArgs e)
         {

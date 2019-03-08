@@ -191,7 +191,7 @@ namespace DBI_PEA_Scoring.Utils.DaoType
             }
             string name, path;
             name = dataTable.Rows[0]["name"].ToString();
-            path = System.IO.Path.GetDirectoryName(dataTable.Rows[0]["path"].ToString()) + "\\";
+            path = Path.GetDirectoryName(dataTable.Rows[0]["path"].ToString()) + "\\";
 
             // List database to List
             List<Database> temp = new List<Database>();
