@@ -94,7 +94,8 @@ namespace DBI_PEA_Scoring.UI
                     // Change value status bar
                     count++;
                     statusImportAnswerLabel.Text = "Imported " + count + "/" + submistionCount;
-                    statusImportAnswerProgressBar.Value = count;
+                    statusImportAnswerLabel.Refresh();
+                    statusImportAnswerProgressBar.Invoke(new MethodInvoker(() => statusImportAnswerProgressBar.Value = count));
                 }
                 catch (Exception e)
                 {
