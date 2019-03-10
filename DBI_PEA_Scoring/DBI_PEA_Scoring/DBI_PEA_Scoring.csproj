@@ -58,10 +58,10 @@
     <Compile Include="Common\SecureJsonSerializer.cs" />
     <Compile Include="Model\Input.cs" />
     <Compile Include="Model\Teacher\Candidate.cs" />
-    <Compile Include="Model\Teacher\Question.cs" />
+    <Compile Include="Model\Teacher\PaperSet.cs" />
     <Compile Include="Model\Result.cs" />
-    <Compile Include="Model\Student\Submition.cs" />
-    <Compile Include="Model\Teacher\TestItem.cs" />
+    <Compile Include="Model\Student\Submission.cs" />
+    <Compile Include="Model\Teacher\Paper.cs" />
     <Compile Include="UI\EditScore.cs">
       <SubType>Form</SubType>
     </Compile>

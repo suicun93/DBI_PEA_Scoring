@@ -3,8 +3,7 @@ namespace DBI_PEA_Scoring.Utils.DaoType
 {
     partial class SchemaType
     {
-        private static string ProcCompareDbs = "GO\n" +
-"Create PROC [dbo].[sp_CompareDb]\n" +
+        private static string ProcCompareDbs = "CREATE PROC [dbo].[sp_CompareDb]\n" +
 "(\n" +
 "	@SourceDB SYSNAME,\n" +
 "	@TargetDb SYSNAME\n" +
@@ -580,9 +579,12 @@ namespace DBI_PEA_Scoring.Utils.DaoType
 "		*\n" +
 "	FROM #TAB_RESULTS\n" +
 "\n" +
+"	WHERE #TAB_RESULTS.DATABASENAME = @TargetDb\n" +
+"\n" +
 "	SELECT\n" +
 "		*\n" +
 "	FROM #FK_RESULTS\n" +
+"	WHERE #FK_RESULTS.DATABASENAME = @TargetDb\n" +
 "END\n" +
 "GO";
     }

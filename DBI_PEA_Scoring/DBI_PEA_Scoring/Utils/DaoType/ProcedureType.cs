@@ -1,5 +1,6 @@
 ﻿using DBI_PEA_Scoring.Model;
 using System;
+using System.Collections.Generic;
 
 namespace DBI_PEA_Scoring.Utils.DaoType
 {
@@ -8,35 +9,40 @@ namespace DBI_PEA_Scoring.Utils.DaoType
         /// <summary>
         ///     Get mark for procedure question
         /// </summary>
-        /// <param name="dbStudentName">Name of student DB</param>
-        /// <param name="dbTeacherName">Name of teacher DB</param>
-        /// <param name="queryStudent">Query of student</param>
+        /// <param name="dbAnswerName">Name of student DB</param>
+        /// <param name="dbSolutionName">Name of teacher DB</param>
+        /// <param name="answer">Query of student</param>
         /// <param name="candidate">Query of teacher and query to check</param>
         /// <returns>True if ok and throw exception if something wrong</returns>
-        public static bool MarkProcedureTest(string dbStudentName, string dbTeacherName, string queryStudent,
-            Candidate candidate)
+        public static Dictionary<string, string> MarkProcedureTest(string dbAnswerName, string dbSolutionName, string answer, Candidate candidate)
         {
-            // Run solution of both
-            string queryStudentRun = "Use " + dbStudentName + "\nGO \n" + queryStudent;
-            string queryTeacherRun = "Use " + dbTeacherName + "\nGO \n" + candidate.Solution;
+            // Execute query
             try
             {
-                General.ExecuteSingleQuery(queryStudentRun);
+                General.ExecuteQuery(answer, dbAnswerName);
             }
             catch (Exception e)
             {
-                throw new Exception("Student wrong: " + e.Message);
+                throw new Exception("Answer error: " + e.Message + "Query: " + answer);
             }
             try
             {
-                General.ExecuteSingleQuery(queryTeacherRun);
+                General.ExecuteQuery(candidate.Solution, dbSolutionName);
             }
             catch (Exception e)
             {
-                throw new Exception("Teacher wrong: " + e.Message);
+                throw new Exception("Solution error: " + e.Message + "Query: " + candidate.Solution);
             }
-            // Compare
-            return General.CompareMoreThanOneTableSort(dbStudentName, dbTeacherName, candidate.TestQuery);
+            // Compare nosort and return result(T/F)
+            if (General.CompareMoreThanOneTableSort(dbAnswerName, dbSolutionName, candidate.TestQuery))
+            {
+                return new Dictionary<string, string>()
+                                                {
+                                                    {"Point", candidate.Point.ToString()},
+                                                    {"Comment", "True"},
+                                                };
+            }
+            return null;
         }
     }
 }

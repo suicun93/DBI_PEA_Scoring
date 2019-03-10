@@ -5,11 +5,15 @@ namespace DBI_PEA_Scoring.Common
 {
     public class Constant
     {
-        public static Database[] listDB = null;
+        //public static Database[] listDB = null;
         public static SqlConnectionStringBuilder SqlConnectionStringBuilder = null;
         public static int TimeOutInSecond = 2;
         public static List<string> ListDBTemp = new List<string>();
         public static int NumberOfQuestion = 10;
+        public static List<string> DBScriptList = new List<string>();
+
+
+        public static double minusPoint = 0.25;
     }
     public class Database
     {

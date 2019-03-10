@@ -12,8 +12,9 @@ namespace DBI_PEA_Scoring.Utils.DaoType
         /// Execute Single Query    
         /// </summary>
         /// <param name="query">Query to execute</param>
-        public static void ExecuteSingleQuery(string query)
+        public static void ExecuteQuery(string query, string catalog)
         {
+            query = "Use " + "[" + catalog + "];\nGO\n" + query + "";
             var builder = Common.Constant.SqlConnectionStringBuilder;
             using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
             {
@@ -36,5 +37,36 @@ namespace DBI_PEA_Scoring.Utils.DaoType
                 }
             }
         }
+
+
+        /// <summary>
+        /// Execute Single Query    
+        /// </summary>
+        /// <param name="query">Query to execute</param>
+        //public static void ExecuteSingleQuery(string query, string catalog)
+        //{
+        //    query = "Use " + "[" + catalog + "];\nGO\n" + query + "";
+        //    var builder = Common.Constant.SqlConnectionStringBuilder;
+        //    using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
+        //    {
+        //        connection.Open();
+        //        var server = new Server(new ServerConnection(connection));
+        //        server.ConnectionContext.StatementTimeout = Common.Constant.TimeOutInSecond;
+        //        server.ConnectionContext.Connect();
+        //        try
+        //        {
+        //            server.ConnectionContext.ExecuteNonQuery(query);
+        //        }
+        //        catch (System.Exception)
+        //        {
+        //            throw;
+        //        }
+        //        finally
+        //        {
+        //            server.ConnectionContext.ExecuteNonQuery("Use master");
+        //            server.ConnectionContext.Disconnect();
+        //        }
+        //    }
+        //}
     }
 }

@@ -33,8 +33,8 @@
             this.questionTextBox = new System.Windows.Forms.TextBox();
             this.answerTextBox = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
-            this.browseQuestionButton = new System.Windows.Forms.Button();
-            this.browseAnswerButton = new System.Windows.Forms.Button();
+            this.ImportPaperSetButton = new System.Windows.Forms.Button();
+            this.ImportAnswerButton = new System.Windows.Forms.Button();
             this.label4 = new System.Windows.Forms.Label();
             this.statusImportAnswerProgressBar = new System.Windows.Forms.ProgressBar();
             this.statusImportAnswerLabel = new System.Windows.Forms.Label();
@@ -48,7 +48,7 @@
             this.label7 = new System.Windows.Forms.Label();
             this.serverNameTextBox = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
-            this.browseDatabasesButton = new System.Windows.Forms.Button();
+            this.ImportDatabasesButton = new System.Windows.Forms.Button();
             this.dbPathTextBox = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
             this.button3 = new System.Windows.Forms.Button();
@@ -63,9 +63,9 @@
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.Location = new System.Drawing.Point(31, 99);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(77, 13);
+            this.label1.Size = new System.Drawing.Size(54, 13);
             this.label1.TabIndex = 0;
-            this.label1.Text = "Import Solution";
+            this.label1.Text = "Paper Set";
             // 
             // label2
             // 
@@ -73,9 +73,9 @@
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label2.Location = new System.Drawing.Point(31, 138);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(106, 13);
+            this.label2.Size = new System.Drawing.Size(79, 13);
             this.label2.TabIndex = 1;
-            this.label2.Text = "Import Answer Folder";
+            this.label2.Text = "Answers Folder";
             // 
             // questionTextBox
             // 
@@ -99,31 +99,31 @@
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(34, 65);
+            this.label3.Location = new System.Drawing.Point(41, 65);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(345, 13);
+            this.label3.Size = new System.Drawing.Size(325, 13);
             this.label3.TabIndex = 4;
-            this.label3.Text = "We have to import question bank by file and student\'s answers by folder";
+            this.label3.Text = "We have to import Paper Set by file and student\'s answers by folder";
             // 
-            // browseQuestionButton
+            // ImportPaperSetButton
             // 
-            this.browseQuestionButton.Location = new System.Drawing.Point(318, 95);
-            this.browseQuestionButton.Name = "browseQuestionButton";
-            this.browseQuestionButton.Size = new System.Drawing.Size(63, 23);
-            this.browseQuestionButton.TabIndex = 5;
-            this.browseQuestionButton.Text = "Browse";
-            this.browseQuestionButton.UseVisualStyleBackColor = true;
-            this.browseQuestionButton.Click += new System.EventHandler(this.browseQuestionButton_Click);
+            this.ImportPaperSetButton.Location = new System.Drawing.Point(318, 95);
+            this.ImportPaperSetButton.Name = "ImportPaperSetButton";
+            this.ImportPaperSetButton.Size = new System.Drawing.Size(63, 23);
+            this.ImportPaperSetButton.TabIndex = 5;
+            this.ImportPaperSetButton.Text = "Import";
+            this.ImportPaperSetButton.UseVisualStyleBackColor = true;
+            this.ImportPaperSetButton.Click += new System.EventHandler(this.BrowseQuestionButton_Click);
             // 
-            // browseAnswerButton
+            // ImportAnswerButton
             // 
-            this.browseAnswerButton.Location = new System.Drawing.Point(318, 134);
-            this.browseAnswerButton.Name = "browseAnswerButton";
-            this.browseAnswerButton.Size = new System.Drawing.Size(63, 23);
-            this.browseAnswerButton.TabIndex = 6;
-            this.browseAnswerButton.Text = "Browse";
-            this.browseAnswerButton.UseVisualStyleBackColor = true;
-            this.browseAnswerButton.Click += new System.EventHandler(this.browseAnswerButton_Click);
+            this.ImportAnswerButton.Location = new System.Drawing.Point(318, 134);
+            this.ImportAnswerButton.Name = "ImportAnswerButton";
+            this.ImportAnswerButton.Size = new System.Drawing.Size(63, 23);
+            this.ImportAnswerButton.TabIndex = 6;
+            this.ImportAnswerButton.Text = "Import";
+            this.ImportAnswerButton.UseVisualStyleBackColor = true;
+            this.ImportAnswerButton.Click += new System.EventHandler(this.BrowseAnswerButton_Click);
             // 
             // label4
             // 
@@ -164,7 +164,7 @@
             this.statusConnectCheckBox.TabIndex = 41;
             this.statusConnectCheckBox.Text = "Disconnected";
             this.statusConnectCheckBox.UseVisualStyleBackColor = true;
-            this.statusConnectCheckBox.CheckedChanged += new System.EventHandler(this.statusConnectCheckBox_CheckedChanged);
+            this.statusConnectCheckBox.CheckedChanged += new System.EventHandler(this.StatusConnectCheckBox_CheckedChanged);
             // 
             // checkConnectionButton
             // 
@@ -174,7 +174,7 @@
             this.checkConnectionButton.TabIndex = 40;
             this.checkConnectionButton.Text = "Check Connection";
             this.checkConnectionButton.UseVisualStyleBackColor = true;
-            this.checkConnectionButton.Click += new System.EventHandler(this.checkConnectionButton_Click);
+            this.checkConnectionButton.Click += new System.EventHandler(this.CheckConnectionButton_Click);
             // 
             // passwordTextBox
             // 
@@ -191,9 +191,9 @@
             this.label9.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label9.Location = new System.Drawing.Point(27, 319);
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(98, 15);
+            this.label9.Size = new System.Drawing.Size(104, 15);
             this.label9.TabIndex = 36;
-            this.label9.Text = "Password for DB";
+            this.label9.Text = "Password(Server)";
             // 
             // usernameTextBox
             // 
@@ -210,9 +210,9 @@
             this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label8.Location = new System.Drawing.Point(27, 284);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(102, 15);
+            this.label8.Size = new System.Drawing.Size(108, 15);
             this.label8.TabIndex = 34;
-            this.label8.Text = "Username for DB";
+            this.label8.Text = "Username(Server)";
             // 
             // initialCatalogTextBox
             // 
@@ -229,9 +229,9 @@
             this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label7.Location = new System.Drawing.Point(27, 354);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(79, 15);
+            this.label7.Size = new System.Drawing.Size(81, 15);
             this.label7.TabIndex = 32;
-            this.label7.Text = "Initial catalog";
+            this.label7.Text = "Initial Catalog";
             // 
             // serverNameTextBox
             // 
@@ -252,16 +252,16 @@
             this.label6.TabIndex = 30;
             this.label6.Text = "Server Name";
             // 
-            // browseDatabasesButton
+            // ImportDatabasesButton
             // 
-            this.browseDatabasesButton.Enabled = false;
-            this.browseDatabasesButton.Location = new System.Drawing.Point(323, 444);
-            this.browseDatabasesButton.Name = "browseDatabasesButton";
-            this.browseDatabasesButton.Size = new System.Drawing.Size(63, 23);
-            this.browseDatabasesButton.TabIndex = 29;
-            this.browseDatabasesButton.Text = "Browse";
-            this.browseDatabasesButton.UseVisualStyleBackColor = true;
-            this.browseDatabasesButton.Click += new System.EventHandler(this.browseDatabases_Click);
+            this.ImportDatabasesButton.Enabled = false;
+            this.ImportDatabasesButton.Location = new System.Drawing.Point(323, 444);
+            this.ImportDatabasesButton.Name = "ImportDatabasesButton";
+            this.ImportDatabasesButton.Size = new System.Drawing.Size(63, 23);
+            this.ImportDatabasesButton.TabIndex = 29;
+            this.ImportDatabasesButton.Text = "Import";
+            this.ImportDatabasesButton.UseVisualStyleBackColor = true;
+            this.ImportDatabasesButton.Click += new System.EventHandler(this.browseDatabases_Click);
             // 
             // dbPathTextBox
             // 
@@ -291,7 +291,7 @@
             this.button3.TabIndex = 26;
             this.button3.Text = "GET MARKS";
             this.button3.UseVisualStyleBackColor = true;
-            this.button3.Click += new System.EventHandler(this.getMarkButton_Click);
+            this.button3.Click += new System.EventHandler(this.GetMarkButton_Click);
             // 
             // label10
             // 
@@ -342,15 +342,15 @@
             this.Controls.Add(this.label7);
             this.Controls.Add(this.serverNameTextBox);
             this.Controls.Add(this.label6);
-            this.Controls.Add(this.browseDatabasesButton);
+            this.Controls.Add(this.ImportDatabasesButton);
             this.Controls.Add(this.dbPathTextBox);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.statusImportAnswerLabel);
             this.Controls.Add(this.statusImportAnswerProgressBar);
             this.Controls.Add(this.label4);
-            this.Controls.Add(this.browseAnswerButton);
-            this.Controls.Add(this.browseQuestionButton);
+            this.Controls.Add(this.ImportAnswerButton);
+            this.Controls.Add(this.ImportPaperSetButton);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.answerTextBox);
             this.Controls.Add(this.questionTextBox);
@@ -371,8 +371,8 @@
         private System.Windows.Forms.TextBox questionTextBox;
         private System.Windows.Forms.TextBox answerTextBox;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Button browseQuestionButton;
-        private System.Windows.Forms.Button browseAnswerButton;
+        private System.Windows.Forms.Button ImportPaperSetButton;
+        private System.Windows.Forms.Button ImportAnswerButton;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.ProgressBar statusImportAnswerProgressBar;
         private System.Windows.Forms.Label statusImportAnswerLabel;
@@ -386,7 +386,7 @@
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.TextBox serverNameTextBox;
         private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.Button browseDatabasesButton;
+        private System.Windows.Forms.Button ImportDatabasesButton;
         private System.Windows.Forms.TextBox dbPathTextBox;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Button button3;

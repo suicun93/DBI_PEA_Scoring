@@ -50,7 +50,7 @@ namespace DBI_PEA_Scoring.Model
         /// <exception cref="SQLException">
         ///     if exception was found, throw it for GetPoint function to handle
         /// </exception>
-        private bool Point(Candidate candidate, string answer, int questionOrder)
+        private Dictionary<string, string> Point(Candidate candidate, string answer, int questionOrder)
         {
             // await TaskEx.Delay(100);
             if (string.IsNullOrEmpty(answer))
@@ -96,11 +96,10 @@ namespace DBI_PEA_Scoring.Model
                 {
                     Points[i] = 0;
                 }
-                Thread.Sleep(100);
                 return;
             }
-            // Select random DB
-            TestUtils.Database = Constant.listDB[(new Random()).Next(1, Common.Constant.listDB.Length) - 1];
+            //// Select random DB
+            //TestUtils.Database = Constant.listDB[(new Random()).Next(1, Common.Constant.listDB.Length) - 1];
             // Get mark one by one
             for (int questionOrder = 0; questionOrder < 10; questionOrder++)
             {
@@ -108,19 +107,18 @@ namespace DBI_PEA_Scoring.Model
                 {
                     //bool correct = await Cham(ListCandidates.ElementAt(i), ListAnswers.ElementAt(i));
                     if (numberOfQuestion > questionOrder)
-                        if (Point(ListCandidates.ElementAt(questionOrder), ListAnswers.ElementAt(questionOrder), questionOrder))
-                        {
-                            // Exactly -> Log true and return 0 point
-                            Points[questionOrder] = ListCandidates.ElementAt(questionOrder).Point;
-                            Logs[questionOrder] = "True";
-                        }
-                        else
-                            // Wrong -> Log false and return 0 point
-                            throw new Exception("False");
+                    {
+                        Dictionary<string, string> res = Point(ListCandidates.ElementAt(questionOrder), ListAnswers.ElementAt(questionOrder), questionOrder);
+                        //Exactly -> Log true and return 0 point
+                        Points[questionOrder] = double.Parse(res["Point"]);
+                        Logs[questionOrder] = res["Comment"];
+                    }
                     else
+                    {
                         // Not enough candidate 
                         // It rarely happens, it's this project's demos and faults.
                         throw new Exception("No questions found at question " + questionOrder + " paperNo = " + PaperNo);
+                    }
                 }
                 catch (Exception e)
                 {

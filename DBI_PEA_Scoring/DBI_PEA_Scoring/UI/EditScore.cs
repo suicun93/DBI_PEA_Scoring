@@ -1,4 +1,5 @@
 ﻿using DBI_PEA_Scoring.Model;
+using DBI_PEA_Scoring.Model.Teacher;
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
@@ -7,11 +8,11 @@ namespace DBI_PEA_Scoring.UI
 {
     public partial class EditScore : Form
     {
-        public List<TestItem> ListTestItems { get; set; }
-        public EditScore(List<TestItem> listTestItems)
+        public PaperSet PaperSet { get; set; }
+        public EditScore(PaperSet paperSet)
         {
             InitializeComponent();
-            ListTestItems = listTestItems;
+            PaperSet = paperSet;
             SetupUI();
         }
 
@@ -34,12 +35,12 @@ namespace DBI_PEA_Scoring.UI
             }
             scoreView.Refresh();
             int row = 0;
-            foreach (var testItem in ListTestItems)
+            foreach (var paper in PaperSet.Papers)
             {
                 scoreView.Rows.Add();
-                scoreView.Rows[row].Cells[0].Value = testItem.PaperNo;
+                scoreView.Rows[row].Cells[0].Value = paper.PaperNo;
                 int questionOrder = 0;
-                foreach (var question in testItem.ExamQuestionsList)
+                foreach (var question in paper.CandidateSet)
                 {
                     questionOrder++;
                     scoreView.Rows[row].Cells[questionOrder].Value = question.Point.ToString();

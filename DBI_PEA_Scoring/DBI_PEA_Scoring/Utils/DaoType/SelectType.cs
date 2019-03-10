@@ -1,4 +1,8 @@
 ﻿
+using DBI_PEA_Scoring.Common;
+using DBI_PEA_Scoring.Model;
+using System.Collections.Generic;
+
 namespace DBI_PEA_Scoring.Utils.DaoType
 {
     public class SelectType
@@ -12,19 +16,31 @@ namespace DBI_PEA_Scoring.Utils.DaoType
         /// <param name="queryTeacher"></param>
         /// <param name="queryStudent"></param>
         /// <returns></returns>
-        public static bool MarkSelectType(bool isSort, string dbStudentName, string dbTeacherName, string queryStudent,
-            string queryTeacher)
+        public static Dictionary<string, string> MarkSelectType(Candidate candidate, string answer, string dbSolutionName, string dbAnswerName)
         {
-            switch (isSort)
+            string result = "";
+            double point = candidate.Point;
+            //Compare
+            if(General.CompareOneTable(dbAnswerName, dbSolutionName, answer, candidate.Solution))
             {
-                case true:
-                    //return General.CompareOneTableNoSort(dbTeacherName, dbStudentName, queryTeacher, queryStudent);
-                    return General.CompareMoreThanOneTableSort(dbStudentName, dbTeacherName, queryStudent, queryTeacher);
-                case false:
-                    return General.CompareMoreThanOneTableSort(dbStudentName, dbTeacherName, queryStudent, queryTeacher);
-                default:
-                    return false;
+                result = "True";
+                string compareColumnsName = General.CompareOneTableColumnsName(dbAnswerName, dbSolutionName, answer, candidate.Solution);
+                if (!string.IsNullOrEmpty(compareColumnsName))
+                {
+                    result = compareColumnsName;
+                    point -= Constant.minusPoint;
+                }
             }
+            else
+            {
+                result = string.Concat("Wrong answer:\n","\tAnswer:\n",answer,"\n\tSolution:\n",candidate.Solution,"\n");
+                point = 0;
+            }
+            return new Dictionary<string, string>()
+                                                {
+                                                    {"Point", point.ToString()},
+                                                    {"Comment", result},
+                                                };
         }
     }
 }

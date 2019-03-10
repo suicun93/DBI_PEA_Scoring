@@ -46,7 +46,7 @@
             this.exportButton.TabIndex = 0;
             this.exportButton.Text = "Export";
             this.exportButton.UseVisualStyleBackColor = true;
-            this.exportButton.Click += new System.EventHandler(this.exportButton_Click);
+            this.exportButton.Click += new System.EventHandler(this.ExportButton_Click);
             // 
             // quitButton
             // 
@@ -56,7 +56,7 @@
             this.quitButton.TabIndex = 1;
             this.quitButton.Text = "Quit";
             this.quitButton.UseVisualStyleBackColor = true;
-            this.quitButton.Click += new System.EventHandler(this.quitButton_Click);
+            this.quitButton.Click += new System.EventHandler(this.QuitButton_Click);
             // 
             // label1
             // 
@@ -98,7 +98,7 @@
             this.editScoreButton.TabIndex = 5;
             this.editScoreButton.Text = "Edit Score";
             this.editScoreButton.UseVisualStyleBackColor = true;
-            this.editScoreButton.Click += new System.EventHandler(this.editScoreButton_Click);
+            this.editScoreButton.Click += new System.EventHandler(this.EditScoreButton_Click);
             // 
             // Scoring
             // 

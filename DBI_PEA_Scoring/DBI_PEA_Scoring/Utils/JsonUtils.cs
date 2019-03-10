@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using System.IO;
 using DBI_PEA_Scoring.Model;
+using DBI_PEA_Scoring.Model.Teacher;
 
 namespace DBI_PEA_Scoring.Utils
 {
@@ -17,8 +18,8 @@ namespace DBI_PEA_Scoring.Utils
         public static bool WriteJson(object obj, string path)
         {
             try
-            {
-                File.WriteAllText(path + "\\ExamItems.dat", SerializeJson(obj));
+            {//path with name of file, remember
+                File.WriteAllText(path, SerializeJson(obj));
                 return true;
             }
             catch
@@ -30,13 +31,13 @@ namespace DBI_PEA_Scoring.Utils
         public static object LoadQuestion(string path)
         {
             string jsonQuestion = File.ReadAllText(path);
-            return JsonConvert.DeserializeObject<List<TestItem>>(jsonQuestion);
+            return JsonConvert.DeserializeObject<PaperSet>(jsonQuestion);
         }
 
-        public static List<Question> DeserializeJson(string localPath)
+        public static PaperSet DeserializeJson(string localPath)
         {
             // read file into a string and deserialize JSON to a type
-            return JsonConvert.DeserializeObject<List<Question>>(File.ReadAllText(localPath));
+            return JsonConvert.DeserializeObject<PaperSet>(File.ReadAllText(localPath));
         }
     }
 }

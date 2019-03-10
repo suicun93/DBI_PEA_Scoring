@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace DBI_PEA_Scoring.Model
 {
@@ -19,8 +20,12 @@ namespace DBI_PEA_Scoring.Model
         public QuestionTypes QuestionType { get; set; }
         public string Solution { get; set; }
         public string TestQuery { get; set; }
+
         public bool RequireSort { get; set; }
+        public bool CheckColumnName { get; set; }
+
         public string DBName { get; set; }
+        public List<string> Illustration { get; set; }
         public double Point { get; set; }
     }
 }

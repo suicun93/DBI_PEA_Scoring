@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
 using DBI_PEA_Scoring.Model;
 using DBI_PEA_Scoring.Utils.DaoType;
@@ -7,8 +8,6 @@ namespace DBI_PEA_Scoring.Utils
 {
     public class TestUtils
     {
-        public static Common.Database Database = null;
-
         /// <summary>
         ///     Test Schema of 2 DBs.
         /// </summary>
@@ -18,31 +17,24 @@ namespace DBI_PEA_Scoring.Utils
         /// <exception cref="SqlException">
         ///     When something's wrong, throw exception to log error to KhaoThi
         /// </exception>
-        internal static bool TestSchema(Candidate candidate, string studentId, string answer, int questionOrder)
+        internal static Dictionary<string, string> TestSchema(Candidate candidate, string studentId, string answer, int questionNumber)
         {
-            string dbName = studentId + "_" + questionOrder + "_";
-            string dbTeacherName = dbName + "dbTeacherName";
-            string dbStudentName = dbName + "dbStudentName";
-            string queryTeacher = candidate.Solution.Replace(candidate.DBName, dbTeacherName);
-            string queryStudent = answer.Replace(candidate.DBName, dbStudentName);
+            string dbSolutionName = studentId + "_" + questionNumber + "_" + "Solution";
+            string dbAnswerName = studentId + "_" + questionNumber + "_" + "Answer";
+            string querySolution = candidate.Solution.Replace(candidate.DBName, dbSolutionName);
+            string queryAnswer = answer.Replace(candidate.DBName, dbAnswerName);
             try
             {
-                // Only check by compare 2 DB
-                if (SchemaType.MarkSchemaDatabasesType(dbStudentName, dbTeacherName,
-                    queryStudent, queryTeacher) == false)
-                {
-                    throw new Exception();
-                    
-                }
-                General.DropDatabase(dbTeacherName);
-                General.DropDatabase(dbStudentName);
-                return true;
+                return SchemaType.MarkSchemaDatabasesType(dbAnswerName, dbSolutionName, queryAnswer, querySolution, candidate);
             }
             catch (Exception e)
             {
-                General.DropDatabase(dbTeacherName);
-                General.DropDatabase(dbStudentName);
                 throw e;
+            }
+            finally
+            {
+                General.DropDatabase(dbSolutionName);
+                General.DropDatabase(dbAnswerName);
             }
         }
 
@@ -55,31 +47,24 @@ namespace DBI_PEA_Scoring.Utils
         /// <exception cref="Exception">
         ///     When something's wrong, throw exception to log error to KhaoThi
         /// </exception>
-        internal static bool TestSelect(Candidate candidate, string studentId, string answer, int questionOrder)
+        internal static Dictionary<string, string> TestSelect(Candidate candidate, string studentId, string answer, int questionOrder)
         {
-            string dbName = studentId + "_" + questionOrder;
-            string dbTeacherName = dbName + "_Teacher";
-            string dbStudentName = dbName + "_Student";
-            //Duplicate 2 new DB for student and teacher
-            General.DuplicatedDb(Database.SqlServerDbFolder,
-                Database.SourceDbName, dbName);
+            string dbSolutionName = studentId + "_" + questionOrder + "_Solution";
+            string dbAnswerName = studentId + "_" + questionOrder + "_Answer";
+            //Generate 2 new DB for student's answer and solution
+            General.GenerateDatabase(dbSolutionName, dbAnswerName);
             try
             {
-                // In case question type is Query, Just 1 requirement type, default is result set. 
-                // We will run solution to check
-                if (SelectType.MarkSelectType(candidate.RequireSort, dbStudentName , dbTeacherName, answer, candidate.Solution) == false)
-                {
-                    throw new Exception("Student's result and teacher's result are not the same.");
-                }
-                General.DropDatabase(dbTeacherName);
-                General.DropDatabase(dbStudentName);
-                return true;
+                return SelectType.MarkSelectType(candidate, answer, dbSolutionName, dbAnswerName);
             }
             catch (Exception e)
             {
-                General.DropDatabase(dbTeacherName);
-                General.DropDatabase(dbStudentName);
                 throw e;
+            }
+            finally
+            {
+                General.DropDatabase(dbSolutionName);
+                General.DropDatabase(dbAnswerName);
             }
         }
 
@@ -92,33 +77,27 @@ namespace DBI_PEA_Scoring.Utils
         /// <exception cref="Exception">
         ///     When something's wrong, throw exception to log to Khao Thi.
         /// </exception>
-        internal static bool TestInsertDeleteUpdate(Candidate candidate, string studentId, string answer, int questionOrder)
+        internal static Dictionary<string, string> TestInsertDeleteUpdate(Candidate candidate, string studentId, string answer, int questionOrder)
         {
-            string dbName = studentId + "_" + questionOrder;
-            string dbTeacherName = dbName + "_Teacher";
-            string dbStudentName = dbName + "_Student";
+            string dbSolutionName = studentId + "_" + questionOrder + "_Solution";
+            string dbAnswerName = studentId + "_" + questionOrder + "_Answer";
 
-            //Duplicate 2 new DB for student and teacher
-            General.DuplicatedDb(Database.SqlServerDbFolder,
-                Database.SourceDbName, dbName);
+            //Generate 2 new DB for student's answer and solution
+            General.GenerateDatabase(dbSolutionName, dbAnswerName);
             try
             {
                 // In case question type is DML, Just 1 requirement type, default is result set. 
                 // Run query and compare table.
-                string checkQuery = candidate.TestQuery;
-                if (DmlType.MarkDMLQuery(dbStudentName, dbTeacherName, answer, candidate.Solution, checkQuery) == false)
-                {
-                    throw new Exception("Student's result and teacher's result are not the same.");
-                }
-                General.DropDatabase(dbTeacherName);
-                General.DropDatabase(dbStudentName);
-                return true;
+                return DmlType.MarkDMLQuery(dbAnswerName, dbSolutionName, answer, candidate);
             }
             catch (Exception e)
             {
-                General.DropDatabase(dbTeacherName);
-                General.DropDatabase(dbStudentName);
                 throw e;
+            }
+            finally
+            {
+                General.DropDatabase(dbSolutionName);
+                General.DropDatabase(dbAnswerName);
             }
         }
 
@@ -131,31 +110,27 @@ namespace DBI_PEA_Scoring.Utils
         /// <exception cref="Exception">
         ///     When something's wrong, throw exception to log to Khao Thi.
         /// </exception>
-        internal static bool TestProcedure(Candidate candidate, string studentId, string answer, int questionOrder)
+        internal static Dictionary<string, string> TestProcedure(Candidate candidate, string studentId, string answer, int questionOrder)
         {
-            string dbName = studentId + "_" + questionOrder;
-            string dbTeacherName = dbName + "_Teacher";
-            string dbStudentName = dbName + "_Student";
-            //Duplicate 2 new DB for student and teacher
-            General.DuplicatedDb(Database.SqlServerDbFolder,
-                Database.SourceDbName, dbName);
+            string dbSolutionName = studentId + "_" + questionOrder + "_Solution";
+            string dbAnswerName = studentId + "_" + questionOrder + "_Answer";
+
+            //Generate 2 new DB for student's answer and solution
+            General.GenerateDatabase(dbSolutionName, dbAnswerName);
             try
             {
-                // Create procedure then compare 2 multiple result sets by TestQuery
-                if (ProcedureType.MarkProcedureTest(dbStudentName, dbTeacherName, answer,
-                    candidate) == false)
-                {
-                    throw new Exception("Student and teacher's result are not matched.");
-                }
-                General.DropDatabase(dbTeacherName);
-                General.DropDatabase(dbStudentName);
-                return true;
+                // In case question type is DML, Just 1 requirement type, default is result set. 
+                // Run query and compare table.
+                return ProcedureType.MarkProcedureTest(dbAnswerName, dbSolutionName, answer, candidate);
             }
             catch (Exception e)
             {
-                General.DropDatabase(dbTeacherName);
-                General.DropDatabase(dbStudentName);
                 throw e;
+            }
+            finally
+            {
+                General.DropDatabase(dbSolutionName);
+                General.DropDatabase(dbAnswerName);
             }
         }
         /// <summary>
@@ -167,31 +142,27 @@ namespace DBI_PEA_Scoring.Utils
         /// /// <exception cref="Exception">
         ///     When something's wrong, throw exception to log to Khao Thi.
         /// </exception>
-        internal static bool TestTrigger(Candidate candidate, string studentId, string answer, int questionOrder)
+        internal static Dictionary<string, string> TestTrigger(Candidate candidate, string studentId, string answer, int questionOrder)
         {
-            string dbName = studentId + "_" + questionOrder;
-            string dbTeacherName = dbName + "_Teacher";
-            string dbStudentName = dbName + "_Student";
-            //Duplicate 2 new DB for student and teacher
-            General.DuplicatedDb(Database.SqlServerDbFolder,
-                Database.SourceDbName, dbName);
+            string dbSolutionName = studentId + "_" + questionOrder + "_Solution";
+            string dbAnswerName = studentId + "_" + questionOrder + "_Answer";
+
+            //Generate 2 new DB for student's answer and solution
+            General.GenerateDatabase(dbSolutionName, dbAnswerName);
             try
             {
-                // Create trigger then compare 2 multiple result sets by TestQuery
-                if (TriggerType.MarkTriggerTest(dbStudentName, dbTeacherName, answer,
-                    candidate) == false)
-                {
-                    throw new Exception("Student and teacher's result are not matched.");
-                }
-                General.DropDatabase(dbTeacherName);
-                General.DropDatabase(dbStudentName);
-                return true;
+                // In case question type is DML, Just 1 requirement type, default is result set. 
+                // Run query and compare table.
+                return TriggerType.MarkTriggerTest(dbAnswerName, dbSolutionName, answer, candidate);
             }
             catch (Exception e)
             {
-                General.DropDatabase(dbTeacherName);
-                General.DropDatabase(dbStudentName);
                 throw e;
+            }
+            finally
+            {
+                General.DropDatabase(dbSolutionName);
+                General.DropDatabase(dbAnswerName);
             }
         }
     }
