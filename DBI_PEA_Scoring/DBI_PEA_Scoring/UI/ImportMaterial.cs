@@ -2,13 +2,13 @@
 using DBI_PEA_Scoring.Model;
 using DBI_PEA_Scoring.Model.Teacher;
 using DBI_PEA_Scoring.Utils;
-using DBI_PEA_Scoring.Utils.DaoType;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using General = DBI_PEA_Scoring.Utils.Dao.General;
 
 namespace DBI_PEA_Scoring.UI
 {

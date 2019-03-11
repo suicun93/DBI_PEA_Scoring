@@ -60,19 +60,19 @@ namespace DBI_PEA_Scoring.Model
             {
                 case Candidate.QuestionTypes.Schema:
                     // Schema Question
-                    return TestUtils.TestSchema(candidate, StudentID, answer, questionOrder);
+                    return PaperUtils.TestSchema(candidate, StudentID, answer, questionOrder);
                 case Candidate.QuestionTypes.Select:
                     //Select Question
-                    return TestUtils.TestSelect(candidate, StudentID, answer, questionOrder);
+                    return PaperUtils.TestSelect(candidate, StudentID, answer, questionOrder);
                 case Candidate.QuestionTypes.DML:
                     // DML: Insert/Delete/Update Question
-                    return TestUtils.TestInsertDeleteUpdate(candidate, StudentID, answer, questionOrder);
+                    return PaperUtils.TestInsertDeleteUpdate(candidate, StudentID, answer, questionOrder);
                 case Candidate.QuestionTypes.Procedure:
                     // Procedure Question
-                    return TestUtils.TestProcedure(candidate, StudentID, answer, questionOrder);
+                    return PaperUtils.TestProcedure(candidate, StudentID, answer, questionOrder);
                 case Candidate.QuestionTypes.Trigger:
                     // Trigger Question
-                    return TestUtils.TestTrigger(candidate, StudentID, answer, questionOrder);
+                    return PaperUtils.TestTrigger(candidate, StudentID, answer, questionOrder);
                 default:
                     // Not supported yet
                     throw new Exception("This question type has not been supported yet.");

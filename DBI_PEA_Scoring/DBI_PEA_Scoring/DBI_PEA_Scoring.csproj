@@ -82,19 +82,14 @@
     <Compile Include="UI\Scoring.Designer.cs">
       <DependentUpon>Scoring.cs</DependentUpon>
     </Compile>
-    <Compile Include="Utils\DaoType\DmlType.cs" />
     <Compile Include="Utils\ExcelUtils.cs" />
-    <Compile Include="Utils\DaoType\General\General+Compare.cs" />
-    <Compile Include="Utils\DaoType\General\General+Support.cs" />
-    <Compile Include="Utils\DaoType\General\General+Execution.cs" />
-    <Compile Include="Utils\DaoType\ProcedureType.cs" />
-    <Compile Include="Utils\DaoType\SchemaType+Query.cs" />
-    <Compile Include="Utils\DaoType\SchemaType.cs" />
-    <Compile Include="Utils\DaoType\SelectType.cs" />
-    <Compile Include="Utils\DaoType\TriggerType.cs" />
+    <Compile Include="Utils\Dao\General+Compare.cs" />
+    <Compile Include="Utils\Dao\General+Support.cs" />
+    <Compile Include="Utils\Dao\General.cs" />
+    <Compile Include="Utils\Dao\SchemaType+Query.cs" />
     <Compile Include="Utils\FileUtils.cs" />
     <Compile Include="Utils\JsonUtils.cs" />
-    <Compile Include="Utils\TestUtils.cs" />
+    <Compile Include="Utils\PaperUtils.cs" />
     <EmbeddedResource Include="UI\EditScore.resx">
       <DependentUpon>EditScore.cs</DependentUpon>
     </EmbeddedResource>

@@ -2,7 +2,6 @@
 using DBI_PEA_Scoring.Model;
 using DBI_PEA_Scoring.Model.Teacher;
 using DBI_PEA_Scoring.Utils;
-using DBI_PEA_Scoring.Utils.DaoType;
 using System;
 using System.Collections.Generic;
 using System.IO;

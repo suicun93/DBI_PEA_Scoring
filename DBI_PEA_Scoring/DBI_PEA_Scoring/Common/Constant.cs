@@ -7,7 +7,7 @@ namespace DBI_PEA_Scoring.Common
     {
         //public static Database[] listDB = null;
         public static SqlConnectionStringBuilder SqlConnectionStringBuilder = null;
-        public static int TimeOutInSecond = 2;
+        public static int TimeOutInSecond = 5;
         public static List<string> ListDBTemp = new List<string>();
         public static int NumberOfQuestion = 10;
         public static List<string> DBScriptList = new List<string>();
