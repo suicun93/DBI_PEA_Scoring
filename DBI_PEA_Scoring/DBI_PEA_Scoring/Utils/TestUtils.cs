@@ -33,8 +33,8 @@ namespace DBI_PEA_Scoring.Utils
             }
             finally
             {
-                General.DropDatabase(dbSolutionName);
                 General.DropDatabase(dbAnswerName);
+                General.DropDatabase(dbSolutionName);
             }
         }
 
@@ -161,8 +161,8 @@ namespace DBI_PEA_Scoring.Utils
             }
             finally
             {
-                General.DropDatabase(dbSolutionName);
                 General.DropDatabase(dbAnswerName);
+                General.DropDatabase(dbSolutionName);
             }
         }
     }

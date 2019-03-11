@@ -28,21 +28,25 @@ namespace DBI_PEA_Scoring.Utils.DaoType
             try
             {
                 General.ExecuteQuery(candidate.Solution, dbSolutionName);
+                // Compare nosort and return result(T/F)
+                if (General.CompareMoreThanOneTableSort(dbAnswerName, dbSolutionName, candidate.TestQuery))
+                {
+                    return new Dictionary<string, string>()
+                                                {
+                                                    {"Point", candidate.Point.ToString()},
+                                                    {"Comment", "True"},
+                                                };
+                }
             }
             catch (Exception e)
             {
                 throw new Exception("Solution error: " + e.Message + "Query: " + candidate.Solution);
             }
-            // Compare nosort and return result(T/F)
-            if (General.CompareMoreThanOneTableSort(dbAnswerName, dbSolutionName, candidate.TestQuery))
-            {
-                return new Dictionary<string, string>()
+            return new Dictionary<string, string>()
                                                 {
-                                                    {"Point", candidate.Point.ToString()},
-                                                    {"Comment", "True"},
-                                                };
-            }
-            return null;
+                                                    {"Point", "0"},
+                                                    {"Comment", "False"},
+                                                }; ;
         }
     }
 }
