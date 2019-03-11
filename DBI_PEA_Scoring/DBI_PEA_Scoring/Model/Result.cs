@@ -91,7 +91,7 @@ namespace DBI_PEA_Scoring.Model
             // Wrong PaperNo
             if (numberOfQuestion == 0)
             {
-                Logs[0] = "Wrong Paper No";
+                Logs[0] = "Wrong Paper No\n";
                 for (int i = 0; i < Constant.NumberOfQuestion; i++)
                 {
                     Points[i] = 0;
@@ -110,14 +110,22 @@ namespace DBI_PEA_Scoring.Model
                     {
                         Dictionary<string, string> res = Point(ListCandidates.ElementAt(questionOrder), ListAnswers.ElementAt(questionOrder), questionOrder);
                         //Exactly -> Log true and return 0 point
-                        Points[questionOrder] = double.Parse(res["Point"]);
-                        Logs[questionOrder] = res["Comment"];
+                        if(res != null)
+                        {
+                            Points[questionOrder] = double.Parse(res["Point"]);
+                            Logs[questionOrder] = res["Comment"] + "\n";
+                        }
+                        else
+                        {
+                            Points[questionOrder] = 0;
+                            Logs[questionOrder] = "False\n";
+                        }
                     }
                     else
                     {
                         // Not enough candidate 
                         // It rarely happens, it's this project's demos and faults.
-                        throw new Exception("No questions found at question " + questionOrder + " paperNo = " + PaperNo);
+                        throw new Exception("No questions found at question " + questionOrder + " paperNo = " + PaperNo + "\n");
                     }
                 }
                 catch (Exception e)
@@ -125,7 +133,7 @@ namespace DBI_PEA_Scoring.Model
                     // When something's wrong:
                     // Log error and return 0 point for student.
                     Points[questionOrder] = 0;
-                    Logs[questionOrder] = e.Message;
+                    Logs[questionOrder] = e.Message + "\n";
                 }
             }
         }

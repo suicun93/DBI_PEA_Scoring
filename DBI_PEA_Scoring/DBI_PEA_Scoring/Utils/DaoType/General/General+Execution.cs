@@ -20,7 +20,7 @@ namespace DBI_PEA_Scoring.Utils.DaoType
         /// "message error" if error
         /// "false" if not success
         /// </returns>
-        public static string ExecuteQuery(string query, string catalog)
+        public static bool ExecuteQuery(string query, string catalog)
         {
             query = "Use " + "[" + catalog + "]\nGO\n" + query + "";
             string[] queryList = query.Split(new string[] { "GO", "go", "Go", "oG" }, StringSplitOptions.None);
@@ -34,52 +34,48 @@ namespace DBI_PEA_Scoring.Utils.DaoType
                     {
                         using (SqlCommand command = new SqlCommand(queryList[i], connection))
                         {
-                            int res = command.ExecuteNonQuery();
-                            if(res >= 0)
-                            {
-                                return "";
-                            }
+                            Console.WriteLine(command.ExecuteNonQuery());
                         }
                     }
+                    return true;
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
-                return e.Message;
+                throw e;
             }
-            return "False";
+        }
+
+        /// <summary>
+        /// Execute Single Query    
+        /// </summary>
+        /// <param name="query">Query to execute</param>
+        public static bool ExecuteSingleQuery(string query, string catalog)
+        {
+            query = "Use " + "[" + catalog + "];\nGO\n" + query + "";
+            var builder = Common.Constant.SqlConnectionStringBuilder;
+            using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
+            {
+                connection.Open();
+                var server = new Server(new ServerConnection(connection));
+                server.ConnectionContext.StatementTimeout = Common.Constant.TimeOutInSecond;
+                server.ConnectionContext.Connect();
+                try
+                {
+                    server.ConnectionContext.ExecuteNonQuery(query);
+                    return true;
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+                finally
+                {
+                    server.ConnectionContext.ExecuteNonQuery("Use master");
+                    server.ConnectionContext.Disconnect();
+                }
+            }
         }
     }
-
-
-    /// <summary>
-    /// Execute Single Query    
-    /// </summary>
-    /// <param name="query">Query to execute</param>
-    //public static void ExecuteSingleQuery(string query, string catalog)
-    //{
-    //    query = "Use " + "[" + catalog + "];\nGO\n" + query + "";
-    //    var builder = Common.Constant.SqlConnectionStringBuilder;
-    //    using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
-    //    {
-    //        connection.Open();
-    //        var server = new Server(new ServerConnection(connection));
-    //        server.ConnectionContext.StatementTimeout = Common.Constant.TimeOutInSecond;
-    //        server.ConnectionContext.Connect();
-    //        try
-    //        {
-    //            server.ConnectionContext.ExecuteNonQuery(query);
-    //        }
-    //        catch (System.Exception)
-    //        {
-    //            throw;
-    //        }
-    //        finally
-    //        {
-    //            server.ConnectionContext.ExecuteNonQuery("Use master");
-    //            server.ConnectionContext.Disconnect();
-    //        }
-    //    }
-    //}
 }
 

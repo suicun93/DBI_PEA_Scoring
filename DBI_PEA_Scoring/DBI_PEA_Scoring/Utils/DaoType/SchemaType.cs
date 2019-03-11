@@ -21,19 +21,20 @@ namespace DBI_PEA_Scoring.Utils.DaoType
         /// message error from sqlserver if error</returns>
         public static Dictionary<string, string> MarkSchemaDatabasesType(string dbAnswerName, string dbSolutionName, string answer, string solution, Candidate candidate)
         {
-            string resAnswer = General.ExecuteQuery(answer, "master");
-            if (resAnswer.Equals(""))
+            try
             {
-                string resSolution = General.ExecuteQuery(answer, "master");
-                if (resSolution.Equals(""))
-                    return CompareTwoDatabases(dbAnswerName, dbSolutionName, candidate);
-                else
-                    throw new Exception("Solution error: " + resSolution + "Querry: " + solution);
+                if (General.ExecuteQuery(answer, "master"))
+                {
+                    if (General.ExecuteQuery(solution, "master"))
+                        return CompareTwoDatabases(dbAnswerName, dbSolutionName, candidate);
+                }
+                return null;
             }
-            else
+            catch (Exception)
             {
-                throw new Exception("Answer error: " + resAnswer + "Querry: " + answer);
+                throw;
             }
+            
         }
 
         /// <summary>
