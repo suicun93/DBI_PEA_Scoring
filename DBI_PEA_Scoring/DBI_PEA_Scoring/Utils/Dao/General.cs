@@ -26,15 +26,23 @@ namespace DBI_PEA_Scoring.Utils.Dao
             using (var connection = new SqlConnection(builder.ConnectionString))
             {
                 connection.Open();
-                foreach (var q in queryList)
+                try
                 {
-                    using (var command = new SqlCommand(q, connection))
+                    foreach (var q in queryList)
                     {
-                        command.CommandTimeout = Constant.TimeOutInSecond;
-                        Console.WriteLine(command.ExecuteNonQuery());
+                        using (var command = new SqlCommand(q, connection))
+                        {
+                            command.CommandTimeout = Constant.TimeOutInSecond;
+                            Console.WriteLine(command.ExecuteNonQuery());
+                        }
                     }
+                    return true;
                 }
-                return true;
+                finally
+                {
+                    SqlCommand FixCommand = new SqlCommand("Use master", connection);
+                    FixCommand.ExecuteNonQuery();
+                }
             }
         }
 
