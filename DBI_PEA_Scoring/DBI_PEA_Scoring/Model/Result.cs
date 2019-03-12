@@ -113,7 +113,7 @@ namespace DBI_PEA_Scoring.Model
                         if(res != null)
                         {
                             Points[questionOrder] = double.Parse(res["Point"]);
-                            Logs[questionOrder] = res["Comment"] + "\n";
+                            Logs[questionOrder] = res["Comment"];
                         }
                         else
                         {

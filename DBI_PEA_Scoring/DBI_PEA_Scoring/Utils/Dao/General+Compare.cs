@@ -28,6 +28,8 @@ namespace DBI_PEA_Scoring.Utils.Dao
                 string compareQuery = "exec sp_CompareDb [" + db2Name + "], [" + db1Name + "]";
                 var builder = Constant.SqlConnectionStringBuilder;
                 // Connect to SQL
+                string result = "";
+                int count = 0;
                 using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
                 {
                     connection.Open();
@@ -35,24 +37,32 @@ namespace DBI_PEA_Scoring.Utils.Dao
                     {
                         using (SqlDataReader reader = commandCompare.ExecuteReader())
                         {
-                            string result = string.Concat("Check Table structure:\n", "Table Name\t",
-                                "Column Name\t", "Data Type\t", "Nullable\n");
-                            double point = candidate.Point;
                             while (reader.Read())
                             {
-                                result = string.Concat(result, (string)reader["TABLENAME"], "\t", (string)reader["COLUMNNAME"], "\t",
-                                    (string)reader["DATATYPE"], "\t", (string)reader["NULLABLE"], "\n");
-                                point -= Constant.minusPoint;
+                                result = string.Concat(result, "Check Table structure:\n", "||    Table Name    ||", "    Column Name    ||",
+                                    "    Data Type    ||", "    Nullable   ||\n");
+
+                                result = string.Concat(result, new string('-', 79), "\n", string.Format("||{0,-18}||", (string)reader["TABLENAME"]),
+                                    string.Format("{0,-19}||", (string)reader["COLUMNNAME"]),
+                                    string.Format("{0,-17}||", (string)reader["DATATYPE"]),
+                                    string.Format("{0,-15}||", (string)reader["NULLABLE"]), "\n");
+                                result = string.Concat(result, "\n");
+                                count++;
                             }
                             reader.NextResult();
                             while (reader.Read())
                             {
-                                result = string.Concat(result, "Check Constraints:\n", "FK Table\t",
-                                    "FK Columns\t", "PK Table\t", "PK Columns\n");
-                                result = string.Concat(result, (string)reader["FK_TABLE"], "\t", (string)reader["FK_COLUMNS"], "\t",
-                                    (string)reader["PK_TABLE"], "\t", (string)reader["PK_COLUMNS"], "\n");
-                                point -= Constant.minusPoint;
+                                result = string.Concat(result, "Check Constraints:\n", "||    FK Table    ||",
+                                    "    FK Columns    ||", "    PK Table   ||", "    PK Columns   ||\n");
+                                result = string.Concat(result, new string('-', 76), "\n", string.Format("||{0,-16}||", (string)reader["FK_TABLE"]),
+                                    string.Format("{0,-18}||", (string)reader["FK_COLUMNS"]), string.Format("{0,-15}||", (string)reader["PK_TABLE"]),
+                                    string.Format("{0,-17}||", (string)reader["PK_COLUMNS"]), "\n");
+                                result = string.Concat(result, "\n");
+                                count++;
                             }
+                            double point = candidate.Point - Constant.minusPoint * count;
+                            result = string.Concat(result, count, " error(s) have been found\n");
+
                             point = point < 0 ? 0 : point;
                             result = point == candidate.Point ? "True" : result;
                             return new Dictionary<string, string>
@@ -133,17 +143,17 @@ namespace DBI_PEA_Scoring.Utils.Dao
                 if (candidate.RequireSort) numOfTc++;
                 if (candidate.CheckColumnName) numOfTc++;
                 double pointEachTc = Math.Round(candidate.Point / numOfTc, 2);
+                int count = 0;
                 //check data
                 if (CompareTwoDataSetsByData(dataTableAnswer, dataTableSolution))
                 {
-                    point += pointEachTc;
+                    count++;
                     //If Sort is require
                     if (candidate.RequireSort)
                     {
                         if (CompareTwoDataSetsByRow(dataTableAnswer, dataTableSolution))
                         {
-                            point += pointEachTc;
-                            //comment = "False\n";
+                            count++;
                         }
                         else
                         {
@@ -158,20 +168,20 @@ namespace DBI_PEA_Scoring.Utils.Dao
                             CompareColumnsNameOfTables(dataTableAnswerShema, dataTableSolutionShema);
                         if (resCompareColumnName.Equals(""))
                         {
-                            point += pointEachTc;
-
+                            count++;
                         }
                         else
                         {
                             comment = string.Concat(comment, resCompareColumnName);
                         }
                     }
+                    point = count * pointEachTc;
                 }
                 //Wrong query
                 else
                 {
                     point = 0;
-                    comment = "False\n";
+                    comment = "Wrong Answer\n";
                 }
                 if (comment.Equals(""))
                 {
@@ -181,7 +191,7 @@ namespace DBI_PEA_Scoring.Utils.Dao
                 return new Dictionary<string, string>
                 {
                     {"Point", point.ToString()},
-                    {"Comment", comment + "\n"}
+                    {"Comment", string.Concat("Testcase passed: (", count, "/",numOfTc ,") - ",comment)}
                 };
             }
         }
@@ -223,35 +233,39 @@ namespace DBI_PEA_Scoring.Utils.Dao
                     sqlDataAdapterSolution.Fill(dataSetSolution);
 
                     int numOfTc = dataSetSolution.Tables.Count;
-                    double pointEachTc = candidate.Point / numOfTc;
+                    double pointEachTc = Math.Round(candidate.Point / numOfTc, 2);
                     int count = 0;
                     string comment = "";
-                    // If Number of table of student and teacher is same, then Compare one by one
+                    //Compare results one by one
                     for (int i = 0; i < numOfTc; i++)
                     {
                         foreach (DataTable tableAnswer in dataSetAnswer.Tables)
                             if (CompareTwoDataSetsByData(tableAnswer, dataSetSolution.Tables[i]))
                             {
                                 count++;
-                                comment = string.Concat(comment, "Testcase ", i + 1, ": True\n");
                                 break;
                             }
-                            else if (i + 1 == numOfTc)
-                                comment = string.Concat(comment, "Testcase ", i + 1, ": False\n");
                     }
-
+                    //Degree 50% of point if Answer has more resultSets than Solution
+                    if (dataSetSolution.Tables.Count < dataSetAnswer.Tables.Count)
+                    {
+                        pointEachTc = Math.Round(pointEachTc / 2, 2);
+                        comment = string.Concat(comment, "Decrease 50% of points because Answer has more resultSets than Solution (",
+                            dataSetAnswer.Tables.Count, " > ", dataSetSolution.Tables.Count, ")\n");
+                    }
                     if (count > 0)
                     {
                         return new Dictionary<string, string>
                             {
-                                {"Point", (count * pointEachTc).ToString(CultureInfo.InvariantCulture)},
-                                {"Comment", comment}
+                                {"Point", (count * pointEachTc).ToString()},
+                                {"Comment", string.Concat("Testcase passed: (", count, "/",numOfTc ,") - ", (count == numOfTc)&&(comment.Equals(""))? "True\n":
+                                string.Concat("Wrong Answer\n", comment))}
                             };
                     }
                     return new Dictionary<string, string>
                         {
                             {"Point", "0"},
-                            {"Comment", "False\n"}
+                            {"Comment", string.Concat("Testcase passed: (", count, "/",numOfTc ,") - ","Wrong Answer\n")}
                         };
 
                 }
@@ -292,68 +306,5 @@ namespace DBI_PEA_Scoring.Utils.Dao
             }
             return true;
         }
-
-        //internal static bool CompareMoreResultSets(string dbAnswerName, string dbSolutionName, string answer, Candidate candidate)
-        //{
-        //    // Prepare Command
-        //    var builder = Constant.SqlConnectionStringBuilder;
-        //    builder.MultipleActiveResultSets = true;
-        //    string queryAnswer = "USE " + dbAnswerName + " \n" + answer;
-        //    string querySolution = "USE " + dbSolutionName + " \n" + candidate.Solution;
-        //    // Connect and run query to check
-        //    using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
-        //    {
-        //        connection.Open();
-        //        // Prepare Command
-        //        SqlCommand sqlCommandStudent = new SqlCommand(queryAnswer, connection);
-        //        SqlCommand sqlCommandTeacher = new SqlCommand(querySolution, connection);
-        //        sqlCommandStudent.CommandTimeout = Constant.TimeOutInSecond;
-        //        sqlCommandTeacher.CommandTimeout = Constant.TimeOutInSecond;
-
-        //        // Prepare SqlDataAdapter
-        //        SqlDataAdapter adapterStudent = new SqlDataAdapter(queryAnswer, connection);
-        //        SqlDataAdapter adapterTeacher = new SqlDataAdapter(querySolution, connection);
-
-        //        // Prepare DataSet
-        //        DataSet dataSetStudent = new DataSet();
-        //        DataSet dataSetTeacher = new DataSet();
-
-        //        // Fill Data adapter to dataset
-        //        try
-        //        {
-        //            adapterStudent.Fill(dataSetStudent);
-        //        }
-        //        catch (Exception e)
-        //        {
-        //            throw new Exception("Answer error: " + e.Message);
-        //        }
-        //        try
-        //        {
-        //            adapterTeacher.Fill(dataSetTeacher);
-        //        }
-        //        catch (Exception e)
-        //        {
-        //            throw new Exception("Solution error: " + e.Message);
-        //        }
-        //        connection.Close();
-
-        //        // Check count of table of student and teacher is same or not.
-        //        if (dataSetTeacher.Tables.Count > dataSetStudent.Tables.Count)
-        //            throw new Exception("Less table than requirement");
-        //        if (dataSetTeacher.Tables.Count < dataSetStudent.Tables.Count)
-        //            throw new Exception("More table than requirement");
-        //        // If Number of table of student and teacher is same, then Compare one by one
-        //        for (int i = 0; i < dataSetStudent.Tables.Count; i++)
-        //        {
-        //            if (CompareTwoDataSetsNoSort(dataSetStudent.Tables[i], dataSetTeacher.Tables[i]))
-        //            {
-        //                throw new Exception("Result Not matched");
-        //            }
-        //        }
-        //        return true;
-        //    }
-        //}
-
-
     }
 }
