@@ -43,9 +43,9 @@ namespace DBI_PEA_Scoring.UI
                 // Get link to file
                 //QuestionPath = FileUtils.GetFileLocation();
                 // Bao
-                // QuestionPath = @"E:\OneDrive\000 SWP\Sample\DBI_Exam\03_Sample_for_Testing_New_Phase_(09.03)\01_From_Shuffle\PaperSet.dat";
+                QuestionPath = @"E:\OneDrive\000 SWP\Sample\DBI_Exam\03_Sample_for_Testing_New_Phase_(09.03)\01_From_Shuffle\PaperSet.dat";
                 // Duc
-                QuestionPath = @"C:\Users\hoangduc\Desktop\PaperSet.dat";
+                //  = @"C:\Users\hoangduc\Desktop\PaperSet.dat";
                 questionTextBox.Text = QuestionPath;
                 // Get QuestionPackage from file
                 PaperSet = null;
@@ -73,9 +73,9 @@ namespace DBI_PEA_Scoring.UI
                 // Get directory where student's submittion was saved
                 //AnswerPath = FileUtils.GetFolderLocation();
                 // Bao
-                // AnswerPath = @"D:\Sys\Desktop\tmp";
+                AnswerPath = @"D:\Sys\Desktop\tmp";
                 // Duc
-                AnswerPath = @"C:\Users\hoangduc\Desktop\02_From_Submission";
+                //AnswerPath = @"C:\Users\hoangduc\Desktop\02_From_Submission";
                 answerTextBox.Text = AnswerPath;
                 // Get all submission files
                 string[] submissionFiles = Directory.GetFiles(AnswerPath, "*.dat");

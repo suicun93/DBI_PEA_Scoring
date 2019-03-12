@@ -19,10 +19,10 @@ namespace DBI_PEA_Scoring.Utils
         /// <exception cref="SqlException">
         ///     When something's wrong, throw exception to log error to KhaoThi
         /// </exception>
-        internal static Dictionary<string, string> TestSchema(Candidate candidate, string studentId, string answer, int questionNumber)
+        internal static Dictionary<string, string> TestSchema(Candidate candidate, string studentId, string answer, int questionOrder)
         {
-            string dbSolutionName = studentId + "_" + questionNumber + "_" + "Solution";
-            string dbAnswerName = studentId + "_" + questionNumber + "_" + "Answer";
+            string dbSolutionName = studentId + "_" + questionOrder + "_Solution" + "_" + new Random().Next(1000000000);
+            string dbAnswerName = studentId + "_" + questionOrder + "_Answer" + "_" + new Random().Next(1000000000);
             string querySolution = candidate.Solution.Replace(candidate.DBName, dbSolutionName);
             string queryAnswer = answer.Replace(candidate.DBName, dbAnswerName);
             try
@@ -67,8 +67,8 @@ namespace DBI_PEA_Scoring.Utils
         /// </exception>
         internal static Dictionary<string, string> TestSelect(Candidate candidate, string studentId, string answer, int questionOrder)
         {
-            string dbSolutionName = studentId + "_" + questionOrder + "_Solution";
-            string dbAnswerName = studentId + "_" + questionOrder + "_Answer";
+            string dbSolutionName = studentId + "_" + questionOrder + "_Solution" + "_" + new Random().Next(1000000000);
+            string dbAnswerName = studentId + "_" + questionOrder + "_Answer" + "_" + new Random().Next(1000000000);
             //Generate 2 new DB for student's answer and solution
             General.GenerateDatabase(dbSolutionName, dbAnswerName);
             try
@@ -95,8 +95,8 @@ namespace DBI_PEA_Scoring.Utils
         /// </exception>
         internal static Dictionary<string, string> TestInsertDeleteUpdate(Candidate candidate, string studentId, string answer, int questionOrder)
         {
-            string dbSolutionName = studentId + "_" + questionOrder + "_Solution";
-            string dbAnswerName = studentId + "_" + questionOrder + "_Answer";
+            string dbSolutionName = studentId + "_" + questionOrder + "_Solution" + "_" + new Random().Next(1000000000);
+            string dbAnswerName = studentId + "_" + questionOrder + "_Answer" + "_" + new Random().Next(1000000000);
 
             //Generate 2 new DB for student's answer and solution
             General.GenerateDatabase(dbSolutionName, dbAnswerName);
@@ -141,8 +141,8 @@ namespace DBI_PEA_Scoring.Utils
         /// </exception>
         internal static Dictionary<string, string> TestProcedure(Candidate candidate, string studentId, string answer, int questionOrder)
         {
-            string dbSolutionName = studentId + "_" + questionOrder + "_Solution";
-            string dbAnswerName = studentId + "_" + questionOrder + "_Answer";
+            string dbSolutionName = studentId + "_" + questionOrder + "_Solution" + "_" + new Random().Next(1000000000);
+            string dbAnswerName = studentId + "_" + questionOrder + "_Answer" + "_" + new Random().Next(1000000000);
 
             //Generate 2 new DB for student's answer and solution
             General.GenerateDatabase(dbSolutionName, dbAnswerName);
@@ -187,8 +187,8 @@ namespace DBI_PEA_Scoring.Utils
         /// </exception>
         internal static Dictionary<string, string> TestTrigger(Candidate candidate, string studentId, string answer, int questionOrder)
         {
-            string dbSolutionName = studentId + "_" + questionOrder + "_Solution";
-            string dbAnswerName = studentId + "_" + questionOrder + "_Answer";
+            string dbSolutionName = studentId + "_" + questionOrder + "_Solution" + "_" + new Random().Next(1000000000);
+            string dbAnswerName = studentId + "_" + questionOrder + "_Answer" + "_" + new Random().Next(1000000000);
 
             //Generate 2 new DB for student's answer and solution
             General.GenerateDatabase(dbSolutionName, dbAnswerName);

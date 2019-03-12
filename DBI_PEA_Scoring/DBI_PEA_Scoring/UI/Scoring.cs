@@ -103,6 +103,17 @@ namespace DBI_PEA_Scoring.UI
         // Cham diem
         private void ShowPoint(object sender, EventArgs e)
         {
+            int a; int b;
+            a = b = 2;
+            if (ThreadPool.SetMinThreads(a, b))
+            {
+                MessageBox.Show("a= " + a.ToString() + " b= " + b.ToString());
+            }
+            ThreadPool.GetMinThreads(out a, out b); //a=1, b=1 on my machine
+            if (ThreadPool.SetMaxThreads(a, b))
+            {
+                MessageBox.Show("a= " + a.ToString() + " b= " + b.ToString());
+            }
             if (!scored)
             {
                 // Populate the data source.
