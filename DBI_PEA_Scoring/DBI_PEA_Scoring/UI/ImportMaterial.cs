@@ -23,8 +23,18 @@ namespace DBI_PEA_Scoring.UI
         public ImportMaterial()
         {
             InitializeComponent();
-            // Auto Check connection
-            CheckConnectionButton_Click(null, null);
+            // Auto Check connection import DB QUestion set and Answer of student for debug cho nhanh
+            try
+            {
+                CheckConnectionButton_Click(null, null);
+            }
+            catch (Exception) { }
+            
+            try
+            {
+                BrowseQuestionButton_Click(null, null);
+            }
+            catch (Exception) { }
         }
         private void BrowseQuestionButton_Click(object sender, EventArgs e)
         {
@@ -32,15 +42,19 @@ namespace DBI_PEA_Scoring.UI
             {
                 // Get link to file
                 //QuestionPath = FileUtils.GetFileLocation();
-                QuestionPath = @"E:\OneDrive\000 SWP\Sample\DBI_Exam\03_Sample_for_Testing_New_Phase_(09.03)\01_From_Shuffle\PaperSet.dat";
-                questionTextBox.Text = @"E:\OneDrive\000 SWP\Sample\DBI_Exam\03_Sample_for_Testing_New_Phase_(09.03)\01_From_Shuffle\PaperSet.dat";
+                // Bao
+                // QuestionPath = @"E:\OneDrive\000 SWP\Sample\DBI_Exam\03_Sample_for_Testing_New_Phase_(09.03)\01_From_Shuffle\PaperSet.dat";
+                // Duc
+                QuestionPath = @"C:\Users\hoangduc\Desktop\PaperSet.dat";
+                questionTextBox.Text = QuestionPath;
                 // Get QuestionPackage from file
                 PaperSet = null;
                 PaperSet = JsonUtils.LoadQuestion(QuestionPath) as PaperSet;
                 Constant.DBScriptList = PaperSet.DBScriptList;
                 if (PaperSet == null || PaperSet.Papers.Count == 0)
                     throw new Exception("No question was found!");
-                else {
+                else
+                {
 
                     //MessageBox.Show("Load questions successfully", "Successfully");
                 }
@@ -58,8 +72,11 @@ namespace DBI_PEA_Scoring.UI
             {
                 // Get directory where student's submittion was saved
                 //AnswerPath = FileUtils.GetFolderLocation();
-                AnswerPath = @"D:\Sys\Desktop\tmp";
-                answerTextBox.Text = @"D:\Sys\Desktop\tmp"; 
+                // Bao
+                // AnswerPath = @"D:\Sys\Desktop\tmp";
+                // Duc
+                AnswerPath = @"C:\Users\hoangduc\Desktop\02_From_Submission";
+                answerTextBox.Text = AnswerPath;
                 // Get all submission files
                 string[] submissionFiles = Directory.GetFiles(AnswerPath, "*.dat");
                 if (submissionFiles.Count() == 0)
@@ -138,7 +155,7 @@ namespace DBI_PEA_Scoring.UI
                 {
                     MessageBox.Show("Database connection error!", "Error");
                 }
-                
+
             }
         }
 
