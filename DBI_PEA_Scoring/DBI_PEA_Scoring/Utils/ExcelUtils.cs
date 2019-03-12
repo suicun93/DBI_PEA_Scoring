@@ -54,7 +54,7 @@ namespace DBI_PEA_Scoring.Utils
                         double totalPoints = result.SumOfPoint();
                         sheetResult.Cells[lastRow, 5] = totalPoints;
                         sheetResult.Cells[lastRow, 6] = maxPoint;
-                        sheetResult.Cells[lastRow, 7].Formula = "Sum(E2;f2)";
+                        sheetResult.Cells[lastRow, 7].Formula = @"=Sum(E2;f2)";
                         for (int i = 8; i < 8 + numOfQuestion; i++)
                         {
                             sheetResult.Cells[lastRow, i] = result.Points[i - 8];

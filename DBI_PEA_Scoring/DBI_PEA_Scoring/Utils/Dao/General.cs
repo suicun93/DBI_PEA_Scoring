@@ -30,7 +30,7 @@ namespace DBI_PEA_Scoring.Utils.Dao
                 {
                     using (var command = new SqlCommand(q, connection))
                     {
-                        command.CommandTimeout = 1;
+                        command.CommandTimeout = Constant.TimeOutInSecond;
                         Console.WriteLine(command.ExecuteNonQuery());
                     }
                 }

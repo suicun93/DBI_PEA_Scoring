@@ -11,6 +11,33 @@ namespace DBI_PEA_Scoring.Utils.Dao
 {
     public partial class General
     {
+        public static bool PrepareSpCompareDatabase()
+        {
+            var builder = Constant.SqlConnectionStringBuilder;
+            using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
+            {
+                connection.Open();
+                //Check exists SP sp_compareDb
+                try
+                {
+                    ExecuteSingleQuery(SchemaType.ProcCompareDbsCreate, "master");
+                }
+                catch (Exception e)
+                {
+                    throw new Exception("Compare error: " + e.Message);
+                }
+                try
+                {
+                    ExecuteSingleQuery(SchemaType.ProcCompareDbsAlter, "master");
+                }
+                catch (Exception e)
+                {
+                    throw new Exception("Compare error: " + e.Message);
+                }
+                return true;
+            }
+        }
+
         /// <summary>
         /// Compare 2 databases
         /// </summary>
@@ -25,62 +52,44 @@ namespace DBI_PEA_Scoring.Utils.Dao
         {
             try
             {
-                const string checkExistsSpQuery = "SELECT * FROM sys.objects\n" +
-                                                  "WHERE object_id = OBJECT_ID(N'[sp_CompareDb]') AND type IN ( N'P', N'PC' )";
                 string compareQuery = "exec sp_CompareDb [" + db2Name + "], [" + db1Name + "]";
                 var builder = Constant.SqlConnectionStringBuilder;
                 // Connect to SQL
                 using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
                 {
                     connection.Open();
-                    using (SqlCommand command = new SqlCommand(checkExistsSpQuery, connection))
+                    using (SqlCommand commandCompare = new SqlCommand(compareQuery, connection))
                     {
-                        //Check exists SP sp_compareDb
-                        if (command.ExecuteScalar() == null)
+                        using (SqlDataReader reader = commandCompare.ExecuteReader())
                         {
-                            try
+                            string result = string.Concat("Check Table structure:\n", "Table Name\t",
+                                "Column Name\t", "Data Type\t", "Nullable\n");
+                            double point = candidate.Point;
+                            while (reader.Read())
                             {
-                                ExecuteQuery(SchemaType.ProcCompareDbs, "master");
+                                result = string.Concat(result, (string)reader["TABLENAME"], "\t", (string)reader["COLUMNNAME"], "\t",
+                                    (string)reader["DATATYPE"], "\t", (string)reader["NULLABLE"], "\n");
+                                point -= Constant.minusPoint;
                             }
-                            catch (Exception e)
+                            reader.NextResult();
+                            while (reader.Read())
                             {
-                                throw new Exception("Compare error: " + e.Message);
+                                result = string.Concat(result, "Check Constraints:\n", "FK Table\t",
+                                    "FK Columns\t", "PK Table\t", "PK Columns\n");
+                                result = string.Concat(result, (string)reader["FK_TABLE"], "\t", (string)reader["FK_COLUMNS"], "\t",
+                                    (string)reader["PK_TABLE"], "\t", (string)reader["PK_COLUMNS"], "\n");
+                                point -= Constant.minusPoint;
                             }
-                        }
-                        using (SqlCommand commandCompare = new SqlCommand(compareQuery, connection))
-                        {
-                            using (SqlDataReader reader = commandCompare.ExecuteReader())
-                            {
-                                string result = string.Concat("Check Table structure:\n", "Table Name\t",
-                                    "Column Name\t", "Data Type\t", "Nullable\n");
-                                double point = candidate.Point;
-                                while (reader.Read())
-                                {
-                                    result = string.Concat(result, (string)reader["TABLENAME"], "\t", (string)reader["COLUMNNAME"], "\t",
-                                        (string)reader["DATATYPE"], "\t", (string)reader["NULLABLE"], "\n");
-                                    point -= Constant.minusPoint;
-                                }
-                                reader.NextResult();
-                                while (reader.Read())
-                                {
-                                    result = string.Concat(result, "Check Constraints:\n", "FK Table\t",
-                                        "FK Columns\t", "PK Table\t", "PK Columns\n");
-                                    result = string.Concat(result, (string)reader["FK_TABLE"], "\t", (string)reader["FK_COLUMNS"], "\t",
-                                        (string)reader["PK_TABLE"], "\t", (string)reader["PK_COLUMNS"], "\n");
-                                    point -= Constant.minusPoint;
-                                }
-                                point = point < 0 ? 0 : point;
-
-                                result = point == candidate.Point ? "True" : result;
-
-                                return new Dictionary<string, string>
+                            point = point < 0 ? 0 : point;
+                            result = point == candidate.Point ? "True" : result;
+                            return new Dictionary<string, string>
                                 {
                                     {"Point", point.ToString()},
                                     {"Comment", result},
                                 };
-                            }
                         }
                     }
+
                 }
             }
             catch (Exception ex)

@@ -129,8 +129,16 @@ namespace DBI_PEA_Scoring.UI
             //    MessageBox.Show("Enter Database!", "Error");
             else
             {
-                Hide();
-                var Score = new Scoring(PaperSet, Listsubmissions);
+                if (General.PrepareSpCompareDatabase())
+                {
+                    var scoring = new Scoring(PaperSet, Listsubmissions);
+                    Hide();
+                }
+                else
+                {
+                    MessageBox.Show("Database connection error!", "Error");
+                }
+                
             }
         }
 
