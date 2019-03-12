@@ -33,6 +33,7 @@ namespace DBI_PEA_Scoring.Utils.Dao
                     connection.Open();
                     using (SqlCommand commandCompare = new SqlCommand(compareQuery, connection))
                     {
+                        commandCompare.CommandTimeout = Constant.TimeOutInSecond;
                         using (SqlDataReader reader = commandCompare.ExecuteReader())
                         {
                             string result = string.Concat("Check Table structure:\n", "Table Name\t",
