@@ -8,6 +8,33 @@ namespace DBI_PEA_Scoring.Utils.Dao
 {
     public partial class General
     {
+        public static bool PrepareSpCompareDatabase()
+        {
+            var builder = Constant.SqlConnectionStringBuilder;
+            using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
+            {
+                connection.Open();
+                //Check exists SP sp_compareDb
+                try
+                {
+                    ExecuteSingleQuery(SchemaType.ProcCompareDbsCreate, "master");
+                }
+                catch
+                {
+                    // ignored
+                }
+                try
+                {
+                    ExecuteSingleQuery(SchemaType.ProcCompareDbsAlter, "master");
+                }
+                catch
+                {
+                    // ignored
+                }
+                return true;
+            }
+        }
+
         /// <summary>
         /// execute a query
         /// </summary>

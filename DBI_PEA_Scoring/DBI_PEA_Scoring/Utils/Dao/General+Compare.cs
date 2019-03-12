@@ -11,33 +11,6 @@ namespace DBI_PEA_Scoring.Utils.Dao
 {
     public partial class General
     {
-        public static bool PrepareSpCompareDatabase()
-        {
-            var builder = Constant.SqlConnectionStringBuilder;
-            using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
-            {
-                connection.Open();
-                //Check exists SP sp_compareDb
-                try
-                {
-                    ExecuteSingleQuery(SchemaType.ProcCompareDbsCreate, "master");
-                }
-                catch (Exception e)
-                {
-                    throw new Exception("Compare error: " + e.Message);
-                }
-                try
-                {
-                    ExecuteSingleQuery(SchemaType.ProcCompareDbsAlter, "master");
-                }
-                catch (Exception e)
-                {
-                    throw new Exception("Compare error: " + e.Message);
-                }
-                return true;
-            }
-        }
-
         /// <summary>
         /// Compare 2 databases
         /// </summary>
