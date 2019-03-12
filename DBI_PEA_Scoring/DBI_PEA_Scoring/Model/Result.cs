@@ -50,7 +50,7 @@ namespace DBI_PEA_Scoring.Model
         /// <exception cref="SQLException">
         ///     if exception was found, throw it for GetPoint function to handle
         /// </exception>
-        private bool Point(Candidate candidate, string answer, int questionOrder)
+        private Dictionary<string, string> Point(Candidate candidate, string answer, int questionOrder)
         {
             // await TaskEx.Delay(100);
             if (string.IsNullOrEmpty(answer))
@@ -60,19 +60,19 @@ namespace DBI_PEA_Scoring.Model
             {
                 case Candidate.QuestionTypes.Schema:
                     // Schema Question
-                    return TestUtils.TestSchema(candidate, StudentID, answer, questionOrder);
+                    return PaperUtils.TestSchema(candidate, StudentID, answer, questionOrder);
                 case Candidate.QuestionTypes.Select:
                     //Select Question
-                    return TestUtils.TestSelect(candidate, StudentID, answer, questionOrder);
+                    return PaperUtils.TestSelect(candidate, StudentID, answer, questionOrder);
                 case Candidate.QuestionTypes.DML:
                     // DML: Insert/Delete/Update Question
-                    return TestUtils.TestInsertDeleteUpdate(candidate, StudentID, answer, questionOrder);
+                    return PaperUtils.TestInsertDeleteUpdate(candidate, StudentID, answer, questionOrder);
                 case Candidate.QuestionTypes.Procedure:
                     // Procedure Question
-                    return TestUtils.TestProcedure(candidate, StudentID, answer, questionOrder);
+                    return PaperUtils.TestProcedure(candidate, StudentID, answer, questionOrder);
                 case Candidate.QuestionTypes.Trigger:
                     // Trigger Question
-                    return TestUtils.TestTrigger(candidate, StudentID, answer, questionOrder);
+                    return PaperUtils.TestTrigger(candidate, StudentID, answer, questionOrder);
                 default:
                     // Not supported yet
                     throw new Exception("This question type has not been supported yet.");
@@ -91,16 +91,15 @@ namespace DBI_PEA_Scoring.Model
             // Wrong PaperNo
             if (numberOfQuestion == 0)
             {
-                Logs[0] = "Wrong Paper No";
+                Logs[0] = "Wrong Paper No\n";
                 for (int i = 0; i < Constant.NumberOfQuestion; i++)
                 {
                     Points[i] = 0;
                 }
-                Thread.Sleep(100);
                 return;
             }
-            // Select random DB
-            TestUtils.Database = Constant.listDB[(new Random()).Next(1, Common.Constant.listDB.Length) - 1];
+            //// Select random DB
+            //TestUtils.Database = Constant.listDB[(new Random()).Next(1, Common.Constant.listDB.Length) - 1];
             // Get mark one by one
             for (int questionOrder = 0; questionOrder < 10; questionOrder++)
             {
@@ -108,26 +107,33 @@ namespace DBI_PEA_Scoring.Model
                 {
                     //bool correct = await Cham(ListCandidates.ElementAt(i), ListAnswers.ElementAt(i));
                     if (numberOfQuestion > questionOrder)
-                        if (Point(ListCandidates.ElementAt(questionOrder), ListAnswers.ElementAt(questionOrder), questionOrder))
+                    {
+                        Dictionary<string, string> res = Point(ListCandidates.ElementAt(questionOrder), ListAnswers.ElementAt(questionOrder), questionOrder);
+                        //Exactly -> Log true and return 0 point
+                        if(res != null)
                         {
-                            // Exactly -> Log true and return 0 point
-                            Points[questionOrder] = ListCandidates.ElementAt(questionOrder).Point;
-                            Logs[questionOrder] = "True";
+                            Points[questionOrder] = double.Parse(res["Point"]);
+                            Logs[questionOrder] = res["Comment"] + "\n";
                         }
                         else
-                            // Wrong -> Log false and return 0 point
-                            throw new Exception("False");
+                        {
+                            Points[questionOrder] = 0;
+                            Logs[questionOrder] = "False\n";
+                        }
+                    }
                     else
+                    {
                         // Not enough candidate 
                         // It rarely happens, it's this project's demos and faults.
-                        throw new Exception("No questions found at question " + questionOrder + " paperNo = " + PaperNo);
+                        throw new Exception("No questions found at question " + questionOrder + " paperNo = " + PaperNo + "\n");
+                    }
                 }
                 catch (Exception e)
                 {
                     // When something's wrong:
                     // Log error and return 0 point for student.
                     Points[questionOrder] = 0;
-                    Logs[questionOrder] = e.Message;
+                    Logs[questionOrder] = e.Message + "\n";
                 }
             }
         }

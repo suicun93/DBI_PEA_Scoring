@@ -1,4 +1,5 @@
-﻿using System.Windows.Forms;
+﻿using System.IO;
+using System.Windows.Forms;
 
 namespace DBI_PEA_Scoring.Utils
 {
@@ -50,7 +51,7 @@ namespace DBI_PEA_Scoring.Utils
         ///     Uri
         ///     If something goes wrong, return null
         /// </returns>
-        /// /// <exception cref="File not found">
+        /// /// <exception cref="File">
         ///     When no file was found
         /// </exception>
         public static string GetFolderLocation()
@@ -62,8 +63,7 @@ namespace DBI_PEA_Scoring.Utils
                 if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
                     //Get Files in folder
                     return fbd.SelectedPath;
-                else
-                    throw new System.Exception("No folder was found");
+                throw new System.Exception("No folder was found");
             }
         }
     }

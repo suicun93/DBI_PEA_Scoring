@@ -1,7 +1,7 @@
 ﻿using DBI_PEA_Scoring.Common;
 using DBI_PEA_Scoring.Model;
+using DBI_PEA_Scoring.Model.Teacher;
 using DBI_PEA_Scoring.Utils;
-using DBI_PEA_Scoring.Utils.DaoType;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -17,35 +17,42 @@ namespace DBI_PEA_Scoring.UI
         private List<Result> ListResults { get; set; }
         private bool scored = false;
         private EditScore EditScore;
-        private List<TestItem> ListTestItems = null;
-        public Scoring(List<TestItem> ListTestItems, List<Submition> ListSubmitions)
+        //private List<Paper> ListTestItems = null;
+        private PaperSet PaperSet = null;
+        private List<string> DBScripts;
+
+        public Scoring(PaperSet paperSet, List<Submission> Listsubmissions)
         {
             InitializeComponent();
-            this.ListTestItems = ListTestItems;
+            PaperSet = paperSet;
             // Show Scoring Form and generate Score here
             ListResults = new List<Result>();
-            Prepare();
+            //Prepare();
             SetupUI();
+            DBScripts = paperSet.DBScriptList;
+
             //this.Activated += new System.EventHandler(ShowPoint);
-            // Merge Question and Submition to ListResults
-            foreach (Submition submition in ListSubmitions)
+            // Merge Question and submission to ListResults
+            foreach (Submission submission in Listsubmissions)
             {
-                Result result = new Result();
-                // Add PaperNo
-                result.PaperNo = submition.PaperNo;
-                // Add StudentID
-                result.StudentID = submition.StudentID;
+                Result result = new Result
+                {
+                    // Add PaperNo
+                    PaperNo = submission.PaperNo,
+                    // Add StudentID
+                    StudentID = submission.StudentID
+                };
                 // Add Answers
-                foreach (string answer in submition.ListAnswer)
+                foreach (string answer in submission.ListAnswer)
                 {
                     result.ListAnswers.Add(answer);
                 }
                 // Add Candidates
-                foreach (TestItem testItem in ListTestItems)
+                foreach (Paper paper in paperSet.Papers)
                 {
-                    if (testItem.PaperNo.Equals(result.PaperNo))
+                    if (paper.PaperNo.Equals(result.PaperNo))
                     {
-                        foreach (Candidate candidate in testItem.ExamQuestionsList)
+                        foreach (Candidate candidate in paper.CandidateSet)
                         {
                             result.ListCandidates.Add(candidate);
                         }
@@ -110,10 +117,8 @@ namespace DBI_PEA_Scoring.UI
                     Input input = new Input(scoreGridView, row, CurrentResult);
                     ThreadPool.QueueUserWorkItem(new WaitCallback(KetPoint), input);
                 }
-                scoreGridView.Refresh();
+                //scoreGridView.Refresh();
                 scored = true;
-                // Delete origin database
-                //General.ClearDatabase();
             }
             else MessageBox.Show("Score has already got.");
         }
@@ -134,7 +139,7 @@ namespace DBI_PEA_Scoring.UI
         }
         //delegate void SetTextCallback(Result result);
         // sau khi add xong thuc hien cham diem, cham den dau in diem den day!
-        private void exportButton_Click(object sender, EventArgs e)
+        private void ExportButton_Click(object sender, EventArgs e)
         {
             try
             {
@@ -150,14 +155,13 @@ namespace DBI_PEA_Scoring.UI
                     {
                         maxPoint += candidate.Point;
                     }
-                    ExcelUtils.ExportResultsExcel(savePath, ListResults, maxPoint);
+                    ExcelUtils.ExportResultsExcel(savePath, ListResults, maxPoint, ListResults.ElementAt(0).ListCandidates.Count);
                 }
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Error");
             }
-
         }
 
         private void Scoring_FormClosed(object sender, FormClosedEventArgs e)
@@ -165,15 +169,15 @@ namespace DBI_PEA_Scoring.UI
             Application.Exit();
         }
 
-        private void quitButton_Click(object sender, EventArgs e)
+        private void QuitButton_Click(object sender, EventArgs e)
         {
             Application.Exit();
         }
 
-        private void editScoreButton_Click(object sender, EventArgs e)
+        private void EditScoreButton_Click(object sender, EventArgs e)
         {
             // Edit lai bieu diem cho cac cau hoi
-            EditScore = new EditScore(ListTestItems);
+            EditScore = new EditScore(PaperSet);
             EditScore.Show();
         }
     }
