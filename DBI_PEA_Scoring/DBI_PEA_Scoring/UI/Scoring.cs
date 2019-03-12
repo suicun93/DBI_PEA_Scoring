@@ -155,7 +155,7 @@ namespace DBI_PEA_Scoring.UI
                     {
                         maxPoint += candidate.Point;
                     }
-                    ExcelUtils.ExportResultsExcel(savePath, ListResults, maxPoint);
+                    ExcelUtils.ExportResultsExcel(savePath, ListResults, maxPoint, ListResults.ElementAt(0).ListCandidates.Count);
                 }
             }
             catch (Exception ex)
