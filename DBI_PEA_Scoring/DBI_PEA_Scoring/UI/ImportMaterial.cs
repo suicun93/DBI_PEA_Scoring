@@ -19,25 +19,30 @@ namespace DBI_PEA_Scoring.UI
         public string AnswerPath { get; set; }
         private PaperSet PaperSet;
         private List<Submission> Listsubmissions;
-        //private bool importedDB = false;
+        private bool importForDebug = false;
         public ImportMaterial()
         {
             InitializeComponent();
             // Auto Check connection import DB QUestion set and Answer of student for debug cho nhanh
             CheckConnectionButton_Click(null, null);
-            BrowseQuestionButton_Click(null, null);
-            BrowseAnswerButton_Click(null, null);
+            if (importForDebug)
+            {
+                BrowseQuestionButton_Click(null, null);
+                BrowseAnswerButton_Click(null, null);
+            }
         }
         private void BrowseQuestionButton_Click(object sender, EventArgs e)
         {
             try
             {
                 // Get link to file
-                //QuestionPath = FileUtils.GetFileLocation();
-                // Bao
-                //QuestionPath = @"E:\OneDrive\000 SWP\Sample\DBI_Exam\03_Sample_for_Testing_New_Phase_(09.03)\01_From_Shuffle\PaperSet.dat";
-                // Duc
-                QuestionPath = @"C:\Users\hoangduc\Desktop\PaperSet.dat";
+                if (importForDebug)
+                    // Bao
+                    //QuestionPath = @"E:\OneDrive\000 SWP\Sample\DBI_Exam\03_Sample_for_Testing_New_Phase_(09.03)\01_From_Shuffle\PaperSet.dat";
+                    // Duc
+                    QuestionPath = @"C:\Users\hoangduc\Desktop\PaperSet.dat";
+                else
+                    QuestionPath = FileUtils.GetFileLocation();
                 questionTextBox.Text = QuestionPath;
                 // Get QuestionPackage from file
                 PaperSet = null;
@@ -58,11 +63,13 @@ namespace DBI_PEA_Scoring.UI
             try
             {
                 // Get directory where student's submittion was saved
-                //AnswerPath = FileUtils.GetFolderLocation();
-                // Bao
-                //AnswerPath = @"D:\Sys\Desktop\tmp";
-                // Duc
-                AnswerPath = @"C:\Users\hoangduc\Desktop\02_From_Submission";
+                if (importForDebug)
+                    // Bao
+                    //AnswerPath = @"D:\Sys\Desktop\tmp";
+                    // Duc
+                    AnswerPath = @"C:\Users\hoangduc\Desktop\02_From_Submission";
+                else
+                    AnswerPath = FileUtils.GetFolderLocation();
                 answerTextBox.Text = AnswerPath;
                 // Get all submission files
                 string[] submissionFiles = Directory.GetFiles(AnswerPath, "*.dat");
@@ -132,7 +139,7 @@ namespace DBI_PEA_Scoring.UI
                 if (PaperSet.Papers == null || PaperSet.Papers.Count == 0)
                 MessageBox.Show("Please import Paper Set", "Error");
             else
-                if (!isConnectedToDB())
+                if (!IsConnectedToDB)
                 MessageBox.Show("Please test connect to Sql Server", "Error");
             //else
             //    if (!importedDB)
@@ -169,7 +176,7 @@ namespace DBI_PEA_Scoring.UI
             }
         }
 
-        private void browseDatabases_Click(object sender, EventArgs e)
+        private void BrowseDatabases_Click(object sender, EventArgs e)
         {
             //try
             //{
@@ -244,7 +251,7 @@ namespace DBI_PEA_Scoring.UI
 
         private void StatusConnectCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            if (isConnectedToDB())
+            if (IsConnectedToDB)
             {
                 usernameTextBox.Enabled = false;
                 passwordTextBox.Enabled = false;
@@ -255,10 +262,7 @@ namespace DBI_PEA_Scoring.UI
                 checkConnectionButton.Enabled = false;
             }
         }
-        private bool isConnectedToDB()
-        {
-            return statusConnectCheckBox.Checked;
-        }
+        private bool IsConnectedToDB => statusConnectCheckBox.Checked;
 
         private void ImportMaterial_FormClosed(object sender, FormClosedEventArgs e)
         {

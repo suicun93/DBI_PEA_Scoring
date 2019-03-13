@@ -122,8 +122,6 @@ namespace DBI_PEA_Scoring.UI
             else MessageBox.Show("Score has already got.");
         }
 
-
-
         private void GetPoint(Input input)
         {
             input.Result.GetPoint();
