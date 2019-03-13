@@ -89,17 +89,6 @@ namespace DBI_PEA_Scoring.UI
             }
         }
 
-        // Prepare environment
-        private void Prepare()
-        {
-            //General.ExecuteSingleQuery("use master drop proc sp_CompareDb");
-            var dir = "C:\\Temp\\";
-            if (!Directory.Exists(dir))
-            {
-                Directory.CreateDirectory(dir);
-            }
-        }
-
         /// <summary>
         /// Setup Min Max Threads in ThreadPool
         /// Show Point procedure 
@@ -112,7 +101,7 @@ namespace DBI_PEA_Scoring.UI
             // This should be 1 because cpu is easy to run but HDD disk can not load over 2 threads in 1 time => wrong mark for student
             // So workerThreads = 1, completionPortThreads = 1;
             int workerThreads = Constant.MaxThreadPoolSize, completionPortThreads = Constant.MaxThreadPoolSize;
-            ThreadPool.SetMinThreads(workerThreads: workerThreads,completionPortThreads: completionPortThreads);
+            ThreadPool.SetMinThreads(workerThreads: workerThreads, completionPortThreads: completionPortThreads);
             ThreadPool.GetMinThreads(out workerThreads, out completionPortThreads);
             ThreadPool.SetMaxThreads(workerThreads, completionPortThreads);
 
@@ -124,10 +113,14 @@ namespace DBI_PEA_Scoring.UI
                 {
                     var CurrentResult = ListResults.ElementAt(row);
                     // Prepare 2 first columns
-                    scoreGridView.Rows.Add(1);
-                    scoreGridView.Rows[row].Cells[0].Value = CurrentResult.StudentID;
-                    scoreGridView.Rows[row].Cells[1].Value = CurrentResult.PaperNo;
-                    scoreGridView.Refresh();
+                    scoreGridView.Invoke((MethodInvoker)(() =>
+                    {
+                        scoreGridView.Rows.Add(1);
+                        scoreGridView.Rows[row].Cells[0].Value = CurrentResult.StudentID;
+                        scoreGridView.Rows[row].Cells[1].Value = CurrentResult.PaperNo;
+                        scoreGridView.UpdateCellValue(0, row);
+                        scoreGridView.UpdateCellValue(1, row);
+                    }));
                     Input input = new Input(scoreGridView, row, CurrentResult);
                     ThreadPool.QueueUserWorkItem(KetPoint, input);
                 }
@@ -142,14 +135,14 @@ namespace DBI_PEA_Scoring.UI
             temp.Result.GetPoint();
             // Refresh to show point and scroll view to the last row
             // Show point of each question
-            for (int questionOrder = 0; questionOrder < temp.Result.ListCandidates.Count; questionOrder++)
+            scoreGridView.Invoke((MethodInvoker)(() =>
             {
-                scoreGridView.Invoke(new MethodInvoker(() =>
+                for (int questionOrder = 0; questionOrder < temp.Result.ListCandidates.Count; questionOrder++)
                 {
                     scoreGridView.Rows[temp.Row].Cells[2 + questionOrder].Value = temp.Result.Points[questionOrder].ToString();
                     scoreGridView.UpdateCellValue(2 + questionOrder, temp.Row);
-                }));
-            }
+                }
+            }));
         }
         //delegate void SetTextCallback(Result result);
         // sau khi add xong thuc hien cham diem, cham den dau in diem den day!

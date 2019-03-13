@@ -82,7 +82,7 @@ namespace DBI_PEA_Scoring.UI
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.scoreGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.scoreGridView.Location = new System.Drawing.Point(19, 67);
+            this.scoreGridView.Location = new System.Drawing.Point(15, 67);
             this.scoreGridView.Name = "scoreGridView";
             this.scoreGridView.ReadOnly = true;
             this.scoreGridView.Size = new System.Drawing.Size(736, 401);
