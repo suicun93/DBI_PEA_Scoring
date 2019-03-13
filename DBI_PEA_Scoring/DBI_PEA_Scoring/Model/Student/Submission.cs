@@ -1,8 +1,9 @@
-﻿using DBI_PEA_Scoring.Common;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
+using DBI_PEA_Scoring.Common;
+using Newtonsoft.Json;
 
 namespace DBI_PEA_Scoring.Model
 {
@@ -13,7 +14,7 @@ namespace DBI_PEA_Scoring.Model
         public string ExamCode { get; set; }
         public string PaperNo { get; set; }
         public List<string> ListAnswer { get; set; }
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public SecureJsonSerializer<Submission> secureJsonSerializer;
 
         public Submission()
@@ -88,7 +89,7 @@ namespace DBI_PEA_Scoring.Model
                         // Create new list
                         for (int i = 0; i < 10; i++)
                         {
-                            this.ListAnswer.Add("");
+                            ListAnswer.Add("");
                         }
                     }
                 }

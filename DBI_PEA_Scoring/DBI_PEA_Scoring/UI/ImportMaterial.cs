@@ -1,14 +1,14 @@
-﻿using DBI_PEA_Scoring.Common;
-using DBI_PEA_Scoring.Model;
-using DBI_PEA_Scoring.Model.Teacher;
-using DBI_PEA_Scoring.Utils;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using General = DBI_PEA_Scoring.Utils.Dao.General;
+using DBI_PEA_Scoring.Common;
+using DBI_PEA_Scoring.Model;
+using DBI_PEA_Scoring.Model.Teacher;
+using DBI_PEA_Scoring.Utils;
+using DBI_PEA_Scoring.Utils.Dao;
 
 namespace DBI_PEA_Scoring.UI
 {
@@ -17,8 +17,8 @@ namespace DBI_PEA_Scoring.UI
         public string QuestionPath { get; set; }
         //public List<string> DBScriptList { get; set; }
         public string AnswerPath { get; set; }
-        private PaperSet PaperSet = null;
-        private List<Submission> Listsubmissions = null;
+        private PaperSet PaperSet;
+        private List<Submission> Listsubmissions;
         //private bool importedDB = false;
         public ImportMaterial()
         {
@@ -53,11 +53,6 @@ namespace DBI_PEA_Scoring.UI
                 Constant.DBScriptList = PaperSet.DBScriptList;
                 if (PaperSet == null || PaperSet.Papers.Count == 0)
                     throw new Exception("No question was found!");
-                else
-                {
-
-                    //MessageBox.Show("Load questions successfully", "Successfully");
-                }
             }
             catch (Exception ex)
             {
@@ -81,8 +76,7 @@ namespace DBI_PEA_Scoring.UI
                 string[] submissionFiles = Directory.GetFiles(AnswerPath, "*.dat");
                 if (submissionFiles.Count() == 0)
                     throw new Exception("No submittion was found");
-                else
-                    Loadsubmission(submissionFiles);
+                Loadsubmission(submissionFiles);
             }
             catch (Exception ex)
             {
@@ -260,7 +254,6 @@ namespace DBI_PEA_Scoring.UI
                 statusConnectCheckBox.ForeColor = Color.Green;
                 statusConnectCheckBox.Text = "Sql Connected";
                 checkConnectionButton.Enabled = false;
-                ImportDatabasesButton.Enabled = true;
             }
         }
         private bool isConnectedToDB()

@@ -1,11 +1,14 @@
-﻿namespace DBI_PEA_Scoring.UI
+﻿using System.ComponentModel;
+using System.Windows.Forms;
+
+namespace DBI_PEA_Scoring.UI
 {
     partial class ImportMaterial
     {
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.IContainer components = null;
+        private IContainer components = null;
 
         /// <summary>
         /// Clean up any resources being used.
@@ -48,13 +51,8 @@
             this.label7 = new System.Windows.Forms.Label();
             this.serverNameTextBox = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
-            this.ImportDatabasesButton = new System.Windows.Forms.Button();
-            this.dbPathTextBox = new System.Windows.Forms.TextBox();
-            this.label5 = new System.Windows.Forms.Label();
             this.button3 = new System.Windows.Forms.Button();
             this.label10 = new System.Windows.Forms.Label();
-            this.label11 = new System.Windows.Forms.Label();
-            this.statusImportDatabaseProgressBar = new System.Windows.Forms.ProgressBar();
             this.SuspendLayout();
             // 
             // label1
@@ -252,40 +250,10 @@
             this.label6.TabIndex = 30;
             this.label6.Text = "Server Name";
             // 
-            // ImportDatabasesButton
-            // 
-            this.ImportDatabasesButton.Enabled = false;
-            this.ImportDatabasesButton.Location = new System.Drawing.Point(323, 444);
-            this.ImportDatabasesButton.Name = "ImportDatabasesButton";
-            this.ImportDatabasesButton.Size = new System.Drawing.Size(63, 23);
-            this.ImportDatabasesButton.TabIndex = 29;
-            this.ImportDatabasesButton.Text = "Import";
-            this.ImportDatabasesButton.UseVisualStyleBackColor = true;
-            this.ImportDatabasesButton.Click += new System.EventHandler(this.browseDatabases_Click);
-            // 
-            // dbPathTextBox
-            // 
-            this.dbPathTextBox.Enabled = false;
-            this.dbPathTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.dbPathTextBox.Location = new System.Drawing.Point(149, 446);
-            this.dbPathTextBox.Name = "dbPathTextBox";
-            this.dbPathTextBox.Size = new System.Drawing.Size(163, 20);
-            this.dbPathTextBox.TabIndex = 28;
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label5.Location = new System.Drawing.Point(26, 449);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(104, 15);
-            this.label5.TabIndex = 27;
-            this.label5.Text = "Import Databases";
-            // 
             // button3
             // 
             this.button3.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button3.Location = new System.Drawing.Point(159, 535);
+            this.button3.Location = new System.Drawing.Point(150, 431);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(95, 31);
             this.button3.TabIndex = 26;
@@ -305,32 +273,11 @@
             this.label10.TabIndex = 42;
             this.label10.Text = "label10";
             // 
-            // label11
-            // 
-            this.label11.AutoSize = true;
-            this.label11.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.label11.Location = new System.Drawing.Point(-47, 429);
-            this.label11.MaximumSize = new System.Drawing.Size(500, 3);
-            this.label11.MinimumSize = new System.Drawing.Size(500, 0);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(500, 3);
-            this.label11.TabIndex = 43;
-            this.label11.Text = "label11";
-            // 
-            // statusImportDatabaseProgressBar
-            // 
-            this.statusImportDatabaseProgressBar.Location = new System.Drawing.Point(33, 486);
-            this.statusImportDatabaseProgressBar.Name = "statusImportDatabaseProgressBar";
-            this.statusImportDatabaseProgressBar.Size = new System.Drawing.Size(347, 35);
-            this.statusImportDatabaseProgressBar.TabIndex = 44;
-            // 
             // ImportMaterial
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(413, 585);
-            this.Controls.Add(this.statusImportDatabaseProgressBar);
-            this.Controls.Add(this.label11);
+            this.ClientSize = new System.Drawing.Size(413, 474);
             this.Controls.Add(this.label10);
             this.Controls.Add(this.statusConnectCheckBox);
             this.Controls.Add(this.checkConnectionButton);
@@ -342,9 +289,6 @@
             this.Controls.Add(this.label7);
             this.Controls.Add(this.serverNameTextBox);
             this.Controls.Add(this.label6);
-            this.Controls.Add(this.ImportDatabasesButton);
-            this.Controls.Add(this.dbPathTextBox);
-            this.Controls.Add(this.label5);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.statusImportAnswerLabel);
             this.Controls.Add(this.statusImportAnswerProgressBar);
@@ -367,33 +311,28 @@
 
         #endregion
 
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.TextBox questionTextBox;
-        private System.Windows.Forms.TextBox answerTextBox;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Button ImportPaperSetButton;
-        private System.Windows.Forms.Button ImportAnswerButton;
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.ProgressBar statusImportAnswerProgressBar;
-        private System.Windows.Forms.Label statusImportAnswerLabel;
-        private System.Windows.Forms.CheckBox statusConnectCheckBox;
-        private System.Windows.Forms.Button checkConnectionButton;
-        private System.Windows.Forms.TextBox passwordTextBox;
-        private System.Windows.Forms.Label label9;
-        private System.Windows.Forms.TextBox usernameTextBox;
-        private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.TextBox initialCatalogTextBox;
-        private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.TextBox serverNameTextBox;
-        private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.Button ImportDatabasesButton;
-        private System.Windows.Forms.TextBox dbPathTextBox;
-        private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.Button button3;
-        private System.Windows.Forms.Label label10;
-        private System.Windows.Forms.Label label11;
-        private System.Windows.Forms.ProgressBar statusImportDatabaseProgressBar;
+        private Label label1;
+        private Label label2;
+        private TextBox questionTextBox;
+        private TextBox answerTextBox;
+        private Label label3;
+        private Button ImportPaperSetButton;
+        private Button ImportAnswerButton;
+        private Label label4;
+        private ProgressBar statusImportAnswerProgressBar;
+        private Label statusImportAnswerLabel;
+        private CheckBox statusConnectCheckBox;
+        private Button checkConnectionButton;
+        private TextBox passwordTextBox;
+        private Label label9;
+        private TextBox usernameTextBox;
+        private Label label8;
+        private TextBox initialCatalogTextBox;
+        private Label label7;
+        private TextBox serverNameTextBox;
+        private Label label6;
+        private Button button3;
+        private Label label10;
     }
 }
 

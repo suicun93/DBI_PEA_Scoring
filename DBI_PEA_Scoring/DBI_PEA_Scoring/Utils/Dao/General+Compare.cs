@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Globalization;
 using System.Linq;
 using DBI_PEA_Scoring.Common;
 using DBI_PEA_Scoring.Model;
@@ -69,7 +68,7 @@ namespace DBI_PEA_Scoring.Utils.Dao
                             return new Dictionary<string, string>
                                 {
                                     {"Point", point.ToString()},
-                                    {"Comment", result},
+                                    {"Comment", result}
                                 };
                         }
                     }

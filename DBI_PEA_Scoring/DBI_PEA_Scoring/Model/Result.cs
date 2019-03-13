@@ -1,10 +1,8 @@
-﻿using DBI_PEA_Scoring.Common;
-using DBI_PEA_Scoring.Utils;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
-using System.Windows.Forms;
+using DBI_PEA_Scoring.Common;
+using DBI_PEA_Scoring.Utils;
 
 namespace DBI_PEA_Scoring.Model
 {

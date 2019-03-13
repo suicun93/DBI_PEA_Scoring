@@ -1,8 +1,6 @@
-﻿using DBI_PEA_Scoring.Model;
-using DBI_PEA_Scoring.Model.Teacher;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Windows.Forms;
+using DBI_PEA_Scoring.Model.Teacher;
 
 namespace DBI_PEA_Scoring.UI
 {
@@ -30,7 +28,7 @@ namespace DBI_PEA_Scoring.UI
             for (int i = 0; i < 10; i++)
             {
                 DataGridViewColumn column = new DataGridViewTextBoxColumn();
-                column.Name = "Diem cau " + (i + 1).ToString();
+                column.Name = "Diem cau " + (i + 1);
                 scoreView.Columns.Add(column);
             }
             scoreView.Refresh();

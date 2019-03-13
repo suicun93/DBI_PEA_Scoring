@@ -1,7 +1,7 @@
-﻿using System.Text;
+﻿using System.IO;
 using System.Security.Cryptography;
+using System.Text;
 using Newtonsoft.Json;
-using System.IO;
 
 namespace DBI_PEA_Scoring.Common
 {
@@ -32,16 +32,16 @@ namespace DBI_PEA_Scoring.Common
         public SecureJsonSerializer()
         {
             var rmCrypto = GetAlgorithm();
-            this.encryptor = rmCrypto.CreateEncryptor();
-            this.decryptor = rmCrypto.CreateDecryptor();
+            encryptor = rmCrypto.CreateEncryptor();
+            decryptor = rmCrypto.CreateDecryptor();
         }
 
         public SecureJsonSerializer(string filePath)
         {
             this.filePath = filePath;
             var rmCrypto = GetAlgorithm();
-            this.encryptor = rmCrypto.CreateEncryptor();
-            this.decryptor = rmCrypto.CreateDecryptor();
+            encryptor = rmCrypto.CreateEncryptor();
+            decryptor = rmCrypto.CreateDecryptor();
         }
 
         private static RijndaelManaged GetAlgorithm()
@@ -58,7 +58,7 @@ namespace DBI_PEA_Scoring.Common
         public void Save(T obj)
         {
 
-            using (var writer = new StreamWriter(new CryptoStream(File.Create(this.filePath), this.encryptor, CryptoStreamMode.Write)))
+            using (var writer = new StreamWriter(new CryptoStream(File.Create(filePath), encryptor, CryptoStreamMode.Write)))
             {
                 writer.Write(JsonConvert.SerializeObject(obj));
                 writer.Close();
@@ -67,7 +67,7 @@ namespace DBI_PEA_Scoring.Common
 
         public T Load()
         {
-            using (var reader = new StreamReader(new CryptoStream(File.OpenRead(this.filePath), this.decryptor, CryptoStreamMode.Read)))
+            using (var reader = new StreamReader(new CryptoStream(File.OpenRead(filePath), decryptor, CryptoStreamMode.Read)))
             {
                 string json = reader.ReadToEnd();
                 reader.Close();
@@ -77,7 +77,7 @@ namespace DBI_PEA_Scoring.Common
 
         public T Load(string filePath)
         {
-            using (var reader = new StreamReader(new CryptoStream(File.OpenRead(filePath), this.decryptor, CryptoStreamMode.Read)))
+            using (var reader = new StreamReader(new CryptoStream(File.OpenRead(filePath), decryptor, CryptoStreamMode.Read)))
             {
                 string json = reader.ReadToEnd();
                 reader.Close();

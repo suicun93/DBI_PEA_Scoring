@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using DBI_PEA_Scoring.Model;
 using Microsoft.Office.Interop.Excel;
@@ -33,7 +32,7 @@ namespace DBI_PEA_Scoring.Utils
                     AddResultSheet(book.Worksheets.Add(missing, missing, missing, missing), results, maxPoint, numOfQuestion);
 
                     //Add Analyze Sheet
-                    //AddResultSheet(book.Worksheets.Add(missing, missing, missing, missing), results, maxPoint, numOfQuestion);
+                    AddDataAnalyzeSheet(book.Worksheets.Add(missing, missing, missing, missing), results, maxPoint, numOfQuestion);
 
                     //Saving file to location
                     
@@ -51,22 +50,22 @@ namespace DBI_PEA_Scoring.Utils
 
         }
 
-        private static void AddDetailSheet(Worksheet sheetResult, List<Result> results, double maxPoint, int numOfQuestion)
+        private static void AddDetailSheet(Worksheet sheetDetail, List<Result> results, double maxPoint, int numOfQuestion)
         {
-            sheetResult.Name = "Detail";
+            sheetDetail.Name = "02_Detail";
             //Insert Title
-            int lastRow = sheetResult.Cells.SpecialCells(XlCellType.xlCellTypeLastCell).Row;
-            sheetResult.Cells[lastRow, 1] = "No";
-            sheetResult.Cells[lastRow, 2] = "Paper No";
-            sheetResult.Cells[lastRow, 3] = "Login";
-            sheetResult.Cells[lastRow, 4] = "Details";
+            int lastRow = sheetDetail.Cells.SpecialCells(XlCellType.xlCellTypeLastCell).Row;
+            sheetDetail.Cells[lastRow, 1] = "No";
+            sheetDetail.Cells[lastRow, 2] = "Paper No";
+            sheetDetail.Cells[lastRow, 3] = "Login";
+            sheetDetail.Cells[lastRow, 4] = "Details";
             //Insert Data
             foreach (var result in results)
             {
                 lastRow++;
-                sheetResult.Cells[lastRow, 1] = (lastRow - 1);
-                sheetResult.Cells[lastRow, 2] = result.PaperNo;
-                sheetResult.Cells[lastRow, 3] = result.StudentID;
+                sheetDetail.Cells[lastRow, 1] = (lastRow - 1);
+                sheetDetail.Cells[lastRow, 2] = result.PaperNo;
+                sheetDetail.Cells[lastRow, 3] = result.StudentID;
 
                 string note = "";
                 for (int i = 0; i < result.Points.Length; i++)
@@ -78,22 +77,29 @@ namespace DBI_PEA_Scoring.Utils
                         note = string.Concat(note, result.Logs[i], "");
                     }
                 }
-                sheetResult.Cells[lastRow, 4] = note.Substring(0, note.Length - 1);
+                sheetDetail.Cells[lastRow, 4] = note.Substring(0, note.Length - 1);
             }
             //Fit columns
-            sheetResult.Columns.AutoFit();
-            LastRowOfResultSheet = lastRow;
+            sheetDetail.Columns.AutoFit();
+            Range ThisRange = sheetDetail.get_Range("A1:C" + lastRow, Missing.Value);
+            ThisRange.VerticalAlignment = XlVAlign.xlVAlignTop;
         }
 
-        private static void AddAnalyzeSheet(Worksheet sheetResult, List<Result> results, double maxPoint, int numOfQuestion)
+        private static void AddDataAnalyzeSheet(Worksheet sheetDataAnalyze, List<Result> results, double maxPoint, int numOfQuestion)
         {
-            
+            sheetDataAnalyze.Name = "03_DataAnalyze";
+            //Insert Title
+            int lastRow = sheetDataAnalyze.Cells.SpecialCells(XlCellType.xlCellTypeLastCell).Row;
+            sheetDataAnalyze.Cells[lastRow, 1] = "No";
+            sheetDataAnalyze.Cells[lastRow, 2] = "Paper No";
+            sheetDataAnalyze.Cells[lastRow, 3] = "Login";
+            sheetDataAnalyze.Cells[lastRow, 4] = "Test Name  ";
         }
 
 
         private static void AddResultSheet(Worksheet sheetResult, List<Result> results, double maxPoint, int numOfQuestion)
         {
-            sheetResult.Name = "Result";
+            sheetResult.Name = "01_Result";
             //Insert Title
             int lastRow = sheetResult.Cells.SpecialCells(XlCellType.xlCellTypeLastCell).Row;
             sheetResult.Cells[lastRow, 1] = "No";
@@ -125,12 +131,13 @@ namespace DBI_PEA_Scoring.Utils
                 {
                     sheetResult.Cells[lastRow, i] = result.Points[i - 8];
                 }
-                string hyperlinkTargetAddress = "Detail!D" + lastRow;
+                string hyperlinkTargetAddress = "02_Detail!D" + lastRow;
                 sheetResult.Cells[lastRow, numOfQuestion + 8] = "View Details";
                 sheetResult.Hyperlinks.Add(sheetResult.Cells[lastRow, numOfQuestion + 8], "", hyperlinkTargetAddress, "View Details");
-                //Fit columns
-                sheetResult.Columns.AutoFit();
             }
+            //Fit columns
+            sheetResult.Columns.AutoFit();
+            LastRowOfResultSheet = lastRow;
         }
     }
 }

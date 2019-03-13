@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using DBI_PEA_Scoring.Model;
-using General = DBI_PEA_Scoring.Utils.Dao.General;
+using DBI_PEA_Scoring.Utils.Dao;
 
 namespace DBI_PEA_Scoring.Utils
 {

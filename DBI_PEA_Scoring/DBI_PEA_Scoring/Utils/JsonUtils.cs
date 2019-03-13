@@ -1,8 +1,6 @@
-﻿using System.Collections.Generic;
-using Newtonsoft.Json;
-using System.IO;
-using DBI_PEA_Scoring.Model;
+﻿using System.IO;
 using DBI_PEA_Scoring.Model.Teacher;
+using Newtonsoft.Json;
 
 namespace DBI_PEA_Scoring.Utils
 {

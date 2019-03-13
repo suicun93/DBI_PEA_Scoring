@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Windows.Forms;
 
 namespace DBI_PEA_Scoring.Utils
@@ -25,7 +26,7 @@ namespace DBI_PEA_Scoring.Utils
         ///     if  user choose a file return its path
         ///     if  no choice return empty string
         /// </returns>
-        /// <exception cref="File not found">
+        /// <exception cref="File">
         ///     When no file was found
         /// </exception>
         public static string GetFileLocation()
@@ -37,10 +38,9 @@ namespace DBI_PEA_Scoring.Utils
             ofd.Multiselect = false;
             // If the user clicked OK in the dialog and  
             // a .DAT file was selected, take the local path of it.  
-            if (ofd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if (ofd.ShowDialog() == DialogResult.OK)
                 return ofd.FileName;
-            else
-                throw new System.Exception("No file was found");
+            throw new Exception("No file was found");
         }
 
 
@@ -63,7 +63,7 @@ namespace DBI_PEA_Scoring.Utils
                 if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
                     //Get Files in folder
                     return fbd.SelectedPath;
-                throw new System.Exception("No folder was found");
+                throw new Exception("No folder was found");
             }
         }
     }

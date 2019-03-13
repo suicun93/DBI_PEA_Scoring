@@ -1,11 +1,14 @@
-﻿namespace DBI_PEA_Scoring.UI
+﻿using System.ComponentModel;
+using System.Windows.Forms;
+
+namespace DBI_PEA_Scoring.UI
 {
     partial class Scoring
     {
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.IContainer components = null;
+        private IContainer components = null;
 
         /// <summary>
         /// Clean up any resources being used.
@@ -128,12 +131,12 @@
         }
 
         #endregion
-        private System.Windows.Forms.Button exportButton;
-        private System.Windows.Forms.Button quitButton;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.DataGridView scoreGridView;
-        private System.Windows.Forms.Button startButton;
-        private System.Windows.Forms.SaveFileDialog saveFileDialog1;
-        private System.Windows.Forms.Button editScoreButton;
+        private Button exportButton;
+        private Button quitButton;
+        private Label label1;
+        private DataGridView scoreGridView;
+        private Button startButton;
+        private SaveFileDialog saveFileDialog1;
+        private Button editScoreButton;
     }
 }

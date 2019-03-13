@@ -1,13 +1,13 @@
-﻿using DBI_PEA_Scoring.Common;
-using DBI_PEA_Scoring.Model;
-using DBI_PEA_Scoring.Model.Teacher;
-using DBI_PEA_Scoring.Utils;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
+using DBI_PEA_Scoring.Common;
+using DBI_PEA_Scoring.Model;
+using DBI_PEA_Scoring.Model.Teacher;
+using DBI_PEA_Scoring.Utils;
 
 namespace DBI_PEA_Scoring.UI
 {
@@ -15,10 +15,10 @@ namespace DBI_PEA_Scoring.UI
     {
 
         private List<Result> ListResults { get; set; }
-        private bool scored = false;
+        private bool scored;
         private EditScore EditScore;
         //private List<Paper> ListTestItems = null;
-        private PaperSet PaperSet = null;
+        private PaperSet PaperSet;
         private List<string> DBScripts;
 
         public Scoring(PaperSet paperSet, List<Submission> Listsubmissions)
@@ -84,7 +84,7 @@ namespace DBI_PEA_Scoring.UI
             for (int i = 0; i < Constant.NumberOfQuestion; i++)
             {
                 DataGridViewColumn column = new DataGridViewTextBoxColumn();
-                column.Name = "Answer " + (i + 1).ToString();
+                column.Name = "Answer " + (i + 1);
                 scoreGridView.Columns.Add(column);
             }
         }
@@ -103,16 +103,15 @@ namespace DBI_PEA_Scoring.UI
         // Cham diem
         private void ShowPoint(object sender, EventArgs e)
         {
-            int a; int b;
-            a = b = 2;
+            int a =1, b = 1;
             if (ThreadPool.SetMinThreads(a, b))
             {
-                MessageBox.Show("a= " + a.ToString() + " b= " + b.ToString());
+                MessageBox.Show("a= " + a + " b= " + b);
             }
             ThreadPool.GetMinThreads(out a, out b); //a=1, b=1 on my machine
             if (ThreadPool.SetMaxThreads(a, b))
             {
-                MessageBox.Show("a= " + a.ToString() + " b= " + b.ToString());
+                MessageBox.Show("a= " + a + " b= " + b);
             }
             if (!scored)
             {
@@ -126,7 +125,7 @@ namespace DBI_PEA_Scoring.UI
                     scoreGridView.Rows[row].Cells[1].Value = CurrentResult.PaperNo;
                     scoreGridView.Refresh();
                     Input input = new Input(scoreGridView, row, CurrentResult);
-                    ThreadPool.QueueUserWorkItem(new WaitCallback(KetPoint), input);
+                    ThreadPool.QueueUserWorkItem(KetPoint, input);
                 }
                 //scoreGridView.Refresh();
                 scored = true;
