@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
@@ -13,7 +12,6 @@ namespace DBI_PEA_Scoring.UI
 {
     public partial class Scoring : Form
     {
-
         private List<Result> ListResults { get; set; }
         private bool scored;
         private EditScore EditScore;
@@ -42,23 +40,20 @@ namespace DBI_PEA_Scoring.UI
                     // Add StudentID
                     StudentID = submission.StudentID
                 };
+
                 // Add Answers
                 foreach (string answer in submission.ListAnswer)
-                {
                     result.ListAnswers.Add(answer);
-                }
+
                 // Add Candidates
                 foreach (Paper paper in paperSet.Papers)
-                {
                     if (paper.PaperNo.Equals(result.PaperNo))
                     {
                         foreach (Candidate candidate in paper.CandidateSet)
-                        {
                             result.ListCandidates.Add(candidate);
-                        }
                         break;
                     }
-                }
+
                 // Add to List to get score
                 ListResults.Add(result);
             }
@@ -69,24 +64,22 @@ namespace DBI_PEA_Scoring.UI
         {
             // Initialize the DataGridView.
             scoreGridView.AutoGenerateColumns = false;
-
             // Initialize and add a text box column for StudentID
-            DataGridViewColumn studentColumn = new DataGridViewTextBoxColumn();
-            studentColumn.Name = "StudentID";
-            scoreGridView.Columns.Add(studentColumn);
-
+            scoreGridView.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "StudentID"
+            });
             // Initialize and add a text box column for paperNo
-            DataGridViewColumn paperNoColumn = new DataGridViewTextBoxColumn();
-            paperNoColumn.Name = "PaperNo";
-            scoreGridView.Columns.Add(paperNoColumn);
-
+            scoreGridView.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "PaperNo"
+            });
             // Initialize and add a text box column for score of each answer
             for (int i = 0; i < Constant.NumberOfQuestion; i++)
-            {
-                DataGridViewColumn column = new DataGridViewTextBoxColumn();
-                column.Name = "Answer " + (i + 1);
-                scoreGridView.Columns.Add(column);
-            }
+                scoreGridView.Columns.Add(new DataGridViewTextBoxColumn
+                {
+                    Name = "Answer " + (i + 1)
+                });
         }
 
         /// <summary>
@@ -118,13 +111,10 @@ namespace DBI_PEA_Scoring.UI
                         scoreGridView.Rows.Add(1);
                         scoreGridView.Rows[row].Cells[0].Value = CurrentResult.StudentID;
                         scoreGridView.Rows[row].Cells[1].Value = CurrentResult.PaperNo;
-                        scoreGridView.UpdateCellValue(0, row);
-                        scoreGridView.UpdateCellValue(1, row);
                     }));
                     Input input = new Input(scoreGridView, row, CurrentResult);
                     ThreadPool.QueueUserWorkItem(KetPoint, input);
                 }
-                //scoreGridView.Refresh();
                 scored = true;
             }
             else MessageBox.Show("Score has already got.");
@@ -140,7 +130,6 @@ namespace DBI_PEA_Scoring.UI
                 for (int questionOrder = 0; questionOrder < temp.Result.ListCandidates.Count; questionOrder++)
                 {
                     scoreGridView.Rows[temp.Row].Cells[2 + questionOrder].Value = temp.Result.Points[questionOrder].ToString();
-                    scoreGridView.UpdateCellValue(2 + questionOrder, temp.Row);
                 }
             }));
         }
@@ -152,9 +141,7 @@ namespace DBI_PEA_Scoring.UI
             {
                 double maxPoint = 0;
                 foreach (Candidate candidate in ListResults.ElementAt(0).ListCandidates)
-                {
                     maxPoint += candidate.Point;
-                }
                 ExcelUtils.ExportResultsExcel(ListResults, maxPoint, ListResults.ElementAt(0).ListCandidates.Count);
             }
             catch (Exception ex)
@@ -163,15 +150,9 @@ namespace DBI_PEA_Scoring.UI
             }
         }
 
-        private void Scoring_FormClosed(object sender, FormClosedEventArgs e)
-        {
-            Application.Exit();
-        }
+        private void Scoring_FormClosed(object sender, FormClosedEventArgs e) => Application.Exit();
 
-        private void QuitButton_Click(object sender, EventArgs e)
-        {
-            Application.Exit();
-        }
+        private void QuitButton_Click(object sender, EventArgs e) => Application.Exit();
 
         private void EditScoreButton_Click(object sender, EventArgs e)
         {
