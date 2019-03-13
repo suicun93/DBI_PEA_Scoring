@@ -24,17 +24,9 @@ namespace DBI_PEA_Scoring.UI
         {
             InitializeComponent();
             // Auto Check connection import DB QUestion set and Answer of student for debug cho nhanh
-            try
-            {
-                CheckConnectionButton_Click(null, null);
-            }
-            catch (Exception) { }
-            
-            try
-            {
-                BrowseQuestionButton_Click(null, null);
-            }
-            catch (Exception) { }
+            CheckConnectionButton_Click(null, null);
+            BrowseQuestionButton_Click(null, null);
+            BrowseAnswerButton_Click(null, null);
         }
         private void BrowseQuestionButton_Click(object sender, EventArgs e)
         {
@@ -45,7 +37,7 @@ namespace DBI_PEA_Scoring.UI
                 // Bao
                 QuestionPath = @"E:\OneDrive\000 SWP\Sample\DBI_Exam\03_Sample_for_Testing_New_Phase_(09.03)\01_From_Shuffle\PaperSet.dat";
                 // Duc
-                //  = @"C:\Users\hoangduc\Desktop\PaperSet.dat";
+                // QuestionPath = @"C:\Users\hoangduc\Desktop\PaperSet.dat";
                 questionTextBox.Text = QuestionPath;
                 // Get QuestionPackage from file
                 PaperSet = null;
@@ -70,7 +62,7 @@ namespace DBI_PEA_Scoring.UI
                 // Bao
                 AnswerPath = @"D:\Sys\Desktop\tmp";
                 // Duc
-                //AnswerPath = @"C:\Users\hoangduc\Desktop\02_From_Submission";
+                // AnswerPath = @"C:\Users\hoangduc\Desktop\02_From_Submission";
                 answerTextBox.Text = AnswerPath;
                 // Get all submission files
                 string[] submissionFiles = Directory.GetFiles(AnswerPath, "*.dat");
@@ -95,11 +87,14 @@ namespace DBI_PEA_Scoring.UI
             Listsubmissions = new List<Submission>();
             // Setup for status bar
             int submissionCount = files.Count();
-            statusImportAnswerProgressBar.Maximum = submissionCount;
-            statusImportAnswerProgressBar.Step = 1;
-            statusImportAnswerProgressBar.Value = 0;
+            if (Visible)
+            {
+                statusImportAnswerProgressBar.Maximum = submissionCount;
+                statusImportAnswerProgressBar.Step = 1;
+                statusImportAnswerProgressBar.Value = 0;
+                statusImportAnswerLabel.Text = "Imported " + 0 + "/" + submissionCount;
+            }
             int count = 0;
-            statusImportAnswerLabel.Text = "Imported " + count + "/" + submissionCount;
             // Setup for decrypt answer of student
             SecureJsonSerializer<Submission> secureJsonSerializer = new SecureJsonSerializer<Submission>();
             foreach (string file in files)
@@ -110,9 +105,12 @@ namespace DBI_PEA_Scoring.UI
                     Listsubmissions.Add(submission);
                     // Change value status bar
                     count++;
-                    statusImportAnswerLabel.Text = "Imported " + count + "/" + submissionCount;
-                    statusImportAnswerLabel.Refresh();
-                    statusImportAnswerProgressBar.Invoke(new MethodInvoker(() => statusImportAnswerProgressBar.Value = count));
+                    if (Visible)
+                    {
+                        statusImportAnswerLabel.Text = "Imported " + count + "/" + submissionCount;
+                        statusImportAnswerLabel.Refresh();
+                        statusImportAnswerProgressBar.Invoke(new MethodInvoker(() => statusImportAnswerProgressBar.Value = count));
+                    }
                 }
                 catch (Exception e)
                 {
@@ -121,7 +119,8 @@ namespace DBI_PEA_Scoring.UI
             }
             secureJsonSerializer = null;
             // After loading successfully, diable browse button because jsonSerialize is error if load again.
-            ImportAnswerButton.Enabled = false;
+            if (Visible)
+                ImportAnswerButton.Enabled = false;
             //MessageBox.Show("Loaded :" + Listsubmissions.Count + " submissions.");
         }
 
@@ -147,7 +146,7 @@ namespace DBI_PEA_Scoring.UI
                 }
                 else
                 {
-                    MessageBox.Show("Database connection error!", "Error");
+                    MessageBox.Show("DB connection error or Can not create sp_Compare!", "Error");
                 }
 
             }

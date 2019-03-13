@@ -100,19 +100,23 @@ namespace DBI_PEA_Scoring.UI
             }
         }
 
-        // Cham diem
+        /// <summary>
+        /// Setup Min Max Threads in ThreadPool
+        /// Show Point procedure 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ShowPoint(object sender, EventArgs e)
         {
-            int a =1, b = 1;
-            if (ThreadPool.SetMinThreads(a, b))
-            {
-                MessageBox.Show("a= " + a + " b= " + b);
-            }
-            ThreadPool.GetMinThreads(out a, out b); //a=1, b=1 on my machine
-            if (ThreadPool.SetMaxThreads(a, b))
-            {
-                MessageBox.Show("a= " + a + " b= " + b);
-            }
+            // Setup Min Max Threads in ThreadPool
+            // This should be 1 because cpu is easy to run but HDD disk can not load over 2 threads in 1 time => wrong mark for student
+            // So workerThreads = 1, completionPortThreads = 1;
+            int workerThreads = Constant.MaxThreadPoolSize, completionPortThreads = Constant.MaxThreadPoolSize;
+            ThreadPool.SetMinThreads(workerThreads: workerThreads,completionPortThreads: completionPortThreads);
+            ThreadPool.GetMinThreads(out workerThreads, out completionPortThreads);
+            ThreadPool.SetMaxThreads(workerThreads, completionPortThreads);
+
+            // Get Point
             if (!scored)
             {
                 // Populate the data source.

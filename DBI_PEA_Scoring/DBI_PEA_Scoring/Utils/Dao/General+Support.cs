@@ -82,7 +82,9 @@ namespace DBI_PEA_Scoring.Utils.Dao
                 DataSource = dataSource,
                 UserID = userId,
                 Password = password,
-                InitialCatalog = initialCatalog
+                InitialCatalog = initialCatalog,
+                MinPoolSize = Constant.MaxConnectionPoolSize,
+                MaxPoolSize = Constant.MaxConnectionPoolSize
             };
             var builder = Constant.SqlConnectionStringBuilder;
             using (var connection = new SqlConnection(builder.ConnectionString))

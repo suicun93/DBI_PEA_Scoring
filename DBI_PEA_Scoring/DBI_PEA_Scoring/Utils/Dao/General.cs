@@ -10,29 +10,23 @@ namespace DBI_PEA_Scoring.Utils.Dao
     {
         public static bool PrepareSpCompareDatabase()
         {
-            var builder = Constant.SqlConnectionStringBuilder;
-            using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
+            try
             {
-                connection.Open();
-                //Check exists SP sp_compareDb
-                try
-                {
-                    ExecuteSingleQuery(SchemaType.ProcCompareDbsCreate, "master");
-                }
-                catch
-                {
-                    // ignored
-                }
+                ExecuteSingleQuery(SchemaType.ProcCompareDbsCreate, "master");
+            }
+            catch
+            {
+                // ProcCompareDbsCreate has been created
                 try
                 {
                     ExecuteSingleQuery(SchemaType.ProcCompareDbsAlter, "master");
                 }
                 catch
                 {
-                    // ignored
+                    return false;
                 }
-                return true;
             }
+            return true;
         }
 
         /// <summary>
@@ -49,8 +43,7 @@ namespace DBI_PEA_Scoring.Utils.Dao
         {
             query = "Use " + "[" + catalog + "]\nGO\n" + query + "";
             var queryList = query.Split(new[] { "GO", "go", "Go", "gO" }, StringSplitOptions.None);
-            var builder = Constant.SqlConnectionStringBuilder;
-            using (var connection = new SqlConnection(builder.ConnectionString))
+            using (var connection = new SqlConnection(Constant.SqlConnectionStringBuilder.ConnectionString))
             {
                 connection.Open();
                 try
@@ -81,10 +74,8 @@ namespace DBI_PEA_Scoring.Utils.Dao
         public static bool ExecuteSingleQuery(string query, string catalog)
         {
             query = "Use " + "[" + catalog + "];\nGO\n" + query + "";
-            var builder = Constant.SqlConnectionStringBuilder;
-            using (var connection = new SqlConnection(builder.ConnectionString))
+            using (var connection = new SqlConnection(Constant.SqlConnectionStringBuilder.ConnectionString))
             {
-                connection.Open();
                 var server = new Server(new ServerConnection(connection));
                 server.ConnectionContext.StatementTimeout = Constant.TimeOutInSecond;
                 server.ConnectionContext.Connect();
