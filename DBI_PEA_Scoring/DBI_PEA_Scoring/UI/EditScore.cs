@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
+using DBI_PEA_Scoring.Common;
 using DBI_PEA_Scoring.Model.Teacher;
 
 namespace DBI_PEA_Scoring.UI
@@ -20,41 +21,40 @@ namespace DBI_PEA_Scoring.UI
             scoreView.AutoGenerateColumns = false;
 
             // Initialize and add a text box column for StudentID
-            DataGridViewColumn TeskPackageColumn = new DataGridViewTextBoxColumn();
-            TeskPackageColumn.Name = "Ma de";
-            scoreView.Columns.Add(TeskPackageColumn);
+            scoreView.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "Ma de"
+            });
 
             // Initialize and add a text box column for score of each answer
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < Constant.NumberOfQuestion; i++)
             {
-                DataGridViewColumn column = new DataGridViewTextBoxColumn();
-                column.Name = "Diem cau " + (i + 1);
-                scoreView.Columns.Add(column);
+                scoreView.Columns.Add(new DataGridViewTextBoxColumn()
+                {
+                    Name = "Diem cau " + (i + 1)
+                });
             }
-            scoreView.Refresh();
             int row = 0;
-            foreach (var paper in PaperSet.Papers)
+            foreach (Paper paper in PaperSet.Papers)
             {
                 scoreView.Rows.Add();
                 scoreView.Rows[row].Cells[0].Value = paper.PaperNo;
-                int questionOrder = 0;
-                foreach (var question in paper.CandidateSet)
+                scoreView.Invoke((MethodInvoker)(() =>
                 {
-                    questionOrder++;
-                    scoreView.Rows[row].Cells[questionOrder].Value = question.Point.ToString();
-                }
+                    for (int questionOrder = 0; questionOrder < paper.CandidateSet.Count; questionOrder++)
+                        scoreView.Rows[row].Cells[questionOrder].Value = paper.CandidateSet[questionOrder].Point.ToString();
+                }));
                 row++;
             }
-            scoreView.Refresh();
         }
-        private void saveButton_Click(object sender, EventArgs e)
+        private void SaveButton_Click(object sender, EventArgs e)
         {
             Hide();
         }
 
         private void EditScore_FormClosing(object sender, FormClosingEventArgs e)
         {
-            saveButton_Click(sender, e);
+            SaveButton_Click(sender, e);
         }
     }
 }

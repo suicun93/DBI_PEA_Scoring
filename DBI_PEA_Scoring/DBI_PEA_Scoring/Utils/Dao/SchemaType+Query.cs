@@ -1,10 +1,10 @@
 ﻿
 namespace DBI_PEA_Scoring.Utils.Dao
 {
-    class SchemaType
+    internal class SchemaType
     {
 
-        public static string ProcCompareDbsAlter = "Alter PROC [dbo].[sp_CompareDb]\n" +
+        private static string procCompareDbsAlter = "Alter PROC [dbo].[sp_CompareDb]\n" +
 "(\n" +
 "	@SourceDB SYSNAME,\n" +
 "	@TargetDb SYSNAME\n" +
@@ -588,7 +588,7 @@ namespace DBI_PEA_Scoring.Utils.Dao
 "	WHERE #FK_RESULTS.DATABASENAME = @TargetDb\n" +
 "END\n" +
 "GO";
-        public static string ProcCompareDbsCreate = "CREATE PROC [dbo].[sp_CompareDb]\n" +
+        private static string procCompareDbsCreate = "CREATE PROC [dbo].[sp_CompareDb]\n" +
 "(\n" +
 "	@SourceDB SYSNAME,\n" +
 "	@TargetDb SYSNAME\n" +
@@ -1172,5 +1172,8 @@ namespace DBI_PEA_Scoring.Utils.Dao
 "	WHERE #FK_RESULTS.DATABASENAME = @TargetDb\n" +
 "END\n" +
 "GO";
+
+        public static string ProcCompareDbsAlter { get => procCompareDbsAlter; set => procCompareDbsAlter = value; }
+        public static string ProcCompareDbsCreate { get => procCompareDbsCreate; set => procCompareDbsCreate = value; }
     }
 }

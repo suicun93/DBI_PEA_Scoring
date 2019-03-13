@@ -36,13 +36,13 @@ namespace DBI_PEA_Scoring.UI
             try
             {
                 // Get link to file
-                if (importForDebug)
+                if (!importForDebug)
+                    QuestionPath = FileUtils.GetFileLocation();
+                else
                     // Bao
                     //QuestionPath = @"E:\OneDrive\000 SWP\Sample\DBI_Exam\03_Sample_for_Testing_New_Phase_(09.03)\01_From_Shuffle\PaperSet.dat";
                     // Duc
                     QuestionPath = @"C:\Users\hoangduc\Desktop\PaperSet.dat";
-                else
-                    QuestionPath = FileUtils.GetFileLocation();
                 questionTextBox.Text = QuestionPath;
                 // Get QuestionPackage from file
                 PaperSet = null;
@@ -63,13 +63,13 @@ namespace DBI_PEA_Scoring.UI
             try
             {
                 // Get directory where student's submittion was saved
-                if (importForDebug)
+                if (!importForDebug)
+                    AnswerPath = FileUtils.GetFolderLocation();
+                else
                     // Bao
                     //AnswerPath = @"D:\Sys\Desktop\tmp";
                     // Duc
                     AnswerPath = @"C:\Users\hoangduc\Desktop\02_From_Submission";
-                else
-                    AnswerPath = FileUtils.GetFolderLocation();
                 answerTextBox.Text = AnswerPath;
                 // Get all submission files
                 string[] submissionFiles = Directory.GetFiles(AnswerPath, "*.dat");
@@ -116,7 +116,7 @@ namespace DBI_PEA_Scoring.UI
                     {
                         statusImportAnswerLabel.Text = "Imported " + count + "/" + submissionCount;
                         statusImportAnswerLabel.Refresh();
-                        statusImportAnswerProgressBar.Invoke(new MethodInvoker(() => statusImportAnswerProgressBar.Value = count));
+                        statusImportAnswerProgressBar.Invoke((MethodInvoker)(() => { statusImportAnswerProgressBar.Value = count; }));
                     }
                 }
                 catch (Exception e)

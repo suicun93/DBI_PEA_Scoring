@@ -10,7 +10,7 @@ namespace DBI_PEA_Scoring.Utils.Dao
         {
             try
             {
-                var queryGenerateAnswerDb = "CREATE DATABASE [" + dbAnswerName + "]\n" +
+                string queryGenerateAnswerDb = "CREATE DATABASE [" + dbAnswerName + "]\n" +
                                            "GO\n" +
                                            "USE " + "[" + dbAnswerName + "]\n" + Constant.DBScriptList[1];
                 ExecuteQuery(queryGenerateAnswerDb, "master");
@@ -22,7 +22,7 @@ namespace DBI_PEA_Scoring.Utils.Dao
 
             try
             {
-                var queryGenerateSolutionDb = "CREATE DATABASE [" + dbSolutionName + "]\n" +
+                string queryGenerateSolutionDb = "CREATE DATABASE [" + dbSolutionName + "]\n" +
                                              "GO\n" +
                                              "USE " + "[" + dbSolutionName + "]\n" + Constant.DBScriptList[1];
                 ExecuteQuery(queryGenerateSolutionDb, "master");

@@ -97,7 +97,7 @@ namespace DBI_PEA_Scoring.UI
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(41, 65);
+            this.label3.Location = new System.Drawing.Point(44, 65);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(325, 13);
             this.label3.TabIndex = 4;
@@ -128,7 +128,7 @@ namespace DBI_PEA_Scoring.UI
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label4.ForeColor = System.Drawing.SystemColors.MenuHighlight;
-            this.label4.Location = new System.Drawing.Point(122, 29);
+            this.label4.Location = new System.Drawing.Point(125, 29);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(169, 25);
             this.label4.TabIndex = 7;
@@ -253,7 +253,7 @@ namespace DBI_PEA_Scoring.UI
             // button3
             // 
             this.button3.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button3.Location = new System.Drawing.Point(150, 431);
+            this.button3.Location = new System.Drawing.Point(159, 431);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(95, 31);
             this.button3.TabIndex = 26;
