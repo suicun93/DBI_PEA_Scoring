@@ -154,20 +154,12 @@ namespace DBI_PEA_Scoring.UI
         {
             try
             {
-                saveFileDialog1.Filter = "Microsoft Excel 97-2003 Add-In (*.xls)|*.xls";
-                saveFileDialog1.FilterIndex = 2;
-                saveFileDialog1.RestoreDirectory = true;
-                if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+                double maxPoint = 0;
+                foreach (Candidate candidate in ListResults.ElementAt(0).ListCandidates)
                 {
-                    string saveFolder = Path.GetDirectoryName(saveFileDialog1.FileName);
-                    string savePath = Path.Combine(saveFolder, saveFileDialog1.FileName);
-                    double maxPoint = 0;
-                    foreach (Candidate candidate in ListResults.ElementAt(0).ListCandidates)
-                    {
-                        maxPoint += candidate.Point;
-                    }
-                    ExcelUtils.ExportResultsExcel(savePath, ListResults, maxPoint, ListResults.ElementAt(0).ListCandidates.Count);
+                    maxPoint += candidate.Point;
                 }
+                ExcelUtils.ExportResultsExcel(ListResults, maxPoint, ListResults.ElementAt(0).ListCandidates.Count);
             }
             catch (Exception ex)
             {

@@ -356,6 +356,7 @@
             this.Controls.Add(this.questionTextBox);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "ImportMaterial";
             this.Text = "ImportMaterial";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.ImportMaterial_FormClosed);

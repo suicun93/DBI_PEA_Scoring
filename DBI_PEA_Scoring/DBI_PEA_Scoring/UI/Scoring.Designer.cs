@@ -40,6 +40,7 @@
             // 
             // exportButton
             // 
+            this.exportButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.exportButton.Location = new System.Drawing.Point(590, 478);
             this.exportButton.Name = "exportButton";
             this.exportButton.Size = new System.Drawing.Size(75, 23);
@@ -50,6 +51,7 @@
             // 
             // quitButton
             // 
+            this.quitButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.quitButton.Location = new System.Drawing.Point(678, 478);
             this.quitButton.Name = "quitButton";
             this.quitButton.Size = new System.Drawing.Size(75, 23);
@@ -73,6 +75,9 @@
             // 
             this.scoreGridView.AllowUserToAddRows = false;
             this.scoreGridView.AllowUserToDeleteRows = false;
+            this.scoreGridView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.scoreGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.scoreGridView.Location = new System.Drawing.Point(19, 67);
             this.scoreGridView.Name = "scoreGridView";
@@ -82,6 +87,7 @@
             // 
             // startButton
             // 
+            this.startButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.startButton.Location = new System.Drawing.Point(651, 33);
             this.startButton.Name = "startButton";
             this.startButton.Size = new System.Drawing.Size(104, 23);
@@ -92,6 +98,7 @@
             // 
             // editScoreButton
             // 
+            this.editScoreButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.editScoreButton.Location = new System.Drawing.Point(502, 478);
             this.editScoreButton.Name = "editScoreButton";
             this.editScoreButton.Size = new System.Drawing.Size(75, 23);

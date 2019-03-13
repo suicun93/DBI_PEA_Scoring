@@ -11,7 +11,7 @@ namespace DBI_PEA_Scoring.Utils
     {
 
         private static int LastRowOfResultSheet;
-        public static void ExportResultsExcel(string path, List<Result> results, double maxPoint, int numOfQuestion)
+        public static void ExportResultsExcel(List<Result> results, double maxPoint, int numOfQuestion)
         {
             //Open Excel
             try
@@ -33,16 +33,14 @@ namespace DBI_PEA_Scoring.Utils
                     AddResultSheet(book.Worksheets.Add(missing, missing, missing, missing), results, maxPoint, numOfQuestion);
 
                     //Add Analyze Sheet
-                    AddResultSheet(book.Worksheets.Add(missing, missing, missing, missing), results, maxPoint, numOfQuestion);
+                    //AddResultSheet(book.Worksheets.Add(missing, missing, missing, missing), results, maxPoint, numOfQuestion);
 
                     //Saving file to location
-                    book.SaveAs(path, XlFileFormat.xlAddIn8);
+                    
                 }
                 // Should get by type of exception but chua co thoi gian research and debug. -> 2.0
                 catch (Exception e)
                 {
-                    book?.Close(false, missing, missing);
-                    excelApp.Quit();
                     throw new Exception("Export failed.\n " + e.Message);
                 }
             }
@@ -86,6 +84,12 @@ namespace DBI_PEA_Scoring.Utils
             sheetResult.Columns.AutoFit();
             LastRowOfResultSheet = lastRow;
         }
+
+        private static void AddAnalyzeSheet(Worksheet sheetResult, List<Result> results, double maxPoint, int numOfQuestion)
+        {
+            
+        }
+
 
         private static void AddResultSheet(Worksheet sheetResult, List<Result> results, double maxPoint, int numOfQuestion)
         {
