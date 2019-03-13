@@ -5,14 +5,12 @@ namespace DBI_PEA_Scoring.Model
     public class Input
     {
 
-        public Input(DataGridView dataGridView, int row, Result result)
+        public Input(int row, Result result)
         {
             Row = row;
-            DataGridView = dataGridView;
             Result = result;
         }
         public Result Result { get; set; }
         public int Row { get; set; }
-        public DataGridView DataGridView { get; set; }
     }
 }

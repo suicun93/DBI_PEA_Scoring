@@ -44,6 +44,7 @@ namespace DBI_PEA_Scoring.UI
             // exportButton
             // 
             this.exportButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.exportButton.Enabled = false;
             this.exportButton.Location = new System.Drawing.Point(590, 478);
             this.exportButton.Name = "exportButton";
             this.exportButton.Size = new System.Drawing.Size(75, 23);
@@ -102,6 +103,7 @@ namespace DBI_PEA_Scoring.UI
             // editScoreButton
             // 
             this.editScoreButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.editScoreButton.Enabled = false;
             this.editScoreButton.Location = new System.Drawing.Point(502, 478);
             this.editScoreButton.Name = "editScoreButton";
             this.editScoreButton.Size = new System.Drawing.Size(75, 23);

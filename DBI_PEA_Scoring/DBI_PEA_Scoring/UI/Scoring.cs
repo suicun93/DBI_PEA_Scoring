@@ -18,6 +18,7 @@ namespace DBI_PEA_Scoring.UI
         //private List<Paper> ListTestItems = null;
         private PaperSet PaperSet;
         private List<string> DBScripts;
+        private int count = 0;
 
         public Scoring(PaperSet paperSet, List<Submission> Listsubmissions)
         {
@@ -29,7 +30,6 @@ namespace DBI_PEA_Scoring.UI
             SetupUI();
             DBScripts = paperSet.DBScriptList;
 
-            //this.Activated += new System.EventHandler(ShowPoint);
             // Merge Question and submission to ListResults
             foreach (Submission submission in Listsubmissions)
             {
@@ -101,6 +101,8 @@ namespace DBI_PEA_Scoring.UI
             // Get Point
             if (!scored)
             {
+                // Reset to count how many results has been marked.
+                count = 0;
                 // Populate the data source.
                 for (int row = 0; row < ListResults.Count; row++)
                 {
@@ -112,28 +114,47 @@ namespace DBI_PEA_Scoring.UI
                         scoreGridView.Rows[row].Cells[0].Value = CurrentResult.StudentID;
                         scoreGridView.Rows[row].Cells[1].Value = CurrentResult.PaperNo;
                     }));
-                    Input input = new Input(scoreGridView, row, CurrentResult);
-                    ThreadPool.QueueUserWorkItem(KetPoint, input);
+                    Input input = new Input(row, CurrentResult);
+                    ThreadPool.QueueUserWorkItem(dontKnowHowItWork => GetPoint(input));
                 }
                 scored = true;
             }
             else MessageBox.Show("Score has already got.");
         }
-        private void KetPoint(object input)
+
+
+
+        private void GetPoint(Input input)
         {
-            var temp = input as Input;
-            temp.Result.GetPoint();
+            input.Result.GetPoint();
             // Refresh to show point and scroll view to the last row
             // Show point of each question
             scoreGridView.Invoke((MethodInvoker)(() =>
             {
-                for (int questionOrder = 0; questionOrder < temp.Result.ListCandidates.Count; questionOrder++)
+                for (int questionOrder = 0; questionOrder < input.Result.ListCandidates.Count; questionOrder++)
                 {
-                    scoreGridView.Rows[temp.Row].Cells[2 + questionOrder].Value = temp.Result.Points[questionOrder].ToString();
+                    scoreGridView.Rows[input.Row].Cells[2 + questionOrder].Value = input.Result.Points[questionOrder].ToString();
                 }
             }));
+            CountDown();
         }
-        //delegate void SetTextCallback(Result result);
+
+        /// <summary>
+        /// Handle ThreadPool Completion
+        /// </summary>
+        private void CountDown()
+        {
+            count++;
+            if (count == ListResults.Count)
+            {
+                // Done
+                MessageBox.Show("Done");
+                editScoreButton.Enabled = true;
+                exportButton.Enabled = true;
+                startButton.Visible = false;
+            }
+        }
+
         // sau khi add xong thuc hien cham diem, cham den dau in diem den day!
         private void ExportButton_Click(object sender, EventArgs e)
         {
