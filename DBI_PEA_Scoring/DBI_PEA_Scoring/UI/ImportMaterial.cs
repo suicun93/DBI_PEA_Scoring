@@ -19,7 +19,7 @@ namespace DBI_PEA_Scoring.UI
         public string AnswerPath { get; set; }
         private PaperSet PaperSet;
         private List<Submission> Listsubmissions;
-        private bool importForDebug = true;
+        private bool importForDebug = false;
         public ImportMaterial()
         {
             InitializeComponent();
