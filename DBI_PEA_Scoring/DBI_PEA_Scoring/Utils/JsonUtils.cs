@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using DBI_PEA_Scoring.Model;
 using DBI_PEA_Scoring.Model.Teacher;
 using Newtonsoft.Json;
 
@@ -25,17 +26,21 @@ namespace DBI_PEA_Scoring.Utils
                 return false;
             }
         }
-
         public static object LoadQuestion(string path)
         {
             string jsonQuestion = File.ReadAllText(path);
             return JsonConvert.DeserializeObject<PaperSet>(jsonQuestion);
         }
 
-        public static PaperSet DeserializeJson(string localPath)
+        //public static PaperSet PaperSetFromJson(string localPath)
+        //{
+        //    // read file into a string and deserialize JSON to a type
+        //    return JsonConvert.DeserializeObject<PaperSet>(File.ReadAllText(localPath));
+        //}
+
+        public static Submission SubmissionFromJson(string str)
         {
-            // read file into a string and deserialize JSON to a type
-            return JsonConvert.DeserializeObject<PaperSet>(File.ReadAllText(localPath));
+            return JsonConvert.DeserializeObject<Submission>(File.ReadAllText(str));
         }
     }
 }

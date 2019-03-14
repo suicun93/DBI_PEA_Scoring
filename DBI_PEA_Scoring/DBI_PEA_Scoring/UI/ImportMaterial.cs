@@ -19,7 +19,7 @@ namespace DBI_PEA_Scoring.UI
         public string AnswerPath { get; set; }
         private PaperSet PaperSet;
         private List<Submission> Listsubmissions;
-        private bool importForDebug = false;
+        private bool importForDebug = true;
         public ImportMaterial()
         {
             InitializeComponent();
@@ -54,7 +54,8 @@ namespace DBI_PEA_Scoring.UI
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Error");
-                questionTextBox.Text = "";
+                if (Visible)
+                    questionTextBox.Text = "";
             }
         }
 
@@ -79,11 +80,16 @@ namespace DBI_PEA_Scoring.UI
             }
             catch (Exception ex)
             {
-                answerTextBox.Text = "";
-                // Setup for status bar
-                statusImportAnswerProgressBar.Maximum = 1;
-                statusImportAnswerProgressBar.Value = 0;
-                statusImportAnswerLabel.Text = "Imported " + "0/0";
+                if (Visible)
+                {
+                    answerTextBox.Text = "";
+                    // Setup for status bar
+                    statusImportAnswerProgressBar.Maximum = 1;
+                    statusImportAnswerProgressBar.Value = 0;
+                    statusImportAnswerProgressBar.Refresh();
+                    statusImportAnswerLabel.Text = "Imported " + "0/0";
+                    statusImportAnswerLabel.Refresh();
+                }
                 MessageBox.Show(ex.Message, "Error");
             }
         }
@@ -104,18 +110,49 @@ namespace DBI_PEA_Scoring.UI
             int count = 0;
             // Setup for decrypt answer of student
             SecureJsonSerializer<Submission> secureJsonSerializer = new SecureJsonSerializer<Submission>();
+            List<string> tempFiles = new List<string>();
+            // First import normal file.
             foreach (string file in files)
             {
                 try
                 {
-                    Submission submission = secureJsonSerializer.Load(file);
+                    var submission = JsonUtils.SubmissionFromJson(file);
+                    // Load success 1 Submission
                     Listsubmissions.Add(submission);
                     // Change value status bar
                     count++;
                     if (Visible)
                     {
-                        statusImportAnswerLabel.Text = "Imported " + count + "/" + submissionCount;
-                        statusImportAnswerLabel.Refresh();
+                        statusImportAnswerLabel.Invoke((MethodInvoker)(() =>
+                        {
+                            statusImportAnswerLabel.Text = "Imported " + count + "/" + submissionCount;
+                        }));
+                        statusImportAnswerProgressBar.Invoke((MethodInvoker)(() => { statusImportAnswerProgressBar.Value = count; }));
+                    }
+                }
+                catch (Exception)
+                {
+                    tempFiles.Add(file);
+                }
+            }
+            // Second import encoded file.
+            foreach (string file in tempFiles)
+            {
+                try
+                {
+                    Submission submission;
+                    submission = secureJsonSerializer.Load(file);
+
+                    // Load success 1 Submission
+                    Listsubmissions.Add(submission);
+                    // Change value status bar
+                    count++;
+                    if (Visible)
+                    {
+                        statusImportAnswerLabel.Invoke((MethodInvoker)(() =>
+                        {
+                            statusImportAnswerLabel.Text = "Imported " + count + "/" + submissionCount;
+                        }));
                         statusImportAnswerProgressBar.Invoke((MethodInvoker)(() => { statusImportAnswerProgressBar.Value = count; }));
                     }
                 }
@@ -141,22 +178,14 @@ namespace DBI_PEA_Scoring.UI
             else
                 if (!IsConnectedToDB)
                 MessageBox.Show("Please test connect to Sql Server", "Error");
-            //else
-            //    if (!importedDB)
-            //    MessageBox.Show("Enter Database!", "Error");
             else
-            {
                 if (General.PrepareSpCompareDatabase())
-                {
-                    var scoring = new Scoring(PaperSet, Listsubmissions);
-                    Hide();
-                }
-                else
-                {
-                    MessageBox.Show("DB connection error or Can not create sp_Compare!", "Error");
-                }
-
+            {
+                var scoring = new Scoring(PaperSet, Listsubmissions);
+                Hide();
             }
+            else
+                MessageBox.Show("DB connection error or Can not create sp_Compare!", "Error");
         }
 
         private void CheckConnectionButton_Click(object sender, EventArgs e)
