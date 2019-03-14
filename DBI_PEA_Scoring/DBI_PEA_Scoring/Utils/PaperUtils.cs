@@ -30,7 +30,7 @@ namespace DBI_PEA_Scoring.Utils
                 // Execute query
                 try
                 {
-                    General.ExecuteQuery(queryAnswer, "master");
+                    General.ExecuteSingleQuery(queryAnswer, "master");
                 }
                 catch (Exception e)
                 {
@@ -38,7 +38,7 @@ namespace DBI_PEA_Scoring.Utils
                 }
                 try
                 {
-                    General.ExecuteQuery(querySolution, "master");
+                    General.ExecuteSingleQuery(querySolution, "master");
                 }
                 catch (Exception e)
                 {
@@ -105,7 +105,7 @@ namespace DBI_PEA_Scoring.Utils
                 // Execute query
                 try
                 {
-                    General.ExecuteQuery(answer, dbAnswerName);
+                    General.ExecuteSingleQuery(answer, dbAnswerName);
                 }
                 catch (Exception e)
                 {
@@ -113,7 +113,7 @@ namespace DBI_PEA_Scoring.Utils
                 }
                 try
                 {
-                    General.ExecuteQuery(candidate.Solution, dbSolutionName);
+                    General.ExecuteSingleQuery(candidate.Solution, dbSolutionName);
                 }
                 catch (Exception e)
                 {
@@ -151,7 +151,7 @@ namespace DBI_PEA_Scoring.Utils
                 // Execute query
                 try
                 {
-                    General.ExecuteQuery(answer, dbAnswerName);
+                    General.ExecuteSingleQuery(answer, dbAnswerName);
                 }
                 catch (Exception e)
                 {
@@ -159,7 +159,7 @@ namespace DBI_PEA_Scoring.Utils
                 }
                 try
                 {
-                    General.ExecuteQuery(candidate.Solution, dbSolutionName);
+                    General.ExecuteSingleQuery(candidate.Solution, dbSolutionName);
                 }
                 catch (Exception e)
                 {
@@ -197,7 +197,7 @@ namespace DBI_PEA_Scoring.Utils
                 // Execute query
                 try
                 {
-                    General.ExecuteQuery(answer, dbAnswerName);
+                    General.ExecuteSingleQuery(answer, dbAnswerName);
                 }
                 catch (Exception e)
                 {
@@ -205,7 +205,7 @@ namespace DBI_PEA_Scoring.Utils
                 }
                 try
                 {
-                    General.ExecuteQuery(candidate.Solution, dbSolutionName);
+                    General.ExecuteSingleQuery(candidate.Solution, dbSolutionName);
                 }
                 catch (Exception e)
                 {

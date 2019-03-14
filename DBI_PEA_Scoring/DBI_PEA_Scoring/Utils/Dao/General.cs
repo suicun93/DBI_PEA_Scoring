@@ -39,32 +39,32 @@ namespace DBI_PEA_Scoring.Utils.Dao
         /// "message error" if error
         /// "false" if not success
         /// </returns>
-        public static bool ExecuteQuery(string query, string catalog)
-        {
-            query = "Use " + "[" + catalog + "]\nGO\n" + query + "";
-            var queryList = query.Split(new[] { "GO", "go", "Go", "gO" }, StringSplitOptions.None);
-            using (var connection = new SqlConnection(Constant.SqlConnectionStringBuilder.ConnectionString))
-            {
-                connection.Open();
-                try
-                {
-                    foreach (var q in queryList)
-                    {
-                        using (var command = new SqlCommand(q, connection))
-                        {
-                            command.CommandTimeout = Constant.TimeOutInSecond;
-                            Console.WriteLine(command.ExecuteNonQuery());
-                        }
-                    }
-                    return true;
-                }
-                finally
-                {
-                    SqlCommand FixCommand = new SqlCommand("Use master", connection);
-                    FixCommand.ExecuteNonQuery();
-                }
-            }
-        }
+        //public static bool ExecuteQuery(string query, string catalog)
+        //{
+        //    query = "Use " + "[" + catalog + "]\nGO\n" + query + "";
+        //    var queryList = query.Split(new[] { "GO", "go", "Go", "gO" }, StringSplitOptions.None);
+        //    using (var connection = new SqlConnection(Constant.SqlConnectionStringBuilder.ConnectionString))
+        //    {
+        //        connection.Open();
+        //        try
+        //        {
+        //            foreach (var q in queryList)
+        //            {
+        //                using (var command = new SqlCommand(q, connection))
+        //                {
+        //                    command.CommandTimeout = Constant.TimeOutInSecond;
+        //                    Console.WriteLine(command.ExecuteNonQuery());
+        //                }
+        //            }
+        //            return true;
+        //        }
+        //        finally
+        //        {
+        //            SqlCommand FixCommand = new SqlCommand("Use master", connection);
+        //            FixCommand.ExecuteNonQuery();
+        //        }
+        //    }
+        //}
 
         /// <summary>
         /// Execute Single Query    

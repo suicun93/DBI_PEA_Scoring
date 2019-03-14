@@ -18,22 +18,21 @@ namespace DBI_PEA_Scoring.Utils
             {
                 Application excelApp = new Application();
                 object missing = Missing.Value;
-                Workbook book = null;
                 try
                 {
                     excelApp.Visible = true;
 
                     //Open Workbook
-                    book = excelApp.Workbooks.Add(missing);
-
-                    //Add Detail Sheet
-                    AddDetailSheet(book.Worksheets[1], results, maxPoint, numOfQuestion);
+                    var book = excelApp.Workbooks.Add(missing);
 
                     //Add Result Sheet
-                    AddResultSheet(book.Worksheets.Add(missing, missing, missing, missing), results, maxPoint, numOfQuestion);
+                    AddResultSheet(book.Worksheets[1], results, maxPoint, numOfQuestion);
+
+                    //Add Detail Sheet
+                    AddDetailSheet(book.Sheets.Add(After: book.Sheets[book.Sheets.Count]), results, maxPoint, numOfQuestion);
 
                     //Add Analyze Sheet
-                    AddDataAnalyzeSheet(book.Worksheets.Add(missing, missing, missing, missing), results, maxPoint, numOfQuestion);
+                    AddDataAnalyzeSheet(book.Sheets.Add(After: book.Sheets[book.Sheets.Count]), results, maxPoint, numOfQuestion);
 
                     //Saving file to location
 

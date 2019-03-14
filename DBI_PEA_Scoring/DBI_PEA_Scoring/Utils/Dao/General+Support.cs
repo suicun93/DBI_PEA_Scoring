@@ -13,7 +13,7 @@ namespace DBI_PEA_Scoring.Utils.Dao
                 string queryGenerateAnswerDb = "CREATE DATABASE [" + dbAnswerName + "]\n" +
                                            "GO\n" +
                                            "USE " + "[" + dbAnswerName + "]\n" + Constant.DBScriptList[1];
-                ExecuteQuery(queryGenerateAnswerDb, "master");
+                ExecuteSingleQuery(queryGenerateAnswerDb, "master");
             }
             catch
             {
@@ -25,7 +25,7 @@ namespace DBI_PEA_Scoring.Utils.Dao
                 string queryGenerateSolutionDb = "CREATE DATABASE [" + dbSolutionName + "]\n" +
                                              "GO\n" +
                                              "USE " + "[" + dbSolutionName + "]\n" + Constant.DBScriptList[1];
-                ExecuteQuery(queryGenerateSolutionDb, "master");
+                ExecuteSingleQuery(queryGenerateSolutionDb, "master");
             }
             catch
             {
@@ -47,7 +47,7 @@ namespace DBI_PEA_Scoring.Utils.Dao
             {
                 string dropQuery = "USE MASTER IF EXISTS(SELECT name FROM sys.databases WHERE name = '" + dbName + "')\n" +
                                     "USE MASTER DROP DATABASE " + dbName + "";
-                ExecuteQuery(dropQuery , "master");
+                ExecuteSingleQuery(dropQuery , "master");
             }
             catch (Exception)
             {
