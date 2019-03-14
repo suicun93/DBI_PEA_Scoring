@@ -23,8 +23,8 @@ namespace DBI_PEA_Scoring.Utils
         {
             string dbSolutionName = studentId + "_" + questionOrder + "_Solution" + "_" + new Random().Next(1000000000);
             string dbAnswerName = studentId + "_" + questionOrder + "_Answer" + "_" + new Random().Next(1000000000);
-            string querySolution = candidate.Solution.Replace(candidate.DBName, dbSolutionName);
-            string queryAnswer = answer.Replace(candidate.DBName, dbAnswerName);
+            string querySolution = string.Concat("create database ", dbSolutionName, "\nGO\nUSE ", dbSolutionName, "\n", answer);
+            string queryAnswer = string.Concat("create database ", dbAnswerName, "\nGO\nUSE ", dbAnswerName, "\n", candidate.Solution);
             try
             {
                 // Execute query

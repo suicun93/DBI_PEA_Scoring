@@ -61,7 +61,7 @@ namespace DBI_PEA_Scoring.Utils
             sheetDetail.Cells[lastRow, 4] = "Details";
             for (int i = 5; i < 5 + numOfQuestion; i++)
             {
-                sheetDetail.Cells[lastRow, i] = string.Concat("Q", i - 7);
+                sheetDetail.Cells[lastRow, i] = string.Concat("Q", i - 4);
             }
             //Insert Data
             foreach (var result in results)
@@ -88,9 +88,8 @@ namespace DBI_PEA_Scoring.Utils
             }
             //Fit columns
             sheetDetail.Columns.AutoFit();
-            sheetDetail.Rows.AutoFit();
-            Range thisRange = sheetDetail.get_Range("A1:C" + lastRow, Missing.Value);
-            thisRange.VerticalAlignment = XlVAlign.xlVAlignTop;
+            sheetDetail.get_Range("A:G").VerticalAlignment = XlVAlign.xlVAlignTop;
+            sheetDetail.get_Range("D:X").ColumnWidth = 60;
         }
 
         private static void AddDataAnalyzeSheet(Worksheet sheetDataAnalyze, List<Result> results, double maxPoint, int numOfQuestion)
@@ -146,6 +145,7 @@ namespace DBI_PEA_Scoring.Utils
             }
             //Fit columns
             sheetResult.Columns.AutoFit();
+            sheetResult.get_Range("A:G").VerticalAlignment = XlVAlign.xlVAlignTop;
             LastRowOfResultSheet = lastRow;
         }
     }

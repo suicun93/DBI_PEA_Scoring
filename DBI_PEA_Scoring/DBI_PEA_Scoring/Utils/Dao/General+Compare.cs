@@ -52,11 +52,13 @@ namespace DBI_PEA_Scoring.Utils.Dao
                             reader.NextResult();
                             while (reader.Read())
                             {
-                                result = string.Concat(result, "Check Constraints:\n", "||    FK Table    ||",
-                                    "    FK Columns    ||", "    PK Table   ||", "    PK Columns   ||\n");
-                                result = string.Concat(result, new string('-', 76), "\n", string.Format("||{0,-16}||", (string)reader["FK_TABLE"]),
-                                    string.Format("{0,-18}||", (string)reader["FK_COLUMNS"]), string.Format("{0,-15}||", (string)reader["PK_TABLE"]),
-                                    string.Format("{0,-17}||", (string)reader["PK_COLUMNS"]), "\n");
+                                result = string.Concat(result, "Check Constraints:\n", "||    PK Table    ||",
+                                    "    PK Columns    ||", "    FK Table   ||", "    FK Columns   ||\n");
+                                result = string.Concat(result, new string('-', 76), "\n",
+                                    $"||{(string) reader["FK_TABLE"],-16}||",
+                                    $"{(string) reader["FK_COLUMNS"],-18}||",
+                                    $"{(string) reader["PK_TABLE"],-15}||",
+                                    $"{(string) reader["PK_COLUMNS"],-17}||", "\n");
                                 result = string.Concat(result, "\n");
                                 count++;
                             }
@@ -137,7 +139,7 @@ namespace DBI_PEA_Scoring.Utils.Dao
                     if (candidate.CheckColumnName) dataTableSolutionShema = sqlReaderSolution.GetSchemaTable();
                     dataTableSolution.Load(sqlReaderSolution);
                 }
-                double point = 0;
+                double point;
                 string comment = "";
                 int numOfTc = 1;
                 if (candidate.RequireSort) numOfTc++;
