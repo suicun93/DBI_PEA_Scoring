@@ -37,11 +37,10 @@ namespace DBI_PEA_Scoring.Utils.Dao
                         commandCompare.CommandTimeout = Constant.TimeOutInSecond;
                         using (SqlDataReader reader = commandCompare.ExecuteReader())
                         {
+                            result = string.Concat(result, "Check Table structure:\n", "||    Table Name    ||", "    Column Name    ||",
+                                "    Data Type    ||", "    Nullable   ||\n");
                             while (reader.Read())
                             {
-                                result = string.Concat(result, "Check Table structure:\n", "||    Table Name    ||", "    Column Name    ||",
-                                    "    Data Type    ||", "    Nullable   ||\n");
-
                                 result = string.Concat(result, new string('-', 79), "\n", string.Format("||{0,-18}||", (string)reader["TABLENAME"]),
                                     string.Format("{0,-19}||", (string)reader["COLUMNNAME"]),
                                     string.Format("{0,-17}||", (string)reader["DATATYPE"]),
@@ -50,10 +49,10 @@ namespace DBI_PEA_Scoring.Utils.Dao
                                 count++;
                             }
                             reader.NextResult();
+                            result = string.Concat(result, "Check Constraints:\n", "||    PK Table    ||",
+                                "    PK Columns    ||", "    FK Table   ||", "    FK Columns   ||\n");
                             while (reader.Read())
                             {
-                                result = string.Concat(result, "Check Constraints:\n", "||    PK Table    ||",
-                                    "    PK Columns    ||", "    FK Table   ||", "    FK Columns   ||\n");
                                 result = string.Concat(result, new string('-', 76), "\n",
                                     $"||{(string) reader["FK_TABLE"],-16}||",
                                     $"{(string) reader["FK_COLUMNS"],-18}||",

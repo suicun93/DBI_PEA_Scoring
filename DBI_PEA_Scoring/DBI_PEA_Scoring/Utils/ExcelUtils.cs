@@ -36,6 +36,7 @@ namespace DBI_PEA_Scoring.Utils
 
                     //Saving file to location
 
+                    book.Sheets[1].Select(missing);
                 }
                 // Should get by type of exception but chua co thoi gian research and debug. -> 2.0
                 catch (Exception e)
@@ -88,8 +89,8 @@ namespace DBI_PEA_Scoring.Utils
             }
             //Fit columns
             sheetDetail.Columns.AutoFit();
-            sheetDetail.get_Range("A:G").VerticalAlignment = XlVAlign.xlVAlignTop;
-            sheetDetail.get_Range("D:X").ColumnWidth = 60;
+            sheetDetail.Range["A:G"].VerticalAlignment = XlVAlign.xlVAlignTop;
+            sheetDetail.Range["D:X"].ColumnWidth = 60;
         }
 
         private static void AddDataAnalyzeSheet(Worksheet sheetDataAnalyze, List<Result> results, double maxPoint, int numOfQuestion)
@@ -97,10 +98,15 @@ namespace DBI_PEA_Scoring.Utils
             sheetDataAnalyze.Name = "03_DataAnalyze";
             //Insert Title
             int lastRow = sheetDataAnalyze.Cells.SpecialCells(XlCellType.xlCellTypeLastCell).Row;
-            sheetDataAnalyze.Cells[lastRow, 1] = "No";
-            sheetDataAnalyze.Cells[lastRow, 2] = "Paper No";
-            sheetDataAnalyze.Cells[lastRow, 3] = "Login";
-            sheetDataAnalyze.Cells[lastRow, 4] = "Test Name  ";
+            sheetDataAnalyze.Cells[lastRow, 1] = "Mark";
+            sheetDataAnalyze.Cells[lastRow, 2] = "Number";
+            for (int i = 0; i < 10; i++)
+            {
+                sheetDataAnalyze.Cells[lastRow, 1] = string.Concat(i, "-", i + 1);
+               // sheetDataAnalyze.Cells[lastRow, 2] = "=COUNTIFS(Result!G:G;\">" + i + "\";Result!G:G;\"<=" + (i + 1) + "\")";
+            }
+
+
         }
 
 
@@ -145,7 +151,7 @@ namespace DBI_PEA_Scoring.Utils
             }
             //Fit columns
             sheetResult.Columns.AutoFit();
-            sheetResult.get_Range("A:G").VerticalAlignment = XlVAlign.xlVAlignTop;
+            sheetResult.Range["A:G"].VerticalAlignment = XlVAlign.xlVAlignTop;
             LastRowOfResultSheet = lastRow;
         }
     }
