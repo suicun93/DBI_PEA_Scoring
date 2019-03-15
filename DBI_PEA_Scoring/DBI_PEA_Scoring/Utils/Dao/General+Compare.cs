@@ -296,7 +296,7 @@ namespace DBI_PEA_Scoring.Utils.Dao
         /// </returns>
         private static bool CompareTwoDataSetsByRow(DataTable dataTableAnswer, DataTable dataTableSolution)
         {
-            if (dataTableAnswer.Rows.Count != dataTableSolution.Rows.Count || dataTableAnswer.Columns.Count != dataTableSolution.Rows.Count)
+            if (dataTableAnswer.Rows.Count != dataTableSolution.Rows.Count || dataTableAnswer.Columns.Count != dataTableSolution.Columns.Count)
                 return false;
             for (int i = 0; i < dataTableSolution.Rows.Count; i++)
             {
