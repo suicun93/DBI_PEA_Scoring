@@ -89,8 +89,9 @@ namespace DBI_PEA_Scoring.Utils
             }
             //Fit columns
             sheetDetail.Columns.AutoFit();
-            sheetDetail.Range["A:G"].VerticalAlignment = XlVAlign.xlVAlignTop;
-            sheetDetail.Range["D:X"].ColumnWidth = 60;
+            sheetDetail.Range["A:X"].VerticalAlignment = XlVAlign.xlVAlignTop;
+            sheetDetail.Range["D:X"].ColumnWidth = 30;
+            sheetDetail.Range["A:X"].RowHeight = 20;
         }
 
         private static void AddDataAnalyzeSheet(Worksheet sheetDataAnalyze, List<Result> results, double maxPoint, int numOfQuestion)

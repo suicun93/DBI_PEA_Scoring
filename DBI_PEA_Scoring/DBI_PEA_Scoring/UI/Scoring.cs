@@ -90,6 +90,7 @@ namespace DBI_PEA_Scoring.UI
         /// <param name="e"></param>
         private void ShowPoint(object sender, EventArgs e)
         {
+            startButton.Visible = false;
             // Setup Min Max Threads in ThreadPool
             // This should be 1 because cpu is easy to run but HDD disk can not load over 2 threads in 1 time => wrong mark for student
             // So workerThreads = 1, completionPortThreads = 1;
@@ -150,7 +151,6 @@ namespace DBI_PEA_Scoring.UI
                 editScoreButton.Invoke((MethodInvoker)(() => { editScoreButton.Enabled = true; }));
 
                 exportButton.Invoke((MethodInvoker)(() => { exportButton.Enabled = true; })); 
-                startButton.Invoke((MethodInvoker)(() => { startButton.Visible = false; }));
             }
         }
 
