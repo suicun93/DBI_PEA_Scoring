@@ -11,6 +11,7 @@ namespace DBI_PEA_Scoring.Utils
     {
 
         private static int LastRowOfResultSheet;
+        private static WorksheetFunction wsf;
         public static void ExportResultsExcel(List<Result> results, double maxPoint, int numOfQuestion)
         {
             //Open Excel
@@ -21,18 +22,19 @@ namespace DBI_PEA_Scoring.Utils
                 try
                 {
                     excelApp.Visible = true;
-
                     //Open Workbook
                     var book = excelApp.Workbooks.Add(missing);
+                    wsf = excelApp.WorksheetFunction;
 
                     //Add Result Sheet
                     AddResultSheet(book.Worksheets[1], results, maxPoint, numOfQuestion);
 
                     //Add Detail Sheet
-                    AddDetailSheet(book.Sheets.Add(After: book.Sheets[book.Sheets.Count]), results, maxPoint, numOfQuestion);
+                    AddDetailSheet(book.Sheets.Add(After: book.Sheets[book.Sheets.Count]), results, maxPoint,
+                        numOfQuestion);
 
                     //Add Analyze Sheet
-                    AddDataAnalyzeSheet(book.Sheets.Add(After: book.Sheets[book.Sheets.Count]), results, maxPoint, numOfQuestion);
+                    AddDataAnalyzeSheet(book.Sheets.Add(After: book.Sheets[book.Sheets.Count]), results, maxPoint, numOfQuestion, book.Worksheets[1]);
 
                     //Saving file to location
 
@@ -94,21 +96,55 @@ namespace DBI_PEA_Scoring.Utils
             sheetDetail.Range["A:X"].RowHeight = 20;
         }
 
-        private static void AddDataAnalyzeSheet(Worksheet sheetDataAnalyze, List<Result> results, double maxPoint, int numOfQuestion)
+        private static void AddDataAnalyzeSheet(Worksheet sheetDataAnalyze, List<Result> results, double maxPoint, int numOfQuestion, Worksheet sheetResult)
         {
-            sheetDataAnalyze.Name = "03_DataAnalyze";
             //Insert Title
+            sheetDataAnalyze.Name = "03_DataAnalyze";
+            
+            //Add 
+
             int lastRow = sheetDataAnalyze.Cells.SpecialCells(XlCellType.xlCellTypeLastCell).Row;
             sheetDataAnalyze.Cells[lastRow, 1] = "Mark";
-            sheetDataAnalyze.Cells[lastRow, 2] = "Number";
+            sheetDataAnalyze.Cells[lastRow, 2] = "Amount";
+            //Counting
+            Range scoreRange = sheetResult.Range["G:G"];
             for (int i = 0; i < 10; i++)
             {
-                sheetDataAnalyze.Cells[lastRow, 1] = string.Concat(i, "-", i + 1);
-               // sheetDataAnalyze.Cells[lastRow, 2] = "=COUNTIFS(Result!G:G;\">" + i + "\";Result!G:G;\"<=" + (i + 1) + "\")";
+                lastRow++;
+                sheetDataAnalyze.Cells[lastRow, 1] = string.Concat("'>=", i);
+                sheetDataAnalyze.Cells[lastRow, 2] = wsf.CountIfs(scoreRange, string.Concat(">=", i), scoreRange, string.Concat("<", i + 1));
             }
+            //Add Score Line Chart
+            AddChart(sheetDataAnalyze, sheetDataAnalyze.Range["A1", "B12"], 200, 15, "Score Line", "Amount", "Score");
+            //Add Paper Score
+
+
+
 
 
         }
+
+        private static void AddChart(Worksheet worksheet, Range range, double left, double top, string title, string categoryTitle, string valueTitle)
+        {
+            // Add chart.
+            var charts = worksheet.ChartObjects() as ChartObjects;
+            if (charts != null)
+            {
+                var chartObject = charts.Add(left, top, 300, 300);
+                var chart = chartObject.Chart;
+
+                // Set chart range.
+                chart.SetSourceData(range);
+
+                // Set chart properties.
+                chart.ChartType = XlChartType.xlLine;
+                chart.ChartWizard(Source: range,
+                    Title: title,
+                    CategoryTitle: categoryTitle,
+                    ValueTitle: valueTitle);
+            }
+        }
+
 
 
         private static void AddResultSheet(Worksheet sheetResult, List<Result> results, double maxPoint, int numOfQuestion)
