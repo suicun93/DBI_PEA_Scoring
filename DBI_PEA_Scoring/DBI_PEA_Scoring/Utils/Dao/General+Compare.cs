@@ -234,7 +234,7 @@ namespace DBI_PEA_Scoring.Utils.Dao
                     sqlDataAdapterSolution.Fill(dataSetSolution);
 
                     int numOfTc = dataSetSolution.Tables.Count;
-                    double pointEachTc = Math.Round(candidate.Point / numOfTc, 2);
+                   double pointEachTc = Math.Round(candidate.Point / numOfTc, 2);
                     int count = 0;
                     string comment = "";
                     //Compare results one by one
@@ -244,6 +244,7 @@ namespace DBI_PEA_Scoring.Utils.Dao
                             if (CompareTwoDataSetsByData(tableAnswer, dataSetSolution.Tables[i]))
                             {
                                 count++;
+                                break;
                             }
                     }
                     //Degree 50% of point if Answer has more resultSets than Solution
