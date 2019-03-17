@@ -64,7 +64,7 @@ namespace DBI_PEA_Scoring.Model
                     return PaperUtils.TestSelect(candidate, StudentID, answer, questionOrder);
                 case Candidate.QuestionTypes.DML:
                     // DML: Insert/Delete/Update Question
-                    return PaperUtils.TestInsertDeleteUpdate(candidate, StudentID, answer, questionOrder);
+                    return PaperUtils.TestInsertDeleteUpdate(ListCandidates.ElementAt(0).Solution, candidate, StudentID, answer, questionOrder);
                 case Candidate.QuestionTypes.Procedure:
                     // Procedure Question
                     return PaperUtils.TestProcedure(candidate, StudentID, answer, questionOrder);
@@ -108,7 +108,7 @@ namespace DBI_PEA_Scoring.Model
                     {
                         Dictionary<string, string> res = Point(ListCandidates.ElementAt(questionOrder), ListAnswers.ElementAt(questionOrder), questionOrder);
                         //Exactly -> Log true and return 0 point
-                        if(res != null)
+                        if (res != null)
                         {
                             Points[questionOrder] = double.Parse(res["Point"]);
                             Logs[questionOrder] = res["Comment"];

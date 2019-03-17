@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using DBI_PEA_Scoring.Common;
 using DBI_PEA_Scoring.Model;
 using DBI_PEA_Scoring.Utils.Dao;
 
@@ -14,7 +15,6 @@ namespace DBI_PEA_Scoring.Utils
         /// <param name="candidate">Question and requirement to check</param>
         /// <param name="studentId"></param>
         /// <param name="answer">Answer of student</param>
-        /// <param name="questionNumber"></param>
         /// <returns>Result when compare 2 DB</returns>
         /// <exception cref="SqlException">
         ///     When something's wrong, throw exception to log error to KhaoThi
@@ -70,7 +70,7 @@ namespace DBI_PEA_Scoring.Utils
             string dbSolutionName = studentId + "_" + questionOrder + "_Solution" + "_" + new Random().Next(1000000000);
             string dbAnswerName = studentId + "_" + questionOrder + "_Answer" + "_" + new Random().Next(1000000000);
             //Generate 2 new DB for student's answer and solution
-            General.GenerateDatabase(dbSolutionName, dbAnswerName);
+            General.GenerateDatabase(dbSolutionName, dbAnswerName, Constant.DBScriptList[0]);
             try
             {
                 return General.CompareOneResultSet(dbAnswerName, dbSolutionName, answer, candidate);
@@ -85,6 +85,7 @@ namespace DBI_PEA_Scoring.Utils
         /// <summary>
         ///  Execute Query and compare 2 effected tables
         /// </summary>
+        /// <param name="dbScript"></param>
         /// <param name="candidate">Question and requirement to check</param>
         /// <param name="studentId"></param>
         /// <param name="answer">Answer of student</param>
@@ -93,13 +94,13 @@ namespace DBI_PEA_Scoring.Utils
         /// <exception cref="Exception">
         ///     When something's wrong, throw exception to log to Khao Thi.
         /// </exception>
-        internal static Dictionary<string, string> TestInsertDeleteUpdate(Candidate candidate, string studentId, string answer, int questionOrder)
+        internal static Dictionary<string, string> TestInsertDeleteUpdate(string dbScript, Candidate candidate, string studentId, string answer, int questionOrder)
         {
             string dbSolutionName = studentId + "_" + questionOrder + "_Solution" + "_" + new Random().Next(1000000000);
             string dbAnswerName = studentId + "_" + questionOrder + "_Answer" + "_" + new Random().Next(1000000000);
 
             //Generate 2 new DB for student's answer and solution
-            General.GenerateDatabase(dbSolutionName, dbAnswerName);
+            General.GenerateDatabase(dbSolutionName, dbAnswerName, dbScript);
             try
             {
                 // Execute query
@@ -145,7 +146,7 @@ namespace DBI_PEA_Scoring.Utils
             string dbAnswerName = studentId + "_" + questionOrder + "_Answer" + "_" + new Random().Next(1000000000);
 
             //Generate 2 new DB for student's answer and solution
-            General.GenerateDatabase(dbSolutionName, dbAnswerName);
+            General.GenerateDatabase(dbSolutionName, dbAnswerName, Constant.DBScriptList[0]);
             try
             {
                 // Execute query
@@ -191,7 +192,7 @@ namespace DBI_PEA_Scoring.Utils
             string dbAnswerName = studentId + "_" + questionOrder + "_Answer" + "_" + new Random().Next(1000000000);
 
             //Generate 2 new DB for student's answer and solution
-            General.GenerateDatabase(dbSolutionName, dbAnswerName);
+            General.GenerateDatabase(dbSolutionName, dbAnswerName, Constant.DBScriptList[0]);
             try
             {
                 // Execute query

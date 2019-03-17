@@ -6,13 +6,13 @@ namespace DBI_PEA_Scoring.Utils.Dao
 {
     partial class General
     {
-        public static void GenerateDatabase(string dbSolutionName, string dbAnswerName)
+        public static void GenerateDatabase(string dbSolutionName, string dbAnswerName, string dbScript)
         {
             try
             {
                 string queryGenerateAnswerDb = "CREATE DATABASE [" + dbAnswerName + "]\n" +
                                            "GO\n" +
-                                           "USE " + "[" + dbAnswerName + "]\n" + Constant.DBScriptList[0];
+                                           "USE " + "[" + dbAnswerName + "]\n" + dbScript;
                 ExecuteSingleQuery(queryGenerateAnswerDb, "master");
             }
             catch
@@ -24,7 +24,7 @@ namespace DBI_PEA_Scoring.Utils.Dao
             {
                 string queryGenerateSolutionDb = "CREATE DATABASE [" + dbSolutionName + "]\n" +
                                              "GO\n" +
-                                             "USE " + "[" + dbSolutionName + "]\n" + Constant.DBScriptList[0];
+                                             "USE " + "[" + dbSolutionName + "]\n" + dbScript;
                 ExecuteSingleQuery(queryGenerateSolutionDb, "master");
             }
             catch

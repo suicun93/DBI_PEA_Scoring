@@ -244,7 +244,6 @@ namespace DBI_PEA_Scoring.Utils.Dao
                             if (CompareTwoDataSetsByData(tableAnswer, dataSetSolution.Tables[i]))
                             {
                                 count++;
-                                break;
                             }
                     }
                     //Degree 50% of point if Answer has more resultSets than Solution
