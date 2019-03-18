@@ -108,7 +108,7 @@ namespace DBI_PEA_Scoring.Utils
             sheetDataAnalyze.Cells[lastRow, 2] = "Amount";
             //Counting
             Range scoreRange = sheetResult.Range["G:G"];
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 11; i++)
             {
                 lastRow++;
                 sheetDataAnalyze.Cells[lastRow, 1] = string.Concat("'>=", i);
