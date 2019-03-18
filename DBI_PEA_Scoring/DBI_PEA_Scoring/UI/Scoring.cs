@@ -148,9 +148,8 @@ namespace DBI_PEA_Scoring.UI
             {
                 // Done
                 MessageBox.Show("Done");
-                editScoreButton.Invoke((MethodInvoker)(() => { editScoreButton.Enabled = true; }));
-
-                exportButton.Invoke((MethodInvoker)(() => { exportButton.Enabled = true; })); 
+                editScoreButton.Enabled = true;
+                exportButton.Enabled = true;
             }
         }
 
