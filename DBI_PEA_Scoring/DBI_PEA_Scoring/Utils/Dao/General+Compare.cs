@@ -54,10 +54,10 @@ namespace DBI_PEA_Scoring.Utils.Dao
                             while (reader.Read())
                             {
                                 result = string.Concat(result, new string('-', 76), "\n",
-                                    $"||{(string) reader["FK_TABLE"],-16}||",
-                                    $"{(string) reader["FK_COLUMNS"],-18}||",
-                                    $"{(string) reader["PK_TABLE"],-15}||",
-                                    $"{(string) reader["PK_COLUMNS"],-17}||", "\n");
+                                    $"||{(string)reader["FK_TABLE"],-16}||",
+                                    $"{(string)reader["FK_COLUMNS"],-18}||",
+                                    $"{(string)reader["PK_TABLE"],-15}||",
+                                    $"{(string)reader["PK_COLUMNS"],-17}||", "\n");
                                 result = string.Concat(result, "\n");
                                 count++;
                             }
@@ -138,17 +138,34 @@ namespace DBI_PEA_Scoring.Utils.Dao
                     if (candidate.CheckColumnName) dataTableSolutionShema = sqlReaderSolution.GetSchemaTable();
                     dataTableSolution.Load(sqlReaderSolution);
                 }
-                double point;
+                double point = 0;
                 string comment = "";
                 int numOfTc = 1;
                 if (candidate.RequireSort) numOfTc++;
                 if (candidate.CheckColumnName) numOfTc++;
-                double pointEachTc = Math.Round(candidate.Point / numOfTc, 2);
+                if (candidate.CheckDistinct) numOfTc++;
+                double pointCheckData = candidate.Point / 2;
+                double pointEachTc = Math.Round(candidate.Point / 2 / numOfTc, 2);
                 int count = 0;
                 //check data
                 if (CompareTwoDataSetsByData(dataTableAnswer, dataTableSolution))
                 {
                     count++;
+                    point += pointCheckData;
+                    //If check distinct is require
+                    if (candidate.CheckDistinct)
+                    {
+                        if (dataTableSolution.Rows.Count == dataTableAnswer.Rows.Count)
+                        {
+                            count++;
+                            point += pointEachTc;
+                        }
+                        else
+                        {
+                            comment = string.Concat(comment, "Distinct is required!\n");
+                        }
+                    }
+                
                     //If Sort is require
                     if (candidate.RequireSort)
                     {
@@ -176,7 +193,9 @@ namespace DBI_PEA_Scoring.Utils.Dao
                             comment = string.Concat(comment, resCompareColumnName);
                         }
                     }
-                    point = count * pointEachTc;
+
+
+                    point += count * pointEachTc;
                 }
                 //Wrong query
                 else
@@ -208,7 +227,8 @@ namespace DBI_PEA_Scoring.Utils.Dao
         /// "false" if wrong
         /// message error from sqlserver if error
         /// </returns>
-        public static Dictionary<string, string> CompareMoreResultSets(string dbAnswerName, string dbSolutionName, Candidate candidate)
+        public static Dictionary<string, string> CompareMoreResultSets(string dbAnswerName, string dbSolutionName,
+            Candidate candidate, string errorMessage)
         {
             // Prepare Command
             var builder = Constant.SqlConnectionStringBuilder;
@@ -234,9 +254,9 @@ namespace DBI_PEA_Scoring.Utils.Dao
                     sqlDataAdapterSolution.Fill(dataSetSolution);
 
                     int numOfTc = dataSetSolution.Tables.Count;
-                   double pointEachTc = Math.Round(candidate.Point / numOfTc, 2);
+                    double pointEachTc = Math.Round(candidate.Point / numOfTc, 2);
                     int count = 0;
-                    string comment = "";
+                    string comment = errorMessage;
                     //Compare results one by one
                     for (int i = 0; i < numOfTc; i++)
                     {

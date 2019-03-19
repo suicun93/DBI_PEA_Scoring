@@ -117,11 +117,6 @@ namespace DBI_PEA_Scoring.Utils
             //Add Score Line Chart
             AddChart(sheetDataAnalyze, sheetDataAnalyze.Range["A1", "B12"], 200, 15, "Score Line", "Amount", "Score");
             //Add Paper Score
-
-
-
-
-
         }
 
         private static void AddChart(Worksheet worksheet, Range range, double left, double top, string title, string categoryTitle, string valueTitle)

@@ -59,19 +59,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common\Constant.cs" />
-    <Compile Include="Common\SecureJsonSerializer.cs" />
     <Compile Include="Model\Input.cs" />
     <Compile Include="Model\Teacher\Candidate.cs" />
     <Compile Include="Model\Teacher\PaperSet.cs" />
     <Compile Include="Model\Result.cs" />
     <Compile Include="Model\Student\Submission.cs" />
     <Compile Include="Model\Teacher\Paper.cs" />
-    <Compile Include="UI\EditScore.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UI\EditScore.Designer.cs">
-      <DependentUpon>EditScore.cs</DependentUpon>
-    </Compile>
+    <Compile Include="Model\Teacher\Question.cs" />
+    <Compile Include="Model\Teacher\QuestionSet.cs" />
     <Compile Include="UI\ImportMaterial.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -80,11 +75,11 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UI\Scoring.cs">
+    <Compile Include="UI\Grading.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="UI\Scoring.Designer.cs">
-      <DependentUpon>Scoring.cs</DependentUpon>
+    <Compile Include="UI\Grading.Designer.cs">
+      <DependentUpon>Grading.cs</DependentUpon>
     </Compile>
     <Compile Include="Utils\ExcelUtils.cs" />
     <Compile Include="Utils\Dao\General+Compare.cs" />
@@ -94,9 +89,6 @@
     <Compile Include="Utils\FileUtils.cs" />
     <Compile Include="Utils\JsonUtils.cs" />
     <Compile Include="Utils\PaperUtils.cs" />
-    <EmbeddedResource Include="UI\EditScore.resx">
-      <DependentUpon>EditScore.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="UI\ImportMaterial.resx">
       <DependentUpon>ImportMaterial.cs</DependentUpon>
     </EmbeddedResource>
@@ -110,8 +102,8 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <EmbeddedResource Include="UI\Scoring.resx">
-      <DependentUpon>Scoring.cs</DependentUpon>
+    <EmbeddedResource Include="UI\Grading.resx">
+      <DependentUpon>Grading.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="App.config" />
     <None Include="packages.config" />

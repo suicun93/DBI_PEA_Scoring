@@ -18,7 +18,6 @@ namespace DBI_PEA_Scoring.UI
         public string QuestionPath { get; set; }
         //public List<string> DBScriptList { get; set; }
         public string AnswerPath { get; set; }
-        private PaperSet PaperSet;
         private List<Submission> Listsubmissions;
         private bool importForDebug = false;
         public ImportMaterial()
@@ -46,10 +45,8 @@ namespace DBI_PEA_Scoring.UI
                     QuestionPath = @"C:\Users\hoangduc\Desktop\PaperSet.dat";
                 questionTextBox.Text = QuestionPath;
                 // Get QuestionPackage from file
-                PaperSet = null;
-                PaperSet = JsonUtils.LoadQuestion(QuestionPath) as PaperSet;
-                Constant.DBScriptList = PaperSet.DBScriptList;
-                if (PaperSet == null || PaperSet.Papers.Count == 0)
+                Constant.PaperSet = JsonUtils.LoadQuestion(QuestionPath) as PaperSet;
+                if (Constant.PaperSet == null || Constant.PaperSet.Papers.Count == 0)
                     throw new Exception("No question was found!");
             }
             catch (Exception ex)
@@ -161,7 +158,7 @@ namespace DBI_PEA_Scoring.UI
             if (Listsubmissions == null || Listsubmissions.Count == 0)
                 MessageBox.Show("Please import students' answers", "Error");
             else
-                if (PaperSet.Papers == null || PaperSet.Papers.Count == 0)
+                if (Constant.PaperSet.Papers == null || Constant.PaperSet.Papers.Count == 0)
                 MessageBox.Show("Please import Paper Set", "Error");
             else
                 if (!IsConnectedToDB)
@@ -169,7 +166,7 @@ namespace DBI_PEA_Scoring.UI
             else
                 if (General.PrepareSpCompareDatabase())
             {
-                var scoring = new Scoring(PaperSet, Listsubmissions);
+                var scoring = new Grading(Listsubmissions);
                 Hide();
             }
             else
