@@ -13,8 +13,6 @@ namespace DBI_PEA_Scoring.Model
         public string StudentID { get; set; }
         public string PaperNo { get; set; }
         public List<string> ListAnswer { get; set; }
-        [JsonIgnore]
-        public SecureJsonSerializer<Submission> secureJsonSerializer;
 
         public Submission()
         {
@@ -40,20 +38,6 @@ namespace DBI_PEA_Scoring.Model
         public void ClearAnswer()
         {
             ListAnswer.Clear();
-        }
-
-        public void SaveToLocal()
-        {
-            // When drafting answers from student, we save it to local
-            try
-            {
-                // Write file to path ExamCode/StudentID.dat
-                secureJsonSerializer.Save(this);
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show(e.Message);
-            }
         }
     }
 }

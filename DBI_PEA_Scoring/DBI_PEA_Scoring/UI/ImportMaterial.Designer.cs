@@ -39,8 +39,6 @@ namespace DBI_PEA_Scoring.UI
             this.ImportPaperSetButton = new System.Windows.Forms.Button();
             this.ImportAnswerButton = new System.Windows.Forms.Button();
             this.label4 = new System.Windows.Forms.Label();
-            this.statusImportAnswerProgressBar = new System.Windows.Forms.ProgressBar();
-            this.statusImportAnswerLabel = new System.Windows.Forms.Label();
             this.statusConnectCheckBox = new System.Windows.Forms.CheckBox();
             this.checkConnectionButton = new System.Windows.Forms.Button();
             this.passwordTextBox = new System.Windows.Forms.TextBox();
@@ -134,29 +132,13 @@ namespace DBI_PEA_Scoring.UI
             this.label4.TabIndex = 7;
             this.label4.Text = "Import Material";
             // 
-            // statusImportAnswerProgressBar
-            // 
-            this.statusImportAnswerProgressBar.Location = new System.Drawing.Point(33, 193);
-            this.statusImportAnswerProgressBar.Name = "statusImportAnswerProgressBar";
-            this.statusImportAnswerProgressBar.Size = new System.Drawing.Size(347, 23);
-            this.statusImportAnswerProgressBar.TabIndex = 8;
-            // 
-            // statusImportAnswerLabel
-            // 
-            this.statusImportAnswerLabel.AutoSize = true;
-            this.statusImportAnswerLabel.Location = new System.Drawing.Point(168, 173);
-            this.statusImportAnswerLabel.Name = "statusImportAnswerLabel";
-            this.statusImportAnswerLabel.Size = new System.Drawing.Size(76, 13);
-            this.statusImportAnswerLabel.TabIndex = 10;
-            this.statusImportAnswerLabel.Text = "Importing (0/0)";
-            // 
             // statusConnectCheckBox
             // 
             this.statusConnectCheckBox.AutoCheck = false;
             this.statusConnectCheckBox.AutoSize = true;
             this.statusConnectCheckBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.statusConnectCheckBox.ForeColor = System.Drawing.Color.DarkRed;
-            this.statusConnectCheckBox.Location = new System.Drawing.Point(224, 391);
+            this.statusConnectCheckBox.Location = new System.Drawing.Point(224, 342);
             this.statusConnectCheckBox.Name = "statusConnectCheckBox";
             this.statusConnectCheckBox.Size = new System.Drawing.Size(110, 20);
             this.statusConnectCheckBox.TabIndex = 41;
@@ -166,7 +148,7 @@ namespace DBI_PEA_Scoring.UI
             // 
             // checkConnectionButton
             // 
-            this.checkConnectionButton.Location = new System.Drawing.Point(87, 389);
+            this.checkConnectionButton.Location = new System.Drawing.Point(87, 340);
             this.checkConnectionButton.Name = "checkConnectionButton";
             this.checkConnectionButton.Size = new System.Drawing.Size(117, 23);
             this.checkConnectionButton.TabIndex = 40;
@@ -177,7 +159,7 @@ namespace DBI_PEA_Scoring.UI
             // passwordTextBox
             // 
             this.passwordTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.passwordTextBox.Location = new System.Drawing.Point(150, 317);
+            this.passwordTextBox.Location = new System.Drawing.Point(150, 268);
             this.passwordTextBox.Name = "passwordTextBox";
             this.passwordTextBox.Size = new System.Drawing.Size(236, 20);
             this.passwordTextBox.TabIndex = 2;
@@ -187,7 +169,7 @@ namespace DBI_PEA_Scoring.UI
             // 
             this.label9.AutoSize = true;
             this.label9.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label9.Location = new System.Drawing.Point(27, 319);
+            this.label9.Location = new System.Drawing.Point(27, 270);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(104, 15);
             this.label9.TabIndex = 36;
@@ -196,7 +178,7 @@ namespace DBI_PEA_Scoring.UI
             // usernameTextBox
             // 
             this.usernameTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.usernameTextBox.Location = new System.Drawing.Point(150, 282);
+            this.usernameTextBox.Location = new System.Drawing.Point(150, 233);
             this.usernameTextBox.Name = "usernameTextBox";
             this.usernameTextBox.Size = new System.Drawing.Size(236, 20);
             this.usernameTextBox.TabIndex = 1;
@@ -206,7 +188,7 @@ namespace DBI_PEA_Scoring.UI
             // 
             this.label8.AutoSize = true;
             this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label8.Location = new System.Drawing.Point(27, 284);
+            this.label8.Location = new System.Drawing.Point(27, 235);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(108, 15);
             this.label8.TabIndex = 34;
@@ -215,7 +197,7 @@ namespace DBI_PEA_Scoring.UI
             // initialCatalogTextBox
             // 
             this.initialCatalogTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.initialCatalogTextBox.Location = new System.Drawing.Point(150, 352);
+            this.initialCatalogTextBox.Location = new System.Drawing.Point(150, 303);
             this.initialCatalogTextBox.Name = "initialCatalogTextBox";
             this.initialCatalogTextBox.Size = new System.Drawing.Size(236, 20);
             this.initialCatalogTextBox.TabIndex = 3;
@@ -225,7 +207,7 @@ namespace DBI_PEA_Scoring.UI
             // 
             this.label7.AutoSize = true;
             this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label7.Location = new System.Drawing.Point(27, 354);
+            this.label7.Location = new System.Drawing.Point(27, 305);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(81, 15);
             this.label7.TabIndex = 32;
@@ -234,7 +216,7 @@ namespace DBI_PEA_Scoring.UI
             // serverNameTextBox
             // 
             this.serverNameTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.serverNameTextBox.Location = new System.Drawing.Point(150, 247);
+            this.serverNameTextBox.Location = new System.Drawing.Point(150, 198);
             this.serverNameTextBox.Name = "serverNameTextBox";
             this.serverNameTextBox.Size = new System.Drawing.Size(236, 20);
             this.serverNameTextBox.TabIndex = 0;
@@ -244,7 +226,7 @@ namespace DBI_PEA_Scoring.UI
             // 
             this.label6.AutoSize = true;
             this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label6.Location = new System.Drawing.Point(27, 248);
+            this.label6.Location = new System.Drawing.Point(27, 199);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(79, 15);
             this.label6.TabIndex = 30;
@@ -253,7 +235,7 @@ namespace DBI_PEA_Scoring.UI
             // button3
             // 
             this.button3.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button3.Location = new System.Drawing.Point(159, 431);
+            this.button3.Location = new System.Drawing.Point(159, 382);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(95, 31);
             this.button3.TabIndex = 26;
@@ -265,7 +247,7 @@ namespace DBI_PEA_Scoring.UI
             // 
             this.label10.AutoSize = true;
             this.label10.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.label10.Location = new System.Drawing.Point(1, 232);
+            this.label10.Location = new System.Drawing.Point(1, 180);
             this.label10.MaximumSize = new System.Drawing.Size(500, 3);
             this.label10.MinimumSize = new System.Drawing.Size(500, 0);
             this.label10.Name = "label10";
@@ -277,7 +259,7 @@ namespace DBI_PEA_Scoring.UI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(413, 474);
+            this.ClientSize = new System.Drawing.Size(413, 448);
             this.Controls.Add(this.label10);
             this.Controls.Add(this.statusConnectCheckBox);
             this.Controls.Add(this.checkConnectionButton);
@@ -290,8 +272,6 @@ namespace DBI_PEA_Scoring.UI
             this.Controls.Add(this.serverNameTextBox);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.button3);
-            this.Controls.Add(this.statusImportAnswerLabel);
-            this.Controls.Add(this.statusImportAnswerProgressBar);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.ImportAnswerButton);
             this.Controls.Add(this.ImportPaperSetButton);
@@ -319,8 +299,6 @@ namespace DBI_PEA_Scoring.UI
         private Button ImportPaperSetButton;
         private Button ImportAnswerButton;
         private Label label4;
-        private ProgressBar statusImportAnswerProgressBar;
-        private Label statusImportAnswerLabel;
         private CheckBox statusConnectCheckBox;
         private Button checkConnectionButton;
         private TextBox passwordTextBox;

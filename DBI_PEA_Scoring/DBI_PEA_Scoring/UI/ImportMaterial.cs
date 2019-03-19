@@ -62,6 +62,8 @@ namespace DBI_PEA_Scoring.UI
 
         private void BrowseAnswerButton_Click(object sender, EventArgs e)
         {
+            // Init List submissions
+            Listsubmissions = new List<Submission>();
             try
             {
                 // Get directory where student's submittion was saved
@@ -72,12 +74,6 @@ namespace DBI_PEA_Scoring.UI
                     //AnswerPath = @"D:\Sys\Desktop\tmp";
                     // Duc
                     AnswerPath = @"C:\Users\hoangduc\Desktop\02_From_Submission";
-                //answerTextBox.Text = AnswerPath;
-                //// Get all submission files
-                //string[] submissionFiles = Directory.GetFiles(AnswerPath, "*.dat");
-                //if (submissionFiles.Count() == 0)
-                //    throw new Exception("No submittion was found");
-                //Loadsubmission(submissionFiles);
                 // Get all submission files
                 string[] Directories = Directory.GetDirectories(AnswerPath);
 
@@ -94,6 +90,8 @@ namespace DBI_PEA_Scoring.UI
                     // Check bao nhieu de duoc import
                     if (paperNoPaths.Count() == 0)
                         throw new Exception("No PaperNo was found in " + directory);
+                    // Update UI
+                    answerTextBox.Text = AnswerPath;
                     // PaperNo Found
                     foreach (string paperNoPath in paperNoPaths)
                     {
@@ -136,7 +134,7 @@ namespace DBI_PEA_Scoring.UI
                                             // skip
                                         }
                                     }
-                                    Listsubmissions.Add(submission);
+                                    Directory.Delete(solutionPath + "/extract", true);
                                 }
                             }
                             catch (Exception)
@@ -153,91 +151,9 @@ namespace DBI_PEA_Scoring.UI
             catch (Exception ex)
             {
                 if (Visible)
-                {
                     answerTextBox.Text = "";
-                    // Setup for status bar
-                    statusImportAnswerProgressBar.Maximum = 1;
-                    statusImportAnswerProgressBar.Value = 0;
-                    statusImportAnswerProgressBar.Refresh();
-                    statusImportAnswerLabel.Text = "Imported " + "0/0";
-                    statusImportAnswerLabel.Refresh();
-                }
                 MessageBox.Show(ex.Message, "Error");
             }
-        }
-
-        private void Loadsubmission(string[] files)
-        {
-            // Init List submissions
-            Listsubmissions = new List<Submission>();
-            // Setup for status bar
-            int submissionCount = files.Count();
-            if (Visible)
-            {
-                statusImportAnswerProgressBar.Maximum = submissionCount;
-                statusImportAnswerProgressBar.Step = 1;
-                statusImportAnswerProgressBar.Value = 0;
-                statusImportAnswerLabel.Text = "Imported " + 0 + "/" + submissionCount;
-            }
-            int count = 0;
-            // Setup for decrypt answer of student
-            SecureJsonSerializer<Submission> secureJsonSerializer = new SecureJsonSerializer<Submission>();
-            List<string> tempFiles = new List<string>();
-            // First import normal file.
-            foreach (string file in files)
-            {
-                try
-                {
-                    var submission = JsonUtils.SubmissionFromJson(file);
-                    // Load success 1 Submission
-                    Listsubmissions.Add(submission);
-                    // Change value status bar
-                    count++;
-                    if (Visible)
-                    {
-                        statusImportAnswerLabel.Invoke((MethodInvoker)(() =>
-                        {
-                            statusImportAnswerLabel.Text = "Imported " + count + "/" + submissionCount;
-                        }));
-                        statusImportAnswerProgressBar.Invoke((MethodInvoker)(() => { statusImportAnswerProgressBar.Value = count; }));
-                    }
-                }
-                catch (Exception)
-                {
-                    tempFiles.Add(file);
-                }
-            }
-            // Second import encoded file.
-            foreach (string file in tempFiles)
-            {
-                try
-                {
-                    Submission submission;
-                    submission = secureJsonSerializer.Load(file);
-
-                    // Load success 1 Submission
-                    Listsubmissions.Add(submission);
-                    // Change value status bar
-                    count++;
-                    if (Visible)
-                    {
-                        statusImportAnswerLabel.Invoke((MethodInvoker)(() =>
-                        {
-                            statusImportAnswerLabel.Text = "Imported " + count + "/" + submissionCount;
-                        }));
-                        statusImportAnswerProgressBar.Invoke((MethodInvoker)(() => { statusImportAnswerProgressBar.Value = count; }));
-                    }
-                }
-                catch (Exception e)
-                {
-                    MessageBox.Show(e.Message);
-                }
-            }
-            secureJsonSerializer = null;
-            // After loading successfully, diable browse button because jsonSerialize is error if load again.
-            if (Visible)
-                ImportAnswerButton.Enabled = false;
-            //MessageBox.Show("Loaded :" + Listsubmissions.Count + " submissions.");
         }
 
         private void GetMarkButton_Click(object sender, EventArgs e)
