@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Windows.Forms;
 using DBI_PEA_Scoring.Common;
@@ -71,12 +72,83 @@ namespace DBI_PEA_Scoring.UI
                     //AnswerPath = @"D:\Sys\Desktop\tmp";
                     // Duc
                     AnswerPath = @"C:\Users\hoangduc\Desktop\02_From_Submission";
-                answerTextBox.Text = AnswerPath;
+                //answerTextBox.Text = AnswerPath;
+                //// Get all submission files
+                //string[] submissionFiles = Directory.GetFiles(AnswerPath, "*.dat");
+                //if (submissionFiles.Count() == 0)
+                //    throw new Exception("No submittion was found");
+                //Loadsubmission(submissionFiles);
                 // Get all submission files
-                string[] submissionFiles = Directory.GetFiles(AnswerPath, "*.dat");
-                if (submissionFiles.Count() == 0)
-                    throw new Exception("No submittion was found");
-                Loadsubmission(submissionFiles);
+                string[] Directories = Directory.GetDirectories(AnswerPath);
+
+                // Check Folder is empty or not
+                if (Directories.Count() == 0)
+                    throw new Exception("Folder StudentSolution was not found in " + AnswerPath);
+
+                // Look up StudentSolution
+                if (Directory.Exists(AnswerPath + "/StudentSolution"))
+                {
+                    string directory = AnswerPath + "/StudentSolution";
+                    // List PaperNo
+                    string[] paperNoPaths = Directory.GetDirectories(directory);
+                    // Check bao nhieu de duoc import
+                    if (paperNoPaths.Count() == 0)
+                        throw new Exception("No PaperNo was found in " + directory);
+                    // PaperNo Found
+                    foreach (string paperNoPath in paperNoPaths)
+                    {
+                        string paperNo = new DirectoryInfo(paperNoPath).Name;
+                        // Xu ly cac folder Roll Number
+                        string[] rollNumberPaths = Directory.GetDirectories(paperNoPath); // Neu khong co roll number nao thi thoi
+                        foreach (string rollNumberPath in rollNumberPaths)
+                        {
+                            string rollNumber = new DirectoryInfo(rollNumberPath).Name;
+                            string[] solutionPaths = Directory.GetDirectories(rollNumberPath);
+                            // Init submission for student to add to list
+                            Submission submission = new Submission
+                            {
+                                PaperNo = paperNo,
+                                StudentID = rollNumber
+                            };
+                            try
+                            {
+                                string solutionPath = solutionPaths[0]; // "0" folder
+                                string[] zipFiles = Directory.GetFiles(solutionPath, "*.zip");
+                                // Check co nop bai hay khong
+                                if (zipFiles.Count() > 0)
+                                {
+                                    // Student co nop answers
+                                    string zipSolutionPath = zipFiles[0];
+                                    // Extract zip
+                                    ZipFile.ExtractToDirectory(zipSolutionPath, solutionPath + "/extract");
+                                    string[] answerPaths = Directory.GetFiles(solutionPath + "/extract", "*.sql");
+                                    // Add the answer
+                                    foreach (string answerPath in answerPaths)
+                                    {
+                                        try
+                                        {
+                                            string fileName = Path.GetFileNameWithoutExtension(answerPath); // Get q1,q2,...
+                                            int questionOrder = int.Parse(fileName.Remove(0, 1)) - 1; // remove "q/Q" letter
+                                            submission.ListAnswer[questionOrder] = File.ReadAllText(answerPath);
+                                        }
+                                        catch (Exception)
+                                        {
+                                            // skip
+                                        }
+                                    }
+                                    Listsubmissions.Add(submission);
+                                }
+                            }
+                            catch (Exception)
+                            {
+                                // skip
+                            }
+                            Listsubmissions.Add(submission);
+                        }
+                    }
+                }
+                else
+                    throw new Exception("StudentSolution not found in " + AnswerPath);
             }
             catch (Exception ex)
             {

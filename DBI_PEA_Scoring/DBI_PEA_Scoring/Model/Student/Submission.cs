@@ -11,7 +11,6 @@ namespace DBI_PEA_Scoring.Model
     public class Submission
     {
         public string StudentID { get; set; }
-        public string ExamCode { get; set; }
         public string PaperNo { get; set; }
         public List<string> ListAnswer { get; set; }
         [JsonIgnore]
@@ -19,24 +18,18 @@ namespace DBI_PEA_Scoring.Model
 
         public Submission()
         {
+            ListAnswer = new List<string>();
+            for (int i = 0; i < Constant.NumberOfQuestion; i++)
+            {
+                ListAnswer.Add("");
+            }
         }
 
-        public Submission(string examCode, string studentID, string paperNo)
+        public Submission(string studentID, string paperNo)
         {
-            ExamCode = examCode;
             StudentID = studentID;
             PaperNo = paperNo;
             ListAnswer = new List<string>();
-        }
-
-        public void Register()
-        {
-            var dir = ExamCode;
-            if (!Directory.Exists(dir))
-            {
-                Directory.CreateDirectory(dir);
-            }
-            secureJsonSerializer = new SecureJsonSerializer<Submission>(Path.Combine(dir, StudentID + ".dat"));
         }
 
         public void AddAnswer(string answer)
@@ -56,47 +49,6 @@ namespace DBI_PEA_Scoring.Model
             {
                 // Write file to path ExamCode/StudentID.dat
                 secureJsonSerializer.Save(this);
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show(e.Message);
-            }
-        }
-
-        // Restore when students continue doing their exam.
-        public void Restore()
-        {
-            try
-            {
-                var dir = ExamCode;
-                if (Directory.Exists(dir))
-                {
-                    Submission submission;
-                    try
-                    {
-                        submission = secureJsonSerializer.Load();
-                        // Load successfully
-                        ListAnswer = new List<string>();
-                        foreach (var answer in submission.ListAnswer)
-                        {
-                            ListAnswer.Add(answer);
-                        }
-                    }
-                    catch (Exception)
-                    {
-                        // Load fail
-                        MessageBox.Show("Restore fail");
-                        // Create new list
-                        for (int i = 0; i < 10; i++)
-                        {
-                            ListAnswer.Add("");
-                        }
-                    }
-                }
-                else
-                {
-                    throw new Exception("No file was found");
-                }
             }
             catch (Exception e)
             {
