@@ -4,6 +4,8 @@ using System.Drawing;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using DBI_PEA_Scoring.Common;
 using DBI_PEA_Scoring.Model;
@@ -24,6 +26,7 @@ namespace DBI_PEA_Scoring.UI
         public ImportMaterial()
         {
             InitializeComponent();
+
             // Auto Check connection import DB QUestion set and Answer of student for debug cho nhanh
             CheckConnectionButton_Click(null, null);
             if (importForDebug)
@@ -74,6 +77,24 @@ namespace DBI_PEA_Scoring.UI
                     //AnswerPath = @"D:\Sys\Desktop\tmp";
                     // Duc
                     AnswerPath = @"C:\Users\hoangduc\Desktop\02_From_Submission";
+                Application.UseWaitCursor = true;
+                Text = "Import Material - Importing";
+                ImportAnswerButton.Enabled = false;
+                ThreadPool.QueueUserWorkItem(IDontKnowWhatItIs => GetAnswers(AnswerPath));
+            }
+            catch (Exception ex)
+            {
+                if (Visible)
+                    answerTextBox.Text = "";
+                MessageBox.Show(ex.Message, "Error");
+            }
+
+        }
+
+        private void GetAnswers(string AnswerPath)
+        {
+            try
+            {
                 // Get all submission files
                 string[] Directories = Directory.GetDirectories(AnswerPath);
 
@@ -91,7 +112,10 @@ namespace DBI_PEA_Scoring.UI
                     if (paperNoPaths.Count() == 0)
                         throw new Exception("No PaperNo was found in " + directory);
                     // Update UI
-                    answerTextBox.Text = AnswerPath;
+                    answerTextBox.Invoke((MethodInvoker)(() =>
+                    {
+                        answerTextBox.Text = AnswerPath;
+                    }));
                     // PaperNo Found
                     foreach (string paperNoPath in paperNoPaths)
                     {
@@ -117,12 +141,15 @@ namespace DBI_PEA_Scoring.UI
                                 {
                                     // Student co nop answers
                                     string zipSolutionPath = zipFiles[0];
+
                                     // Extract zip
+                                    if (Directory.Exists(solutionPath + "/extract"))
+                                        Directory.Delete(solutionPath + "/extract", true);
                                     ZipFile.ExtractToDirectory(zipSolutionPath, solutionPath + "/extract");
                                     string[] answerPaths = Directory.GetFiles(solutionPath + "/extract", "*.sql");
+
                                     // Add the answer
                                     foreach (string answerPath in answerPaths)
-                                    {
                                         try
                                         {
                                             string fileName = Path.GetFileNameWithoutExtension(answerPath); // Get q1,q2,...
@@ -133,7 +160,6 @@ namespace DBI_PEA_Scoring.UI
                                         {
                                             // skip
                                         }
-                                    }
                                     Directory.Delete(solutionPath + "/extract", true);
                                 }
                             }
@@ -148,12 +174,20 @@ namespace DBI_PEA_Scoring.UI
                 else
                     throw new Exception("StudentSolution not found in " + AnswerPath);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                if (Visible)
-                    answerTextBox.Text = "";
-                MessageBox.Show(ex.Message, "Error");
+                throw;
             }
+            finally
+            {
+                Invoke((MethodInvoker)(() =>
+                {
+                    Application.UseWaitCursor = false;
+                    Text = "Import Material";
+                    ImportAnswerButton.Enabled = true;
+                }));
+            }
+
         }
 
         private void GetMarkButton_Click(object sender, EventArgs e)
@@ -161,7 +195,7 @@ namespace DBI_PEA_Scoring.UI
             if (Listsubmissions == null || Listsubmissions.Count == 0)
                 MessageBox.Show("Please import students' answers", "Error");
             else
-                if (PaperSet.Papers == null || PaperSet.Papers.Count == 0)
+                if (PaperSet == null || PaperSet.Papers.Count == 0)
                 MessageBox.Show("Please import Paper Set", "Error");
             else
                 if (!IsConnectedToDB)

@@ -14,7 +14,6 @@ namespace DBI_PEA_Scoring.UI
     {
         private List<Result> ListResults { get; set; }
         private bool scored;
-        private EditScore EditScore;
         //private List<Paper> ListTestItems = null;
         private PaperSet PaperSet;
         private List<string> DBScripts;
@@ -148,7 +147,6 @@ namespace DBI_PEA_Scoring.UI
             {
                 // Done
                 MessageBox.Show("Done");
-                editScoreButton.Enabled = true;
                 exportButton.Enabled = true;
             }
         }
@@ -173,11 +171,5 @@ namespace DBI_PEA_Scoring.UI
 
         private void QuitButton_Click(object sender, EventArgs e) => Application.Exit();
 
-        private void EditScoreButton_Click(object sender, EventArgs e)
-        {
-            // Edit lai bieu diem cho cac cau hoi
-            EditScore = new EditScore(PaperSet);
-            EditScore.Show();
-        }
     }
 }

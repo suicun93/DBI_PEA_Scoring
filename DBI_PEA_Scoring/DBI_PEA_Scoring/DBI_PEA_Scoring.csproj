@@ -59,19 +59,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common\Constant.cs" />
-    <Compile Include="Common\SecureJsonSerializer.cs" />
     <Compile Include="Model\Input.cs" />
     <Compile Include="Model\Teacher\Candidate.cs" />
     <Compile Include="Model\Teacher\PaperSet.cs" />
     <Compile Include="Model\Result.cs" />
     <Compile Include="Model\Student\Submission.cs" />
     <Compile Include="Model\Teacher\Paper.cs" />
-    <Compile Include="UI\EditScore.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UI\EditScore.Designer.cs">
-      <DependentUpon>EditScore.cs</DependentUpon>
-    </Compile>
     <Compile Include="UI\ImportMaterial.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -94,9 +87,6 @@
     <Compile Include="Utils\FileUtils.cs" />
     <Compile Include="Utils\JsonUtils.cs" />
     <Compile Include="Utils\PaperUtils.cs" />
-    <EmbeddedResource Include="UI\EditScore.resx">
-      <DependentUpon>EditScore.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="UI\ImportMaterial.resx">
       <DependentUpon>ImportMaterial.cs</DependentUpon>
     </EmbeddedResource>
