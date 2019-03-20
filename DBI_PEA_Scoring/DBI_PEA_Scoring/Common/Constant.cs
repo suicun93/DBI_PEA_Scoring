@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Data.SqlClient;
+using DBI_PEA_Scoring.Model.Teacher;
 
 namespace DBI_PEA_Scoring.Common
 {
@@ -8,15 +9,17 @@ namespace DBI_PEA_Scoring.Common
         //public static Database[] listDB = null;
         public static List<string> ListDBTemp = new List<string>();
         public static int NumberOfQuestion = 10;
-        public static List<string> DBScriptList = new List<string>();
 
-        // Configure SQL
+        //Configure SQL
         public static int TimeOutInSecond = 5;
         public static int MaxThreadPoolSize = 1;
         public static int MaxConnectionPoolSize = 1;
         public static double minusPoint = 0.25;
         // This will be configured in General.cs when user check connection to sql.
         public static SqlConnectionStringBuilder SqlConnectionStringBuilder = null;
+
+        //PaperSet
+        public static PaperSet PaperSet;
 
     }
     public class Database

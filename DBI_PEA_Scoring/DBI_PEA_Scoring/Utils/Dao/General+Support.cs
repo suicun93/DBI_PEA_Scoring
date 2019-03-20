@@ -45,8 +45,7 @@ namespace DBI_PEA_Scoring.Utils.Dao
         {
             try
             {
-                string dropQuery = "USE MASTER IF EXISTS(SELECT name FROM sys.databases WHERE name = '" + dbName + "')\n" +
-                                    "USE MASTER DROP DATABASE " + dbName + "";
+                string dropQuery = "DROP DATABASE [" + dbName + "]";
                 ExecuteSingleQuery(dropQuery , "master");
             }
             catch (Exception)

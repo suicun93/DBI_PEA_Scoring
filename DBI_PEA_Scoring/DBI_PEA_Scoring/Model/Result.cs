@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using DBI_PEA_Scoring.Common;
 using DBI_PEA_Scoring.Utils;
 
@@ -41,6 +42,7 @@ namespace DBI_PEA_Scoring.Model
         /// </summary>
         /// <param name="candidate">Question</param>
         /// <param name="answer">Student's answer</param>
+        /// <param name="questionOrder"></param>
         /// <returns>
         ///     True if correct
         ///     False if incorrect.
@@ -48,29 +50,29 @@ namespace DBI_PEA_Scoring.Model
         /// <exception cref="SQLException">
         ///     if exception was found, throw it for GetPoint function to handle
         /// </exception>
-        private Dictionary<string, string> Point(Candidate candidate, string answer, int questionOrder)
+        private Dictionary<string, string> GradeAnswer(Candidate candidate, string answer, int questionOrder)
         {
             // await TaskEx.Delay(100);
-            if (string.IsNullOrEmpty(answer))
+            if (string.IsNullOrEmpty(answer.Trim()))
                 throw new Exception("Empty.");
             // Process by Question Type
             switch (candidate.QuestionType)
             {
                 case Candidate.QuestionTypes.Schema:
                     // Schema Question
-                    return PaperUtils.TestSchema(candidate, StudentID, answer, questionOrder);
+                    return PaperUtils.SchemaType(candidate, StudentID, answer, questionOrder);
                 case Candidate.QuestionTypes.Select:
                     //Select Question
-                    return PaperUtils.TestSelect(candidate, StudentID, answer, questionOrder);
+                    return PaperUtils.SelectType(candidate, StudentID, answer, questionOrder);
                 case Candidate.QuestionTypes.DML:
                     // DML: Insert/Delete/Update Question
-                    return PaperUtils.TestInsertDeleteUpdate(ListCandidates.ElementAt(0).Solution, candidate, StudentID, answer, questionOrder);
+                    return PaperUtils.DMLType(candidate, StudentID, answer, questionOrder);
                 case Candidate.QuestionTypes.Procedure:
                     // Procedure Question
-                    return PaperUtils.TestProcedure(candidate, StudentID, answer, questionOrder);
+                    return PaperUtils.TriggerProcedureType(candidate, StudentID, answer, questionOrder);
                 case Candidate.QuestionTypes.Trigger:
                     // Trigger Question
-                    return PaperUtils.TestTrigger(candidate, StudentID, answer, questionOrder);
+                    return PaperUtils.TriggerProcedureType(candidate, StudentID, answer, questionOrder);
                 default:
                     // Not supported yet
                     throw new Exception("This question type has not been supported yet.");
@@ -78,10 +80,8 @@ namespace DBI_PEA_Scoring.Model
         }
 
         /// <summary>
-        /// Get Point function
+        /// Get GradeAnswer function
         /// </summary>
-        /// <param name="dataGridView"> Data Grid View to show point of student</param>
-        /// <param name="row">The row number where the student is</param>
         public void GetPoint()
         {
             // Count number of candidate
@@ -106,7 +106,7 @@ namespace DBI_PEA_Scoring.Model
                     //bool correct = await Cham(ListCandidates.ElementAt(i), ListAnswers.ElementAt(i));
                     if (numberOfQuestion > questionOrder)
                     {
-                        Dictionary<string, string> res = Point(ListCandidates.ElementAt(questionOrder), ListAnswers.ElementAt(questionOrder), questionOrder);
+                        Dictionary<string, string> res = GradeAnswer(ListCandidates.ElementAt(questionOrder), ListAnswers.ElementAt(questionOrder), questionOrder);
                         //Exactly -> Log true and return 0 point
                         if (res != null)
                         {

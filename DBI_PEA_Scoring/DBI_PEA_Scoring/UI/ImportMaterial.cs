@@ -20,7 +20,6 @@ namespace DBI_PEA_Scoring.UI
         public string QuestionPath { get; set; }
         //public List<string> DBScriptList { get; set; }
         public string AnswerPath { get; set; }
-        private PaperSet PaperSet;
         private List<Submission> Listsubmissions;
         private bool importForDebug = false;
         public ImportMaterial()
@@ -47,12 +46,14 @@ namespace DBI_PEA_Scoring.UI
                     //QuestionPath = @"E:\OneDrive\000 SWP\Sample\DBI_Exam\03_Sample_for_Testing_New_Phase_(09.03)\01_From_Shuffle\PaperSet.dat";
                     // Duc
                     QuestionPath = @"C:\Users\hoangduc\Desktop\PaperSet.dat";
+                if (string.IsNullOrEmpty(QuestionPath))
+                {
+                    return;
+                }
                 questionTextBox.Text = QuestionPath;
                 // Get QuestionPackage from file
-                PaperSet = null;
-                PaperSet = JsonUtils.LoadQuestion(QuestionPath) as PaperSet;
-                Constant.DBScriptList = PaperSet.DBScriptList;
-                if (PaperSet == null || PaperSet.Papers.Count == 0)
+                Constant.PaperSet = JsonUtils.LoadQuestion(QuestionPath) as PaperSet;
+                if (Constant.PaperSet == null || Constant.PaperSet.Papers.Count == 0)
                     throw new Exception("No question was found!");
             }
             catch (Exception ex)
@@ -96,10 +97,12 @@ namespace DBI_PEA_Scoring.UI
             try
             {
                 // Get all submission files
-                string[] Directories = Directory.GetDirectories(AnswerPath);
+                if (string.IsNullOrEmpty(AnswerPath))
+                    return;
+                string[] directories = Directory.GetDirectories(AnswerPath);
 
                 // Check Folder is empty or not
-                if (Directories.Count() == 0)
+                if (!directories.Any())
                     throw new Exception("Folder StudentSolution was not found in " + AnswerPath);
 
                 // Look up StudentSolution
@@ -109,7 +112,7 @@ namespace DBI_PEA_Scoring.UI
                     // List PaperNo
                     string[] paperNoPaths = Directory.GetDirectories(directory);
                     // Check bao nhieu de duoc import
-                    if (paperNoPaths.Count() == 0)
+                    if (!paperNoPaths.Any())
                         throw new Exception("No PaperNo was found in " + directory);
                     // Update UI
                     answerTextBox.Invoke((MethodInvoker)(() =>
@@ -174,9 +177,9 @@ namespace DBI_PEA_Scoring.UI
                 else
                     throw new Exception("StudentSolution not found in " + AnswerPath);
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                throw;
+                throw e;
             }
             finally
             {
@@ -195,7 +198,7 @@ namespace DBI_PEA_Scoring.UI
             if (Listsubmissions == null || Listsubmissions.Count == 0)
                 MessageBox.Show("Please import students' answers", "Error");
             else
-                if (PaperSet == null || PaperSet.Papers.Count == 0)
+                if (Constant.PaperSet == null || Constant.PaperSet.Papers.Count == 0)
                 MessageBox.Show("Please import Paper Set", "Error");
             else
                 if (!IsConnectedToDB)
@@ -203,7 +206,7 @@ namespace DBI_PEA_Scoring.UI
             else
                 if (General.PrepareSpCompareDatabase())
             {
-                var scoring = new Scoring(PaperSet, Listsubmissions);
+                var scoring = new Grading(Listsubmissions);
                 Hide();
             }
             else
