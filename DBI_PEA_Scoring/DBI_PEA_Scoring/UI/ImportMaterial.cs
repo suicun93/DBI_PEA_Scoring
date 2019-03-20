@@ -43,6 +43,10 @@ namespace DBI_PEA_Scoring.UI
                     //QuestionPath = @"E:\OneDrive\000 SWP\Sample\DBI_Exam\03_Sample_for_Testing_New_Phase_(09.03)\01_From_Shuffle\PaperSet.dat";
                     // Duc
                     QuestionPath = @"C:\Users\hoangduc\Desktop\PaperSet.dat";
+                if (string.IsNullOrEmpty(QuestionPath))
+                {
+                    return;
+                }
                 questionTextBox.Text = QuestionPath;
                 // Get QuestionPackage from file
                 Constant.PaperSet = JsonUtils.LoadQuestion(QuestionPath) as PaperSet;
@@ -72,6 +76,9 @@ namespace DBI_PEA_Scoring.UI
                     // Duc
                     AnswerPath = @"C:\Users\hoangduc\Desktop\02_From_Submission";
                 // Get all submission files
+                if (string.IsNullOrEmpty(AnswerPath))
+                    return;
+
                 string[] Directories = Directory.GetDirectories(AnswerPath);
 
                 // Check Folder is empty or not
