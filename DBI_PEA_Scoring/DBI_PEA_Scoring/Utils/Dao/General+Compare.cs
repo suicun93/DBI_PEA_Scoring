@@ -3,8 +3,11 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Net;
 using DBI_PEA_Scoring.Common;
 using DBI_PEA_Scoring.Model;
+using Microsoft.Office.Interop.Excel;
+using DataTable = System.Data.DataTable;
 
 namespace DBI_PEA_Scoring.Utils.Dao
 {
@@ -73,14 +76,12 @@ namespace DBI_PEA_Scoring.Utils.Dao
                                 };
                         }
                     }
-
                 }
             }
             catch (Exception ex)
             {
                 throw new Exception("Compare error: " + ex.Message);
             }
-
         }
 
         /// <summary>
@@ -113,7 +114,8 @@ namespace DBI_PEA_Scoring.Utils.Dao
         /// "false" if wrong
         /// message error from sqlserver if error
         /// </returns>
-        public static Dictionary<string, string> CompareOneResultSet(string dbAnswerName, string dbSolutionName, string answer, Candidate candidate)
+        public static Dictionary<string, string> CompareOneResultSet(string dbAnswerName, string dbSolutionName, string answer, 
+            Candidate candidate)
         {
             var builder = Constant.SqlConnectionStringBuilder;
             DataTable dataTableAnswer = new DataTable();
@@ -147,11 +149,13 @@ namespace DBI_PEA_Scoring.Utils.Dao
                 double pointCheckData = candidate.Point / 2;
                 double pointEachTc = Math.Round(candidate.Point / 2 / numOfTc, 2);
                 int count = 0;
-                //check data
-                if (CompareTwoDataSetsByData(dataTableAnswer, dataTableSolution))
+                //check data using except only (rows can be difference
+                if (CompareTwoDataSetsByData(dataTableAnswer, dataTableSolution, false))
                 {
                     count++;
                     point += pointCheckData;
+
+                    //Distinct and Sort are independence. They cant both equal true.
                     //If check distinct is require
                     if (candidate.CheckDistinct)
                     {
@@ -165,7 +169,7 @@ namespace DBI_PEA_Scoring.Utils.Dao
                             comment = string.Concat(comment, "Distinct is required!\n");
                         }
                     }
-                
+
                     //If Sort is require
                     if (candidate.RequireSort)
                     {
@@ -193,8 +197,6 @@ namespace DBI_PEA_Scoring.Utils.Dao
                             comment = string.Concat(comment, resCompareColumnName);
                         }
                     }
-
-
                     point += count * pointEachTc;
                 }
                 //Wrong query
@@ -222,6 +224,7 @@ namespace DBI_PEA_Scoring.Utils.Dao
         /// <param name="dbAnswerName">DB Name to check student query</param>
         /// <param name="dbSolutionName">DB Name to check teacher query</param>
         /// <param name="candidate">Candidate</param>
+        /// <param name="errorMessage"></param>
         /// <returns>
         /// "true" if correct
         /// "false" if wrong
@@ -261,7 +264,7 @@ namespace DBI_PEA_Scoring.Utils.Dao
                     for (int i = 0; i < numOfTc; i++)
                     {
                         foreach (DataTable tableAnswer in dataSetAnswer.Tables)
-                            if (CompareTwoDataSetsByData(tableAnswer, dataSetSolution.Tables[i]))
+                            if (CompareTwoDataSetsByData(tableAnswer, dataSetSolution.Tables[i], true))
                             {
                                 count++;
                                 break;
@@ -288,7 +291,6 @@ namespace DBI_PEA_Scoring.Utils.Dao
                             {"Point", "0"},
                             {"Comment", string.Concat("Testcase passed: (", count, "/",numOfTc ,") - ","Wrong Answer\n")}
                         };
-
                 }
             }
         }
@@ -301,8 +303,10 @@ namespace DBI_PEA_Scoring.Utils.Dao
         /// <returns>
         /// true = same
         /// </returns>
-        private static bool CompareTwoDataSetsByData(DataTable dataTableAnswer, DataTable dataTableSolution)
+        private static bool CompareTwoDataSetsByData(DataTable dataTableAnswer, DataTable dataTableSolution, bool checkRowsAndColumns)
         {
+            if (checkRowsAndColumns) if (dataTableSolution.Rows.Count != dataTableAnswer.Rows.Count ||
+                               dataTableSolution.Columns.Count != dataTableAnswer.Columns.Count) return false;
             return !dataTableAnswer.AsEnumerable().Except(dataTableSolution.AsEnumerable(), DataRowComparer.Default).Any();
         }
 
@@ -316,8 +320,8 @@ namespace DBI_PEA_Scoring.Utils.Dao
         /// </returns>
         private static bool CompareTwoDataSetsByRow(DataTable dataTableAnswer, DataTable dataTableSolution)
         {
-            if (dataTableAnswer.Rows.Count != dataTableSolution.Rows.Count || dataTableAnswer.Columns.Count != dataTableSolution.Columns.Count)
-                return false;
+            if (dataTableSolution.Rows.Count != dataTableAnswer.Rows.Count ||
+                dataTableSolution.Columns.Count != dataTableAnswer.Columns.Count) return false;
             for (int i = 0; i < dataTableSolution.Rows.Count; i++)
             {
                 var rowArraySolution = dataTableSolution.Rows[i].ItemArray;

@@ -99,7 +99,9 @@ namespace DBI_PEA_Scoring.UI
                     // PaperNo Found
                     foreach (string paperNoPath in paperNoPaths)
                     {
-                        string paperNo = new DirectoryInfo(paperNoPath).Name;
+                        string paperNo = new DirectoryInfo(paperNoPath).
+                            
+                            ;
                         // Xu ly cac folder Roll Number
                         string[] rollNumberPaths = Directory.GetDirectories(paperNoPath); // Neu khong co roll number nao thi thoi
                         foreach (string rollNumberPath in rollNumberPaths)
