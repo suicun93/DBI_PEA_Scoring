@@ -250,6 +250,12 @@ namespace DBI_PEA_Scoring.Utils.Dao
         {
             try
             {
+                //Get testcases from comment in test query
+                List<TestCase> testCases = GetTestCasesPoint(candidate.TestQuery);
+
+                double totalPoint = 0;
+                double maxPoint = candidate.Point;
+
                 // Prepare Command
                 var builder = Constant.SqlConnectionStringBuilder;
                 builder.MultipleActiveResultSets = true;
@@ -273,40 +279,41 @@ namespace DBI_PEA_Scoring.Utils.Dao
                         sqlDataAdapterAnswer.Fill(dataSetAnswer);
                         sqlDataAdapterSolution.Fill(dataSetSolution);
 
-                        int numOfTc = dataSetSolution.Tables.Count;
-                        double pointEachTc = Math.Round(candidate.Point / numOfTc, 2);
+
                         int count = 0;
                         string comment = errorMessage;
                         //Compare results one by one
-                        for (int i = 0; i < numOfTc; i++)
+                        for (int i = 0; i < testCases.Count; i++)
                         {
                             foreach (DataTable tableAnswer in dataSetAnswer.Tables)
                                 if (CompareTwoDataSetsByData(tableAnswer, dataSetSolution.Tables[i], true))
                                 {
                                     count++;
+                                    totalPoint += testCases.ElementAt(i).Point;
                                     break;
                                 }
+                            comment = string.Concat("TC ", i, ": ", comment, testCases.ElementAt(i).Description, "\n");
                         }
                         //Degree 50% of point if Answer has more resultSets than Solution
                         if (dataSetSolution.Tables.Count < dataSetAnswer.Tables.Count)
                         {
-                            pointEachTc = Math.Round(pointEachTc / 2, 2);
-                            comment = string.Concat(comment, "Decrease 50% of points because Answer has more resultSets than Solution (",
+                            maxPoint = Math.Round(maxPoint / 2, 2);
+                            comment = string.Concat(comment,
+                                "Decrease 50% of points because Answer has more resultSets than Solution (",
                                 dataSetAnswer.Tables.Count, " > ", dataSetSolution.Tables.Count, ")\n");
                         }
                         if (count > 0)
                         {
                             return new Dictionary<string, string>
                             {
-                                {"Point", (count * pointEachTc).ToString()},
-                                {"Comment", string.Concat("Testcase passed: (", count, "/",numOfTc ,") - ", (count == numOfTc)&&(comment.Equals(""))? "True\n":
-                                string.Concat("Wrong Answer\n", comment))}
+                                {"Point", totalPoint.ToString()},
+                                {"Comment", string.Concat("Testcase passed: (", count, "/",testCases.Count ,") - ", (count == testCases.Count)&&(comment.Equals(""))? "True\n":comment)}
                             };
                         }
                         return new Dictionary<string, string>
                         {
                             {"Point", "0"},
-                            {"Comment", string.Concat("Testcase passed: (", count, "/",numOfTc ,") - ","Wrong Answer\n")}
+                            {"Comment", string.Concat("Testcase passed: (", count, "/",testCases.Count ,") - ","Wrong Answer\n")}
                         };
                     }
                 }

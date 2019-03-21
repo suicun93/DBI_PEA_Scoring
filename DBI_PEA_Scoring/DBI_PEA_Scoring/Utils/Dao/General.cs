@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Globalization;
+using System.Text.RegularExpressions;
 using DBI_PEA_Scoring.Common;
 using Microsoft.SqlServer.Management.Common;
 using Microsoft.SqlServer.Management.Smo;
@@ -91,6 +94,39 @@ namespace DBI_PEA_Scoring.Utils.Dao
                 }
             }
         }
+
+        public static List<TestCase> GetTestCasesPoint(string input)
+        {
+            Match matchResult = Regex.Match(input, @"(/\*(.|[\r\n])*?\*/)|(--(.*|[\r\n]))", RegexOptions.Singleline);
+
+            List<TestCase> tcpList = new List<TestCase>();
+            int count = 0;
+            TestCase tcp = new TestCase();
+            while (matchResult.Success)
+            {
+                string matchFormatted = matchResult.Value.Split('*')[1];
+                if (count++ % 2 == 0)
+                {
+                    tcp.Point = double.Parse(matchFormatted, CultureInfo.InvariantCulture);
+                }
+                else
+                {
+                    tcp.Description = matchFormatted;
+                    tcpList.Add(tcp);
+                    tcp = new TestCase();
+                }
+                matchResult = matchResult.NextMatch();
+            }
+            return tcpList;
+        }
+
+
+    }
+
+    public class TestCase
+    {
+        public double Point { get; set; }
+        public string Description { get; set; }
     }
 }
 
