@@ -23,15 +23,15 @@ namespace DBI_PEA_Scoring.Utils.Dao
         /// "true" if correct
         /// "false" if wrong
         /// message error from sqlserver if error</returns>
-        public static Dictionary<string, string> CompareTwoDatabases(string db1Name, string db2Name, Candidate candidate)
+        public static Dictionary<string, string> CompareTwoDatabases(string db1Name, string db2Name, Candidate candidate, string errorMessage)
         {
             try
             {
                 string compareQuery = "exec sp_CompareDb [" + db2Name + "], [" + db1Name + "]";
                 var builder = Constant.SqlConnectionStringBuilder;
-                // Connect to SQL
-                string result = "";
+                string result = errorMessage;
                 int count = 0;
+                // Connect to SQL
                 using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
                 {
                     connection.Open();
@@ -44,10 +44,11 @@ namespace DBI_PEA_Scoring.Utils.Dao
                                 "    Data Type    ||", "    Nullable   ||\n");
                             while (reader.Read())
                             {
-                                result = string.Concat(result, new string('-', 79), "\n", string.Format("||{0,-18}||", (string)reader["TABLENAME"]),
-                                    string.Format("{0,-19}||", (string)reader["COLUMNNAME"]),
-                                    string.Format("{0,-17}||", (string)reader["DATATYPE"]),
-                                    string.Format("{0,-15}||", (string)reader["NULLABLE"]), "\n");
+                                result = string.Concat(result, new string('-', 79), "\n",
+                                    $"||{(string)reader["TABLENAME"],-18}||",
+                                    $"{(string)reader["COLUMNNAME"],-19}||",
+                                    $"{(string)reader["DATATYPE"],-17}||",
+                                    $"{(string)reader["NULLABLE"],-15}||", "\n");
                                 result = string.Concat(result, "\n");
                                 count++;
                             }
@@ -96,7 +97,7 @@ namespace DBI_PEA_Scoring.Utils.Dao
             {
                 if (!dataTableSolutionSchema.Rows[i]["ColumnName"].Equals(dataTableAnswerSchema.Rows[i]["ColumnName"]))
                 {
-                    return "ColumnName wrong: " + dataTableSolutionSchema.Rows[i]["ColumnName"] + "\n";
+                    return "Column Name wrong - " + dataTableSolutionSchema.Rows[i]["ColumnName"];
                 }
             }
             return "";
@@ -130,6 +131,7 @@ namespace DBI_PEA_Scoring.Utils.Dao
                 {
                     connection.Open();
 
+                    //Running answer query
                     try
                     {
                         using (var sqlCommandAnswer = new SqlCommand("USE " + dbAnswerName + "; \n" + answer + "", connection))
@@ -141,89 +143,150 @@ namespace DBI_PEA_Scoring.Utils.Dao
                     }
                     catch (Exception e)
                     {
-                        throw new Exception("Answer error: e.Message");
+                        throw new Exception("Answer query error: " + e.Message + "\n");
+                    }
+                    //Running Solution 
+                    try
+                    {
+                        using (var sqlCommandSolution = new SqlCommand("USE " + dbSolutionName + "; \n" + candidate.Solution + "", connection))
+                        {
+                            var sqlReaderSolution = sqlCommandSolution.ExecuteReader();
+                            if (candidate.CheckColumnName) dataTableSolutionShema = sqlReaderSolution.GetSchemaTable();
+                            dataTableSolution.Load(sqlReaderSolution);
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        throw new Exception("Solution query error: " + e.Message + "\n");
                     }
 
-                    using (var sqlCommandSolution = new SqlCommand("USE " + dbSolutionName + "; \n" + candidate.Solution + "", connection))
-                    {
-                        var sqlReaderSolution = sqlCommandSolution.ExecuteReader();
-                        if (candidate.CheckColumnName) dataTableSolutionShema = sqlReaderSolution.GetSchemaTable();
-                        dataTableSolution.Load(sqlReaderSolution);
-                    }
-                    double point = 0;
-                    string comment = "";
-                    int numOfTc = 1;
+                    //Prepare point for testcases and data
+                    double dataPoint = Math.Round(candidate.Point / 2, 2);
+
+                    //Number of testcases
+                    int numOfTc = 0;
                     if (candidate.RequireSort) numOfTc++;
                     if (candidate.CheckColumnName) numOfTc++;
                     if (candidate.CheckDistinct) numOfTc++;
-                    double pointCheckData = candidate.Point / 2;
-                    double pointEachTc = Math.Round(candidate.Point / 2 / numOfTc, 2);
-                    int count = 0;
-                    //check data using except only (rows can be difference
-                    if (CompareTwoDataSetsByData(dataTableAnswer, dataTableSolution, false))
-                    {
-                        count++;
-                        point += pointCheckData;
 
-                        //Distinct and Sort are independence. They cant both equal true.
-                        //If check distinct is require
+                    double gradePoint = 0;//Grading Point
+                    string comment = "";//Logs
+
+                    //Point for each testcase passed
+                    double tcPoint = Math.Round(candidate.Point / 2 / numOfTc, 2);
+
+                    //Count testcases true
+                    int tcCount = 0;
+
+                    //STARTING FOR GRADING
+
+                    //Check data using except only (Rows can be difference)
+                    comment += "Compare Data: ";
+                    if (CompareTwoDataSetsByExcept(dataTableAnswer, dataTableSolution))
+                    {
+                        gradePoint += dataPoint;
+                        comment += string.Concat("Passed => +", dataPoint, "\n");
+
+                        //1. Check if distinct is required
                         if (candidate.CheckDistinct)
                         {
+                            comment += "- Check distinct: ";
+                            //Compare number of rows
                             if (dataTableSolution.Rows.Count == dataTableAnswer.Rows.Count)
                             {
-                                count++;
-                                point += pointEachTc;
+                                tcCount++;
+                                comment += String.Concat("Passed => +", tcPoint, "\n");
                             }
                             else
                             {
-                                comment = string.Concat(comment, "Distinct is required!\n");
+                                comment += "Not pass\n";
                             }
                         }
 
-                        //If Sort is require
+                        //2. Check if sort is required
                         if (candidate.RequireSort)
                         {
-                            if (CompareTwoDataSetsByRow(dataTableAnswer, dataTableSolution))
+                            comment += "- Check sort: ";
+                            //Use distinct to remove all duplicate rows
+                            string queryCheckSortAnswer = "SELECT DISTINCT* FROM (" + answer + ")";
+                            string queryCheckSortSolution = "SELECT DISTINCT* FROM (" + candidate.Solution + ")";
+
+                            DataTable dataTableSortAnswer = new DataTable();
+                            DataTable dataTableSortSolution = new DataTable();
+
+                            //Running Answer Sort query
+                            try
                             {
-                                count++;
+                                using (var sqlCommandAnswer = new SqlCommand("USE " + dbAnswerName + "; \n" + queryCheckSortAnswer + "", connection))
+                                {
+                                    var sqlReaderAnswer = sqlCommandAnswer.ExecuteReader();
+                                    dataTableSortAnswer.Load(sqlReaderAnswer);
+                                }
+                            }
+                            catch (Exception e)
+                            {
+                                throw new Exception("Compare sort error at answer query: " + e.Message + "\n");
+                            }
+                            //Running Solution Sort query
+                            try
+                            {
+                                using (var sqlCommandSolution = new SqlCommand("USE " + dbSolutionName + "; \n" + queryCheckSortSolution + "", connection))
+                                {
+                                    var sqlReaderSolution = sqlCommandSolution.ExecuteReader();
+                                    dataTableSortSolution.Load(sqlReaderSolution);
+                                }
+                            }
+                            catch (Exception e)
+                            {
+                                throw new Exception("Compare sort error at solution query: " + e.Message + "\n");
+                            }
+
+                            //Compare number of rows
+
+                            if (dataTableSortSolution.Rows.Count == dataTableSortAnswer.Rows.Count)
+                            {
+                                tcCount++;
+                                comment += string.Concat("Passed => +", tcPoint, "\n");
                             }
                             else
                             {
-                                comment = string.Concat(comment, "Result is not sorted as required!\n");
+                                comment += "Not pass\n";
                             }
                         }
-
-                        //If check columns name is require
+                        //3. Check if checkColumnName is required
                         if (candidate.CheckColumnName)
                         {
+                            comment += "- Check Columns Name: ";
                             string resCompareColumnName =
                                 CompareColumnsNameOfTables(dataTableAnswerShema, dataTableSolutionShema);
                             if (resCompareColumnName.Equals(""))
                             {
-                                count++;
+                                tcCount++;
+                                comment += string.Concat("Passed => +", tcPoint, "\n");
                             }
                             else
                             {
-                                comment = string.Concat(comment, resCompareColumnName);
+                                comment += string.Concat(resCompareColumnName, "\n");
                             }
                         }
-                        point += count * pointEachTc;
                     }
-                    //Wrong query
                     else
                     {
-                        point = 0;
-                        comment = "Wrong Answer\n";
+                        comment += "Not pass => Point = 0\n";
                     }
-                    if (comment.Equals(""))
+                    if (numOfTc == 0 || numOfTc == tcCount)
                     {
-                        comment = "True\n";
-                        point = candidate.Point;
+                        gradePoint = candidate.Point;
                     }
+                    else
+                    {
+                        gradePoint = Math.Round(tcCount * tcPoint + gradePoint, 2);
+                    }
+
                     return new Dictionary<string, string>
                 {
-                    {"Point", point.ToString()},
-                    {"Comment", string.Concat("Testcase passed: (", count, "/",numOfTc ,") - ",comment)}
+                    {"Point", gradePoint.ToString()},
+                    {"Comment", comment}
                 };
                 }
             }
@@ -256,6 +319,8 @@ namespace DBI_PEA_Scoring.Utils.Dao
                 double totalPoint = 0;
                 double maxPoint = candidate.Point;
 
+
+
                 // Prepare Command
                 var builder = Constant.SqlConnectionStringBuilder;
                 builder.MultipleActiveResultSets = true;
@@ -279,14 +344,13 @@ namespace DBI_PEA_Scoring.Utils.Dao
                         sqlDataAdapterAnswer.Fill(dataSetAnswer);
                         sqlDataAdapterSolution.Fill(dataSetSolution);
 
-
                         int count = 0;
                         string comment = errorMessage;
                         //Compare results one by one
                         for (int i = 0; i < testCases.Count; i++)
                         {
                             foreach (DataTable tableAnswer in dataSetAnswer.Tables)
-                                if (CompareTwoDataSetsByData(tableAnswer, dataSetSolution.Tables[i], true))
+                                if (CompareTwoDataSetsByExcept(tableAnswer, dataSetSolution.Tables[i]))
                                 {
                                     count++;
                                     totalPoint += testCases.ElementAt(i).Point;
@@ -302,6 +366,8 @@ namespace DBI_PEA_Scoring.Utils.Dao
                                 "Decrease 50% of points because Answer has more resultSets than Solution (",
                                 dataSetAnswer.Tables.Count, " > ", dataSetSolution.Tables.Count, ")\n");
                         }
+
+                        totalPoint = totalPoint > maxPoint ? maxPoint : totalPoint;
                         if (count > 0)
                         {
                             return new Dictionary<string, string>
@@ -333,10 +399,8 @@ namespace DBI_PEA_Scoring.Utils.Dao
         /// <returns>
         /// true = same
         /// </returns>
-        private static bool CompareTwoDataSetsByData(DataTable dataTableAnswer, DataTable dataTableSolution, bool checkRowsAndColumns)
+        private static bool CompareTwoDataSetsByExcept(DataTable dataTableAnswer, DataTable dataTableSolution)
         {
-            if (checkRowsAndColumns) if (dataTableSolution.Rows.Count != dataTableAnswer.Rows.Count ||
-                               dataTableSolution.Columns.Count != dataTableAnswer.Columns.Count) return false;
             return !dataTableAnswer.AsEnumerable().Except(dataTableSolution.AsEnumerable(), DataRowComparer.Default).Any();
         }
 

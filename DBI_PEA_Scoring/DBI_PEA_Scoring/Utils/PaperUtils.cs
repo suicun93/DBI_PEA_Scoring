@@ -29,6 +29,7 @@ namespace DBI_PEA_Scoring.Utils
             string queryAnswer = string.Concat("create database ", dbAnswerName, "\nGO\nUSE ", dbAnswerName, "\n", candidate.Solution);
             try
             {
+                string errorMessage = "";
                 // Execute query
                 try
                 {
@@ -36,7 +37,7 @@ namespace DBI_PEA_Scoring.Utils
                 }
                 catch (Exception e)
                 {
-                    throw new Exception("Answer error: " + e.Message);
+                    errorMessage = string.Concat("Answer error: ", errorMessage, "\n");
                 }
                 try
                 {
@@ -44,14 +45,10 @@ namespace DBI_PEA_Scoring.Utils
                 }
                 catch (Exception e)
                 {
-                    throw new Exception("Solution error: " + e.Message);
+                    throw new Exception("Compare error: " + e.Message);
                 }
                 // Execute query
-                return General.CompareTwoDatabases(dbAnswerName, dbSolutionName, candidate);
-            }
-            catch (Exception e)
-            {
-                throw new Exception(e.Message);
+                return General.CompareTwoDatabases(dbAnswerName, dbSolutionName, candidate, errorMessage);
             }
             finally
             {
@@ -75,10 +72,12 @@ namespace DBI_PEA_Scoring.Utils
         {
             string dbSolutionName = studentId + "_" + questionOrder + "_Solution" + "_" + new Random().Next(1000000000);
             string dbAnswerName = studentId + "_" + questionOrder + "_Answer" + "_" + new Random().Next(1000000000);
-            //Generate 2 new DB for student's answer and solution
-            General.GenerateDatabase(dbSolutionName, dbAnswerName, Constant.PaperSet.DBScriptList[1]);
+            
             try
             {
+                //Generate 2 new DB for student's answer and solution
+                General.GenerateDatabase(dbSolutionName, dbAnswerName, Constant.PaperSet.DBScriptList[1]);
+                //Compare
                 return General.CompareOneResultSet(dbAnswerName, dbSolutionName, answer, candidate);
             }
             catch (Exception e)

@@ -15,14 +15,14 @@ namespace DBI_PEA_Scoring.Utils.Dao
         {
             try
             {
-                ExecuteSingleQuery(SchemaType.ProcCompareDbsCreate, "master");
+                ExecuteSingleQuery("GO\n" +"ALTER " + SchemaType.ProcCompareDbs, "master");
             }
             catch
             {
                 // ProcCompareDbsCreate has been created
                 try
                 {
-                    ExecuteSingleQuery(SchemaType.ProcCompareDbsAlter, "master");
+                    ExecuteSingleQuery("GO\n" + "CREATE " + SchemaType.ProcCompareDbs, "master");
                 }
                 catch
                 {

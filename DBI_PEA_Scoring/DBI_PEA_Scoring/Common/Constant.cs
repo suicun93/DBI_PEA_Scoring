@@ -14,7 +14,7 @@ namespace DBI_PEA_Scoring.Common
         public static int TimeOutInSecond = 5;
         public static int MaxThreadPoolSize = 1;
         public static int MaxConnectionPoolSize = 1;
-        public static double minusPoint = 0.25;
+        public static double minusPoint = 0.1;
         // This will be configured in General.cs when user check connection to sql.
         public static SqlConnectionStringBuilder SqlConnectionStringBuilder = null;
 

@@ -83,9 +83,13 @@ namespace DBI_PEA_Scoring.Utils
                     {
                         comment = string.Concat(comment, result.Logs[i], "\n");
                     }
-                    sheetDetail.Cells[lastRow, (i + 5)] = string.Concat(result.ListCandidates.ElementAt(i).QuestionRequirement,
-                        "\nAnswer:\n",
-                        result.ListAnswers.ElementAt(i));
+                    if (!string.IsNullOrEmpty(result.ListAnswers.ElementAt(i).Trim()))
+                        sheetDetail.Cells[lastRow, (i + 5)] = string.Concat(result.ListCandidates.ElementAt(i).QuestionRequirement,
+                            "\nAnswer:\n", result.ListAnswers.ElementAt(i));
+                    else
+                    {
+                        sheetDetail.Cells[lastRow, (i + 5)] = "Empty Answer";
+                    }
                 }
                 sheetDetail.Cells[lastRow, 4] = comment.Trim();
             }
