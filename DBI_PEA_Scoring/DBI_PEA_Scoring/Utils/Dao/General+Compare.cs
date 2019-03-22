@@ -282,7 +282,7 @@ namespace DBI_PEA_Scoring.Utils.Dao
                     {
                         gradePoint = Math.Round(tcCount * tcPoint + gradePoint, 2);
                     }
-
+                    comment = string.Concat("Total Point: ", gradePoint, "\n", comment);
                     return new Dictionary<string, string>
                 {
                     {"Point", gradePoint.ToString()},
@@ -316,10 +316,11 @@ namespace DBI_PEA_Scoring.Utils.Dao
                 //Get testcases from comment in test query
                 List<TestCase> testCases = GetTestCasesPoint(candidate.TestQuery);
 
-                double totalPoint = 0;
+                //Commnet
+                string comment = errorMessage;
+
+                double gradePoint = 0;
                 double maxPoint = candidate.Point;
-
-
 
                 // Prepare Command
                 var builder = Constant.SqlConnectionStringBuilder;
@@ -330,13 +331,12 @@ namespace DBI_PEA_Scoring.Utils.Dao
                 using (var connection = new SqlConnection(builder.ConnectionString))
                 {
                     connection.Open();
-                    // Prepare Command
 
                     // Prepare SqlDataAdapter
                     using (var sqlDataAdapterAnswer = new SqlDataAdapter(queryAnswer, connection))
                     using (var sqlDataAdapterSolution = new SqlDataAdapter(querySolution, connection))
                     {
-                        // Prepare DataSet
+                        // Prepare DataSet  
                         var dataSetAnswer = new DataSet();
                         var dataSetSolution = new DataSet();
 
@@ -344,42 +344,51 @@ namespace DBI_PEA_Scoring.Utils.Dao
                         sqlDataAdapterAnswer.Fill(dataSetAnswer);
                         sqlDataAdapterSolution.Fill(dataSetSolution);
 
-                        int count = 0;
-                        string comment = errorMessage;
+
+
                         //Compare results one by one
-                        for (int i = 0; i < testCases.Count; i++)
+                        int countTesting = 0;
+                        int countComparison = 0;
+
+                        foreach (DataTable dataTableSolution in dataSetSolution.Tables)
                         {
-                            foreach (DataTable tableAnswer in dataSetAnswer.Tables)
-                                if (CompareTwoDataSetsByExcept(tableAnswer, dataSetSolution.Tables[i]))
+                            countTesting++;
+                            comment += string.Concat("TC ", countTesting, ": ",
+                                testCases.ElementAt(countTesting - 1).Description, " - ");
+                            foreach (DataTable dataTableAnswer in dataSetAnswer.Tables)
+                            {
+                                if (CompareTwoDataSetsByExcept(dataTableAnswer, dataTableSolution) &&
+                                    dataTableAnswer.Rows.Count == dataTableSolution.Rows.Count)
                                 {
-                                    count++;
-                                    totalPoint += testCases.ElementAt(i).Point;
+                                    gradePoint += testCases.ElementAt(countTesting - 1).Point;
+                                    comment += string.Concat("Passed => +", testCases.ElementAt(countTesting - 1).Point,
+                                        "\n");
                                     break;
                                 }
-                            comment = string.Concat("TC ", i, ": ", comment, testCases.ElementAt(i).Description, "\n");
+                                countComparison++;
+                            }
+                            if (countComparison == dataSetAnswer.Tables.Count)
+                            {
+                                comment += "Not pass\n";
+                            }
+                            countComparison = 0;
                         }
+
                         //Degree 50% of point if Answer has more resultSets than Solution
                         if (dataSetSolution.Tables.Count < dataSetAnswer.Tables.Count)
                         {
-                            maxPoint = Math.Round(maxPoint / 2, 2);
+                            double rate = Math.Round((double)(dataSetSolution.Tables.Count / dataSetAnswer.Tables.Count), 2);
                             comment = string.Concat(comment,
-                                "Decrease 50% of points because Answer has more resultSets than Solution (",
+                                "Decrease ", rate * 100, "% because Answer has more resultSets than Solution (",
                                 dataSetAnswer.Tables.Count, " > ", dataSetSolution.Tables.Count, ")\n");
+                            gradePoint *= rate;
                         }
-
-                        totalPoint = totalPoint > maxPoint ? maxPoint : totalPoint;
-                        if (count > 0)
-                        {
-                            return new Dictionary<string, string>
-                            {
-                                {"Point", totalPoint.ToString()},
-                                {"Comment", string.Concat("Testcase passed: (", count, "/",testCases.Count ,") - ", (count == testCases.Count)&&(comment.Equals(""))? "True\n":comment)}
-                            };
-                        }
+                        comment = string.Concat("Total Point: ", gradePoint, "\n", comment);
+                        gradePoint = gradePoint > maxPoint ? maxPoint : gradePoint;
                         return new Dictionary<string, string>
                         {
-                            {"Point", "0"},
-                            {"Comment", string.Concat("Testcase passed: (", count, "/",testCases.Count ,") - ","Wrong Answer\n")}
+                            {"Point", gradePoint.ToString()},
+                            {"Comment", comment}
                         };
                     }
                 }

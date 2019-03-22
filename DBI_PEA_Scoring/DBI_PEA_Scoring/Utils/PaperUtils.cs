@@ -72,7 +72,7 @@ namespace DBI_PEA_Scoring.Utils
         {
             string dbSolutionName = studentId + "_" + questionOrder + "_Solution" + "_" + new Random().Next(1000000000);
             string dbAnswerName = studentId + "_" + questionOrder + "_Answer" + "_" + new Random().Next(1000000000);
-            
+
             try
             {
                 //Generate 2 new DB for student's answer and solution
@@ -94,6 +94,7 @@ namespace DBI_PEA_Scoring.Utils
         /// <summary>
         ///  Execute Query and compare 2 effected tables
         /// </summary>
+        /// <param name="candidate"></param>
         /// <param name="studentId"></param>
         /// <param name="answer">Answer of student</param>
         /// <param name="questionOrder"></param>
@@ -125,11 +126,11 @@ namespace DBI_PEA_Scoring.Utils
                 }
             }
 
-            //Generate database for check
-            General.GenerateDatabase(dbSolutionName, dbAnswerName, queryDbForDml);
-
             try
             {
+                //Generate databases for solution and answer
+                General.GenerateDatabase(dbSolutionName, dbAnswerName, queryDbForDml);
+
                 string errorMessage = "";
                 // Execute query
                 try
@@ -138,9 +139,8 @@ namespace DBI_PEA_Scoring.Utils
                 }
                 catch (Exception e)
                 {
-                    errorMessage = string.Concat(errorMessage, "Answer error: " + e.Message + "\n");
+                    errorMessage += string.Concat("Answer query error: ", e.Message, "\n");
                     //Still grading for student even error
-                    //Student still right at some testcase, need to keep grading
                 }
                 try
                 {

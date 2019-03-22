@@ -10,26 +10,24 @@ namespace DBI_PEA_Scoring.Utils.Dao
         {
             try
             {
+                if (string.IsNullOrEmpty(dbScript.Trim()))
+                {
+                    throw new Exception("DbScript for grading is empty!!!\n");
+                }
+
                 string queryGenerateAnswerDb = "CREATE DATABASE [" + dbAnswerName + "]\n" +
                                            "GO\n" +
                                            "USE " + "[" + dbAnswerName + "]\n" + dbScript;
                 ExecuteSingleQuery(queryGenerateAnswerDb, "master");
-            }
-            catch
-            {
-                // ignored
-            }
 
-            try
-            {
                 string queryGenerateSolutionDb = "CREATE DATABASE [" + dbSolutionName + "]\n" +
                                              "GO\n" +
                                              "USE " + "[" + dbSolutionName + "]\n" + dbScript;
                 ExecuteSingleQuery(queryGenerateSolutionDb, "master");
             }
-            catch
+            catch(Exception e)
             {
-                // ignored
+                throw new Exception("Generate databases error: " + e.Message + "\n");
             }
         }
 
