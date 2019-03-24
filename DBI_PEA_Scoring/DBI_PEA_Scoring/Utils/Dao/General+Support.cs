@@ -64,7 +64,7 @@ namespace DBI_PEA_Scoring.Utils.Dao
                 InitialCatalog = initialCatalog,
                 MinPoolSize = Constant.MaxConnectionPoolSize,
                 MaxPoolSize = Constant.MaxConnectionPoolSize,
-                ConnectTimeout = Constant.TimeOutInSecond
+                ConnectTimeout = Constant.TimeOutInSecond,
             };
             var builder = Constant.SqlConnectionStringBuilder;
             using (var connection = new SqlConnection(builder.ConnectionString))

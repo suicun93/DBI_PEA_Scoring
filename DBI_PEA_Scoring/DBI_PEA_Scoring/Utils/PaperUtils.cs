@@ -151,39 +151,6 @@ namespace DBI_PEA_Scoring.Utils
                 }
             }
 
-            queryDbForDml = "create table Students(\n" +
-                            "	StudentID int primary key,\n" +
-                            "	Name nvarchar(50),\n" +
-                            "	Address nvarchar(200),\n" +
-                            "	Gender char(1)\n" +
-                            ")\n" +
-                            "\n" +
-                            "create table Teachers(\n" +
-                            "	TeacherID int primary key,\n" +
-                            "	Name nvarchar(50),\n" +
-                            "	Address nvarchar(200),\n" +
-                            "	Gender char(1)\n" +
-                            ")\n" +
-                            "\n" +
-                            "create table Classes(\n" +
-                            "	ClassID int primary key,\n" +
-                            "	GroupID char(6),\n" +
-                            "	courseID char(6),\n" +
-                            "	NoCredits int,\n" +
-                            "	Semester char(10),\n" +
-                            "	year int,\n" +
-                            "	TeacherID int references Teachers(TeacherID)\n" +
-                            ")\n" +
-                            "\n" +
-                            "create table Attend(\n" +
-                            "	StudentID int references Students(StudentID),\n" +
-                            "	ClassID int references Classes(ClassID),\n" +
-                            "	Date date,\n" +
-                            "	Slot int,\n" +
-                            "	Attend bit,\n" +
-                            "	primary key(StudentID, ClassID, Date, Slot)\n" +
-                            ")";
-
             try
             {
                 //Generate databases for solution and answer

@@ -275,39 +275,52 @@ namespace DBI_PEA_Scoring.Utils.Dao
                         {
                             comment += "- Check sort: ";
                             //Use distinct to remove all duplicate rows
-                            //string queryCheckSortAnswer = "USE " + dbAnswerName + ";\nSELECT DISTINCT* FROM (" + answer + "\nOFFSET 0 ROWS) " + "[" + dbAnswerName + "]";
-                            //string queryCheckSortSolution = "USE " + dbSolutionName + ";\nSELECT DISTINCT* FROM (" + candidate.Solution + "\nOFFSET 0 ROWS) " + "[" + dbSolutionName + "]";
+                            string queryCheckSortAnswer = "USE " + dbAnswerName + ";\nSELECT DISTINCT* FROM (" + answer + "\nOFFSET 0 ROWS) " + "[" + dbAnswerName + "]";
+                            string queryCheckSortSolution = "USE " + dbSolutionName + ";\nSELECT DISTINCT* FROM (" + candidate.Solution + "\nOFFSET 0 ROWS) " + "[" + dbSolutionName + "]";
 
+                            DataTable dataTableSortAnswer = new DataTable();
+                            DataTable dataTableSortSolution = new DataTable();
+                            //Running Answer Sort query
+                            try
+                            {
+                                using (SqlCommand sqlCommandSortAnswer = new SqlCommand(queryCheckSortAnswer, connection))
+                                {
+                                    dataTableSortAnswer.Load(sqlCommandSortAnswer.ExecuteReader());
+                                }
+                                using (SqlCommand sqlCommandSortSolution = new SqlCommand(queryCheckSortSolution, connection))
+                                {
+                                    dataTableSortSolution.Load(sqlCommandSortSolution.ExecuteReader());
+                                }
+                            }
+                            catch
+                            {
+                                try
+                                {
+                                    queryCheckSortAnswer =
+                                        "USE " + dbAnswerName + ";\nSELECT DISTINCT* FROM (" + answer + "\n) " + "[" +
+                                        dbAnswerName + "]";
+                                    queryCheckSortSolution =
+                                        "USE " + dbSolutionName + ";\nSELECT DISTINCT* FROM (" + candidate.Solution +
+                                        "\n) " + "[" + dbSolutionName + "]";
 
-                            //DataTable dataTableSortAnswer = new DataTable();
-                            //DataTable dataTableSortSolution = new DataTable();
-                            ////Running Answer Sort query
-                            //try
-                            //{
-                            //    using (SqlCommand sqlCommandSortAnswer = new SqlCommand(queryCheckSortAnswer, connection))
-                            //    {
-                            //        dataTableSortAnswer.Load(sqlCommandSortAnswer.ExecuteReader());
-                            //    }
-                            //}
-                            //catch (Exception e)
-                            //{
-                            //    throw e;
-                            //}
-                            ////Running Solution Sort query
-                            //try
-                            //{
-                            //    using (SqlCommand sqlCommandSortSolution = new SqlCommand(queryCheckSortSolution, connection))
-                            //    {
-                            //        dataTableSortSolution.Load(sqlCommandSortSolution.ExecuteReader());
-                            //    }
-                            //}
-                            //catch (Exception e)
-                            //{
-                            //    throw e;
-                            //}
+                                    using (SqlCommand sqlCommandSortAnswer = new SqlCommand(queryCheckSortAnswer, connection))
+                                    {
+                                        dataTableSortAnswer.Load(sqlCommandSortAnswer.ExecuteReader());
+                                    }
+                                    using (SqlCommand sqlCommandSortSolution = new SqlCommand(queryCheckSortSolution, connection))
+                                    {
+                                        dataTableSortSolution.Load(sqlCommandSortSolution.ExecuteReader());
+                                    }
+                                }
+                                catch
+                                {
+                                    dataTableSortAnswer = dataTableAnswer;
+                                    dataTableSortSolution = dataTableSolution;
+                                }
+                            }
 
                             //Compare number of rows
-                            if (CompareTwoDataSetsByRow(dataTableAnswer, dataTableSolution))
+                            if (CompareTwoDataSetsByRow(dataTableSortAnswer, dataTableSortSolution))
                             {
                                 tcCount++;
                                 comment += string.Concat("Passed => +", tcPoint, "\n");
@@ -333,7 +346,7 @@ namespace DBI_PEA_Scoring.Utils.Dao
                                 comment += string.Concat(resCompareColumnName, "\n");
                             }
                         }
-                        
+
                     }
                     else
                     {
@@ -448,7 +461,7 @@ namespace DBI_PEA_Scoring.Utils.Dao
                         //Degree 50% of point if Answer has more resultSets than Solution
                         if (dataSetSolution.Tables.Count < dataSetAnswer.Tables.Count)
                         {
-                            double rate = (double) dataSetSolution.Tables.Count / dataSetAnswer.Tables.Count;
+                            double rate = (double)dataSetSolution.Tables.Count / dataSetAnswer.Tables.Count;
                             double rateFormatted = Math.Round(rate, 2);
                             comment = string.Concat(comment,
                                 "Decrease Max Point by ", rateFormatted * 100, "% because Answer has more resultSets than Solution (",
