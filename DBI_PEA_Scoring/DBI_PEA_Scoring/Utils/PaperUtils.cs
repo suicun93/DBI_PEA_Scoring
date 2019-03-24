@@ -23,11 +23,11 @@ namespace DBI_PEA_Scoring.Utils
         /// </exception>
         internal static Dictionary<string, string> SchemaType(Candidate candidate, string studentId, string answer, int questionOrder)
         {
-            string dbSolutionName = studentId + "_" + questionOrder + "_Solution" + "_" + new Random().Next(1000000000);
-            string dbAnswerName = studentId + "_" + questionOrder + "_Answer" + "_" + new Random().Next(1000000000);
-            string dbEmptyName = studentId + "_" + questionOrder + "_EmptyDb" + "_" + new Random().Next(1000000000);
-            string querySolution = string.Concat("create database [", dbSolutionName, "]\nGO\nUSE ", dbSolutionName, "\n", candidate.Solution);
-            string queryAnswer = string.Concat("create database [", dbAnswerName, "]\nGO\nUSE ", dbAnswerName, "\n", answer);
+            string dbSolutionName = studentId.Replace(" ", "") + questionOrder + "_Solution" + "_" + new Random().Next(1000000000);
+            string dbAnswerName = studentId.Replace(" ", "") + "_" + questionOrder + "_Answer" + "_" + new Random().Next(1000000000);
+            string dbEmptyName = studentId.Replace(" ", "") + questionOrder + "_EmptyDb" + "_" + new Random().Next(1000000000);
+            string querySolution = string.Concat("create database [", dbSolutionName, "]\nGO\nUSE [", dbSolutionName, "]\n", candidate.Solution);
+            string queryAnswer = string.Concat("create database [", dbAnswerName, "]\nGO\nUSE [", dbAnswerName, "]\n", answer);
             string queryEmptyDb = string.Concat("create database [", dbEmptyName, "]");
 
             try
@@ -42,10 +42,10 @@ namespace DBI_PEA_Scoring.Utils
                 {
                     //Keep grading instead of errors
                     if (e.InnerException != null)
-                        errorMessage = string.Concat("Answer query error: ", e.InnerException.Message);
+                        errorMessage = string.Concat("Answer query error: ", e.InnerException.Message, "\n");
                     else
                     {
-                        errorMessage = string.Concat("Answer query error: ", e.Message);
+                        errorMessage = string.Concat("Answer query error: ", e.Message, "\n");
                     }
                 }
                 try
@@ -81,8 +81,8 @@ namespace DBI_PEA_Scoring.Utils
         /// </exception>
         internal static Dictionary<string, string> SelectType(Candidate candidate, string studentId, string answer, int questionOrder)
         {
-            string dbSolutionName = studentId + "_" + questionOrder + "_Solution" + "_" + new Random().Next(1000000000);
-            string dbAnswerName = studentId + "_" + questionOrder + "_Answer" + "_" + new Random().Next(1000000000);
+            string dbSolutionName = studentId.Replace(" ", "") + questionOrder + "_Solution" + "_" + new Random().Next(1000000000);
+            string dbAnswerName = studentId.Replace(" ", "") + questionOrder + "_Answer" + "_" + new Random().Next(1000000000);
 
             try
             {
@@ -118,8 +118,8 @@ namespace DBI_PEA_Scoring.Utils
         /// </exception>
         internal static Dictionary<string, string> DMLType(Candidate candidate, string studentId, string answer, int questionOrder)
         {
-            string dbSolutionName = studentId + "_" + questionOrder + "_Solution" + "_" + new Random().Next(10000000);
-            string dbAnswerName = studentId + "_" + questionOrder + "_Answer" + "_" + new Random().Next(10000000);
+            string dbSolutionName = studentId.Replace(" ", "") + questionOrder + "_Solution" + "_" + new Random().Next(10000000);
+            string dbAnswerName = studentId.Replace(" ", "") + questionOrder + "_Answer" + "_" + new Random().Next(10000000);
 
 
             //Generate 2 new DB for student's answer and solution
@@ -200,8 +200,8 @@ namespace DBI_PEA_Scoring.Utils
         /// </exception>
         internal static Dictionary<string, string> TriggerProcedureType(Candidate candidate, string studentId, string answer, int questionOrder)
         {
-            string dbSolutionName = studentId + "_" + questionOrder + "_Solution" + "_" + new Random().Next(10000000);
-            string dbAnswerName = studentId + "_" + questionOrder + "_Answer" + "_" + new Random().Next(10000000);
+            string dbSolutionName = studentId.Replace(" ", "") + questionOrder + "_Solution" + "_" + new Random().Next(10000000);
+            string dbAnswerName = studentId.Replace(" ", "") + questionOrder + "_Answer" + "_" + new Random().Next(10000000);
 
             //Generate 2 new DB for student's answer and solution
             if (Constant.PaperSet.DBScriptList.Count > 1)

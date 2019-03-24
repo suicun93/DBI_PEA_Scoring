@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Windows.Forms;
 using DBI_PEA_Scoring.Common;
-using Newtonsoft.Json;
 
 namespace DBI_PEA_Scoring.Model
 {
@@ -17,7 +14,7 @@ namespace DBI_PEA_Scoring.Model
         public Submission()
         {
             ListAnswer = new List<string>();
-            for (int i = 0; i < Constant.NumberOfQuestion; i++)
+            for (int i = 0; i < Constant.PaperSet.QuestionSet.QuestionList.Count; i++)
             {
                 ListAnswer.Add("");
             }

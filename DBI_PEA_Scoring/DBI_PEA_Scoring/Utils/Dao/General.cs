@@ -5,6 +5,7 @@ using System.Data.SqlClient;
 using System.Globalization;
 using System.Text.RegularExpressions;
 using DBI_PEA_Scoring.Common;
+using DBI_PEA_Scoring.Model;
 using Microsoft.SqlServer.Management.Common;
 using Microsoft.SqlServer.Management.Smo;
 
@@ -16,8 +17,8 @@ namespace DBI_PEA_Scoring.Utils.Dao
         {
             try
             {
-                string query = string.Concat("USE ", databaseName,
-                    "\nSELECT COUNT(*) from information_schema.tables\r\nWHERE table_type = \'base table\'");
+                string query = string.Concat("USE [", databaseName,
+                    "]\nSELECT COUNT(*) from information_schema.tables\r\nWHERE table_type = \'base table\'");
                 //Prepare connection
                 var builder = Constant.SqlConnectionStringBuilder;
                 using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
@@ -111,9 +112,9 @@ namespace DBI_PEA_Scoring.Utils.Dao
             }
         }
 
-        public static List<TestCase> GetTestCasesPoint(string input)
+        public static List<TestCase> GetTestCasesPoint(Candidate candidate)
         {
-            Match matchResult = Regex.Match(input, @"(/\*(.|[\r\n])*?\*/)|(--(.*|[\r\n]))", RegexOptions.Singleline);
+            Match matchResult = Regex.Match(candidate.TestQuery, @"(/\*(.|[\r\n])*?\*/)|(--(.*|[\r\n]))", RegexOptions.Singleline);
 
             List<TestCase> tcpList = new List<TestCase>();
             int count = 0;
@@ -132,6 +133,14 @@ namespace DBI_PEA_Scoring.Utils.Dao
                     tcp = new TestCase();
                 }
                 matchResult = matchResult.NextMatch();
+            }
+            if (tcpList.Count == 0)
+            {
+                tcpList.Add(new TestCase()
+                {
+                    Description = "",
+                    Point = candidate.Point
+                });
             }
             return tcpList;
         }
