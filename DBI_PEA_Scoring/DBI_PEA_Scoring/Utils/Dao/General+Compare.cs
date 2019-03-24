@@ -49,7 +49,7 @@ namespace DBI_PEA_Scoring.Utils.Dao
                     ratePoint = (double)countSolutionTables / countAnswerTables;
                     maxPoint = Math.Round((double)candidate.Point * ratePoint, 2);
                     comment += string.Concat("Answer has more columns than Solution database (", countAnswerTables, ">",
-                        countSolutionTables, ") => Decrease maxPoint by ", ratePoint * 100, "% => Max Point = ", maxPoint, "\n");
+                        countSolutionTables, ") => Decrease Max Point by ", ratePoint * 100, "% => Max Point = ", maxPoint, "\n");
                 }
                 else if (countSolutionTables > countAnswerTables)
                 {
@@ -63,13 +63,11 @@ namespace DBI_PEA_Scoring.Utils.Dao
                     comment += "Same\n";
                 }
 
-
-
                 //Count Comparison
                 int numOfComparison;
                 using (DataSet dtsNumOfComparison = GetDataSetFromReader(countComparisonQuery))
                 {
-                    numOfComparison = dtsNumOfComparison.Tables[0].Rows.Count + dtsNumOfComparison.Tables[1].Rows.Count * 2;//PK must be not null so + nullable comparison
+                    numOfComparison = dtsNumOfComparison.Tables[0].Rows.Count * 2 + dtsNumOfComparison.Tables[1].Rows.Count;//PK must be not null so + nullable comparison
                 }
 
                 //Get Dataset compare result
@@ -87,8 +85,6 @@ namespace DBI_PEA_Scoring.Utils.Dao
                     //Sumary point
                     int totalErros = errorsConstraintRows.Count() + errorsConstructureRows.Count();
                     double gradePoint = Math.Round(maxPoint * (numOfComparison - totalErros) / numOfComparison, 2);
-
-
                     comment += string.Concat("Correct ", (numOfComparison - totalErros), "/", numOfComparison,
                         " comparison => Point = ", gradePoint, totalErros == 0 ? ", details:" : "", "\n");
 
@@ -150,7 +146,7 @@ namespace DBI_PEA_Scoring.Utils.Dao
             }
             catch (Exception ex)
             {
-                throw new Exception("Compare error: " + ex.Message);
+                throw ex;
             }
         }
 
@@ -203,7 +199,7 @@ namespace DBI_PEA_Scoring.Utils.Dao
                     //Running answer query
                     try
                     {
-                        using (SqlCommand sqlCommandAnswer = new SqlCommand("USE " + dbAnswerName + "; \n" + answer + "", connection))
+                        using (SqlCommand sqlCommandAnswer = new SqlCommand("USE " + dbAnswerName + ";\n" + answer + "", connection))
                         {
                             SqlDataReader sqlReaderAnswer = sqlCommandAnswer.ExecuteReader();
                             if (candidate.CheckColumnName) dataTableAnswerShema = sqlReaderAnswer.GetSchemaTable();
@@ -212,12 +208,12 @@ namespace DBI_PEA_Scoring.Utils.Dao
                     }
                     catch (Exception e)
                     {
-                        throw new Exception("Answer query error: " + e.Message + "\n");
+                        throw e;
                     }
                     //Running Solution 
                     try
                     {
-                        using (SqlCommand sqlCommandSolution = new SqlCommand("USE " + dbSolutionName + "; \n" + candidate.Solution + "", connection))
+                        using (SqlCommand sqlCommandSolution = new SqlCommand("USE " + dbSolutionName + ";\n" + candidate.Solution + "", connection))
                         {
                             SqlDataReader sqlReaderSolution = sqlCommandSolution.ExecuteReader();
                             if (candidate.CheckColumnName) dataTableSolutionShema = sqlReaderSolution.GetSchemaTable();
@@ -226,17 +222,17 @@ namespace DBI_PEA_Scoring.Utils.Dao
                     }
                     catch (Exception e)
                     {
-                        throw new Exception("Solution query error: " + e.Message + "\n");
+                        throw e;
                     }
-
-                    //Prepare point for testcases and data
-                    double dataPoint = Math.Round(candidate.Point / 2, 2);
 
                     //Number of testcases
                     int numOfTc = 0;
                     if (candidate.RequireSort) numOfTc++;
                     if (candidate.CheckColumnName) numOfTc++;
                     if (candidate.CheckDistinct) numOfTc++;
+
+                    //Prepare point for testcases and data
+                    double dataPoint = numOfTc != 0 ? Math.Round(candidate.Point / 2, 2) : candidate.Point;
 
                     double gradePoint = 0;//Grading Point
                     string comment = "";//Logs
@@ -248,7 +244,7 @@ namespace DBI_PEA_Scoring.Utils.Dao
                     int tcCount = 0;
 
                     //STARTING FOR GRADING
-                    comment += "Compare Data: ";
+                    comment += "- Check Data: ";
                     if (CompareTwoDataSetsByExcept(dataTableSolution, dataTableAnswer))
                     {
                         gradePoint += dataPoint;
@@ -275,39 +271,39 @@ namespace DBI_PEA_Scoring.Utils.Dao
                         {
                             comment += "- Check sort: ";
                             //Use distinct to remove all duplicate rows
-                            string queryCheckSortAnswer = "USE " + dbAnswerName + ";\nSELECT DISTINCT* FROM (" + answer + "\nOFFSET 0 ROWS) " + "[" + dbAnswerName + "]";
-                            string queryCheckSortSolution = "USE " + dbSolutionName + ";\nSELECT DISTINCT* FROM (" + candidate.Solution + "\nOFFSET 0 ROWS) " + "[" + dbSolutionName + "]";
+                            //string queryCheckSortAnswer = "USE " + dbAnswerName + ";\nSELECT DISTINCT* FROM (" + answer + "\nOFFSET 0 ROWS) " + "[" + dbAnswerName + "]";
+                            //string queryCheckSortSolution = "USE " + dbSolutionName + ";\nSELECT DISTINCT* FROM (" + candidate.Solution + "\nOFFSET 0 ROWS) " + "[" + dbSolutionName + "]";
 
 
-                            DataTable dataTableSortAnswer = new DataTable();
-                            DataTable dataTableSortSolution = new DataTable();
-                            //Running Answer Sort query
-                            try
-                            {
-                                using (SqlCommand sqlCommandSortAnswer = new SqlCommand(queryCheckSortAnswer, connection))
-                                {
-                                    dataTableSortAnswer.Load(sqlCommandSortAnswer.ExecuteReader());
-                                }
-                            }
-                            catch (Exception e)
-                            {
-                                throw new Exception("Compare sort error at answer query: " + e.Message + "\n");
-                            }
-                            //Running Solution Sort query
-                            try
-                            {
-                                using (SqlCommand sqlCommandSortSolution = new SqlCommand(queryCheckSortSolution, connection))
-                                {
-                                    dataTableSortSolution.Load(sqlCommandSortSolution.ExecuteReader());
-                                }
-                            }
-                            catch (Exception e)
-                            {
-                                throw new Exception("Compare sort error at solution query: " + e.Message + "\n");
-                            }
+                            //DataTable dataTableSortAnswer = new DataTable();
+                            //DataTable dataTableSortSolution = new DataTable();
+                            ////Running Answer Sort query
+                            //try
+                            //{
+                            //    using (SqlCommand sqlCommandSortAnswer = new SqlCommand(queryCheckSortAnswer, connection))
+                            //    {
+                            //        dataTableSortAnswer.Load(sqlCommandSortAnswer.ExecuteReader());
+                            //    }
+                            //}
+                            //catch (Exception e)
+                            //{
+                            //    throw e;
+                            //}
+                            ////Running Solution Sort query
+                            //try
+                            //{
+                            //    using (SqlCommand sqlCommandSortSolution = new SqlCommand(queryCheckSortSolution, connection))
+                            //    {
+                            //        dataTableSortSolution.Load(sqlCommandSortSolution.ExecuteReader());
+                            //    }
+                            //}
+                            //catch (Exception e)
+                            //{
+                            //    throw e;
+                            //}
 
                             //Compare number of rows
-                            if (CompareTwoDataSetsByRow(dataTableSortAnswer, dataTableSortSolution))
+                            if (CompareTwoDataSetsByRow(dataTableAnswer, dataTableSolution))
                             {
                                 tcCount++;
                                 comment += string.Concat("Passed => +", tcPoint, "\n");
@@ -333,28 +329,14 @@ namespace DBI_PEA_Scoring.Utils.Dao
                                 comment += string.Concat(resCompareColumnName, "\n");
                             }
                         }
-
-                        //4. Check data if there is no testcase
-
-                        if (numOfTc == 0)
-                        {
-                            comment += "- Check Condition: ";
-                            if (CompareTwoDataSetsByRow(dataTableAnswer, dataTableSolution))
-                            {
-                                gradePoint = candidate.Point;
-                                comment += string.Concat("Passed => +", tcPoint, "\n");
-                            }
-                            else
-                            {
-                                comment += "Not pass\n";
-                            }
-                        }
-
+                        
                     }
                     else
                     {
                         comment += "Not pass => Point = 0\n";
                     }
+
+                    //Calculate Point
                     if (numOfTc > 0 && numOfTc == tcCount)
                     {
                         gradePoint = candidate.Point;
@@ -363,7 +345,7 @@ namespace DBI_PEA_Scoring.Utils.Dao
                     {
                         gradePoint = Math.Round(tcCount * tcPoint + gradePoint, 2);
                     }
-                    comment = string.Concat("Total Point: ", gradePoint, "\n", comment);
+                    comment = string.Concat("Total Point: ", gradePoint, "/", candidate.Point, "\n", comment);
                     return new Dictionary<string, string>
                 {
                     {"Point", gradePoint.ToString()},
@@ -373,7 +355,7 @@ namespace DBI_PEA_Scoring.Utils.Dao
             }
             catch (Exception e)
             {
-                throw new Exception("Compare error: " + e.Message);
+                throw e;
             }
         }
 
@@ -462,13 +444,14 @@ namespace DBI_PEA_Scoring.Utils.Dao
                         //Degree 50% of point if Answer has more resultSets than Solution
                         if (dataSetSolution.Tables.Count < dataSetAnswer.Tables.Count)
                         {
-                            double rate = Math.Round(value: (double)(dataSetSolution.Tables.Count / dataSetAnswer.Tables.Count), digits: 2);
+                            double rate = (double) dataSetSolution.Tables.Count / dataSetAnswer.Tables.Count;
+                            double rateFormatted = Math.Round(rate, 2);
                             comment = string.Concat(comment,
-                                "Decrease ", rate * 100, "% because Answer has more resultSets than Solution (",
+                                "Decrease Max Point by ", rateFormatted * 100, "% because Answer has more resultSets than Solution (",
                                 dataSetAnswer.Tables.Count, " > ", dataSetSolution.Tables.Count, ")\n");
-                            gradePoint *= rate;
+                            gradePoint *= rateFormatted;
                         }
-                        comment = string.Concat("Total Point: ", gradePoint, "\n", comment);
+                        comment = string.Concat("Total Point: ", gradePoint, "/", candidate.Point, "\n", comment);
                         gradePoint = gradePoint > maxPoint ? maxPoint : gradePoint;
                         return new Dictionary<string, string>
                         {
@@ -480,7 +463,7 @@ namespace DBI_PEA_Scoring.Utils.Dao
             }
             catch (SqlException e)
             {
-                throw new Exception(message: e.Message);
+                throw e;
             }
 
         }

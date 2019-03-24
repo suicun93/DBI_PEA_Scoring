@@ -41,7 +41,12 @@ namespace DBI_PEA_Scoring.Utils
                 catch (Exception e)
                 {
                     //Keep grading instead of errors
-                    errorMessage = string.Concat("Answer query error: ", e.InnerException.Message);
+                    if (e.InnerException != null)
+                        errorMessage = string.Concat("Answer query error: ", e.InnerException.Message);
+                    else
+                    {
+                        errorMessage = string.Concat("Answer query error: ", e.Message);
+                    }
                 }
                 try
                 {
@@ -54,11 +59,6 @@ namespace DBI_PEA_Scoring.Utils
                 }
                 // Execute query
                 return General.CompareTwoDatabases(dbAnswerName, dbSolutionName, dbEmptyName, candidate, errorMessage);
-            }
-            catch (Exception e)
-            {
-                if (e.InnerException != null) throw new Exception(e.InnerException.Message);
-                throw new Exception("Compare error: " + e.Message);
             }
             finally
             {
@@ -87,14 +87,16 @@ namespace DBI_PEA_Scoring.Utils
             try
             {
                 //Generate 2 new DB for student's answer and solution
-                General.GenerateDatabase(dbSolutionName, dbAnswerName, Constant.PaperSet.DBScriptList[0]);
+                if (Constant.PaperSet.DBScriptList.Count > 1)
+                {
+                    General.GenerateDatabase(dbSolutionName, dbAnswerName, Constant.PaperSet.DBScriptList[1]);
+                }
+                else
+                {
+                    General.GenerateDatabase(dbSolutionName, dbAnswerName, Constant.PaperSet.DBScriptList[0]);
+                }
                 //Compare
                 return General.CompareOneResultSet(dbAnswerName, dbSolutionName, answer, candidate);
-            }
-            catch (Exception e)
-            {
-                if (e.InnerException != null) throw new Exception(e.InnerException.Message);
-                throw new Exception("Compare error: " + e.Message);
             }
             finally
             {
@@ -123,8 +125,15 @@ namespace DBI_PEA_Scoring.Utils
             //Generate 2 new DB for student's answer and solution
 
             //Create db from solution at schema question
-            string queryDbForDml = Constant.PaperSet.DBScriptList[0];
-
+            string queryDbForDml;
+            if (Constant.PaperSet.DBScriptList.Count > 1)
+            {
+                queryDbForDml = Constant.PaperSet.DBScriptList[1];
+            }
+            else
+            {
+                queryDbForDml = Constant.PaperSet.DBScriptList[0];
+            }
             if (candidate.RelatedSchema)
             {
                 queryDbForDml = "";
@@ -142,6 +151,39 @@ namespace DBI_PEA_Scoring.Utils
                 }
             }
 
+            queryDbForDml = "create table Students(\n" +
+                            "	StudentID int primary key,\n" +
+                            "	Name nvarchar(50),\n" +
+                            "	Address nvarchar(200),\n" +
+                            "	Gender char(1)\n" +
+                            ")\n" +
+                            "\n" +
+                            "create table Teachers(\n" +
+                            "	TeacherID int primary key,\n" +
+                            "	Name nvarchar(50),\n" +
+                            "	Address nvarchar(200),\n" +
+                            "	Gender char(1)\n" +
+                            ")\n" +
+                            "\n" +
+                            "create table Classes(\n" +
+                            "	ClassID int primary key,\n" +
+                            "	GroupID char(6),\n" +
+                            "	courseID char(6),\n" +
+                            "	NoCredits int,\n" +
+                            "	Semester char(10),\n" +
+                            "	year int,\n" +
+                            "	TeacherID int references Teachers(TeacherID)\n" +
+                            ")\n" +
+                            "\n" +
+                            "create table Attend(\n" +
+                            "	StudentID int references Students(StudentID),\n" +
+                            "	ClassID int references Classes(ClassID),\n" +
+                            "	Date date,\n" +
+                            "	Slot int,\n" +
+                            "	Attend bit,\n" +
+                            "	primary key(StudentID, ClassID, Date, Slot)\n" +
+                            ")";
+
             try
             {
                 //Generate databases for solution and answer
@@ -156,8 +198,8 @@ namespace DBI_PEA_Scoring.Utils
                 catch (Exception e)
                 {
                     if (e.InnerException != null)
-                        errorMessage += string.Concat("Answer query error: ",e.InnerException.Message,"\n");
-                    else errorMessage += string.Concat("Answer query error: " + e.Message,"\n");
+                        errorMessage += string.Concat("Answer query error: ", e.InnerException.Message, "\n");
+                    else errorMessage += string.Concat("Answer query error: " + e.Message, "\n");
                 }
                 try
                 {
@@ -169,11 +211,6 @@ namespace DBI_PEA_Scoring.Utils
                     throw new Exception("Compare error: " + e.Message);
                 }
                 return General.CompareMoreResultSets(dbAnswerName, dbSolutionName, candidate, errorMessage);
-            }
-            catch (Exception e)
-            {
-                if (e.InnerException != null) throw new Exception(e.InnerException.Message);
-                throw new Exception("Compare error: " + e.Message);
             }
             finally
             {
@@ -200,7 +237,14 @@ namespace DBI_PEA_Scoring.Utils
             string dbAnswerName = studentId + "_" + questionOrder + "_Answer" + "_" + new Random().Next(10000000);
 
             //Generate 2 new DB for student's answer and solution
-            General.GenerateDatabase(dbSolutionName, dbAnswerName, Constant.PaperSet.DBScriptList[0]);
+            if (Constant.PaperSet.DBScriptList.Count > 1)
+            {
+                General.GenerateDatabase(dbSolutionName, dbAnswerName, Constant.PaperSet.DBScriptList[1]);
+            }
+            else
+            {
+                General.GenerateDatabase(dbSolutionName, dbAnswerName, Constant.PaperSet.DBScriptList[0]);
+            }
             try
             {
                 string errorMessage = "";
@@ -227,11 +271,6 @@ namespace DBI_PEA_Scoring.Utils
                     throw new Exception("Compare error: " + e.Message);
                 }
                 return General.CompareMoreResultSets(dbAnswerName, dbSolutionName, candidate, errorMessage);
-            }
-            catch (Exception e)
-            {
-                if (e.InnerException != null) throw new Exception(e.InnerException.Message);
-                throw new Exception("Compare error: " + e.Message);
             }
             finally
             {

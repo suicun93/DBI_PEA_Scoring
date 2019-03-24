@@ -31,7 +31,7 @@ namespace DBI_PEA_Scoring.Utils.Dao
             }
             catch (Exception e)
             {
-                throw new Exception("Compare error at count tables: " + e.Message);
+                throw e;
             }
 
         }
