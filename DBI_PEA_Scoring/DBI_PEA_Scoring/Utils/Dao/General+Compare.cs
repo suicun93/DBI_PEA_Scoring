@@ -39,6 +39,15 @@ namespace DBI_PEA_Scoring.Utils.Dao
                 int countAnswerTables = GetNumberOfTablesInDatabase(dbAnswerName);
                 int countSolutionTables = GetNumberOfTablesInDatabase(dbSolutionName);
 
+                if (countAnswerTables <= 0)
+                {
+                    return new Dictionary<string, string>
+                    {
+                        {"Point", "0"},
+                        {"Comment", comment}
+                    };
+                }
+
                 //Decrease maxpoint by rate
                 double ratePoint = 1;
                 //Max point
@@ -62,31 +71,27 @@ namespace DBI_PEA_Scoring.Utils.Dao
                 {
                     comment += "Same\n";
                 }
-
                 //Count Comparison
                 int numOfComparison;
                 using (DataSet dtsNumOfComparison = GetDataSetFromReader(countComparisonQuery))
                 {
-                    numOfComparison = dtsNumOfComparison.Tables[0].Rows.Count * 2 + dtsNumOfComparison.Tables[1].Rows.Count;//PK must be not null so + nullable comparison
+                    numOfComparison = dtsNumOfComparison.Tables[0].Rows.Count * 2 + dtsNumOfComparison.Tables[1].Rows.Count;
                 }
-
                 //Get Dataset compare result
                 using (DataSet dtsCompare = GetDataSetFromReader(compareQuery))
                 {
                     if (dtsCompare == null)
                         throw new Exception("Compare error");
-
                     //Get all errors
                     var errorsConstructureRows = dtsCompare.Tables[0].AsEnumerable()
                         .Where(myRow => myRow.Field<string>("DATABASENAME").Contains("Solution"));
                     var errorsConstraintRows = dtsCompare.Tables[1].AsEnumerable()
                         .Where(myRow => myRow.Field<string>("DATABASENAME").Contains("Solution"));
-
                     //Sumary point
                     int totalErros = errorsConstraintRows.Count() + errorsConstructureRows.Count();
                     double gradePoint = Math.Round(maxPoint * (numOfComparison - totalErros) / numOfComparison, 2);
                     comment += string.Concat("Correct ", (numOfComparison - totalErros), "/", numOfComparison,
-                        " comparison => Point = ", gradePoint, totalErros == 0 ? ", details:" : "", "\n");
+                        " comparison => Point = ", gradePoint, totalErros != 0 ? ", details:" : "", "\n");
 
                     //Details
                     //About constructure
@@ -134,15 +139,12 @@ namespace DBI_PEA_Scoring.Utils.Dao
                             comment += string.Concat("  Missing ", rowSolution["PK_COLUMNS"], "(", rowSolution["PK_TABLE"], ") - ", rowSolution["FK_COLUMNS"], "(", rowSolution["FK_TABLE"], ")\n");
                         }
                     }
-
                     return new Dictionary<string, string>
                 {
                     {"Point", gradePoint.ToString()},
                     {"Comment", comment}
                 };
                 }
-
-
             }
             catch (Exception ex)
             {
@@ -201,6 +203,7 @@ namespace DBI_PEA_Scoring.Utils.Dao
                     {
                         using (SqlCommand sqlCommandAnswer = new SqlCommand("USE " + dbAnswerName + ";\n" + answer + "", connection))
                         {
+                            sqlCommandAnswer.CommandTimeout = Constant.TimeOutInSecond;
                             SqlDataReader sqlReaderAnswer = sqlCommandAnswer.ExecuteReader();
                             if (candidate.CheckColumnName) dataTableAnswerShema = sqlReaderAnswer.GetSchemaTable();
                             dataTableAnswer.Load(sqlReaderAnswer);
@@ -215,6 +218,7 @@ namespace DBI_PEA_Scoring.Utils.Dao
                     {
                         using (SqlCommand sqlCommandSolution = new SqlCommand("USE " + dbSolutionName + ";\n" + candidate.Solution + "", connection))
                         {
+                            sqlCommandSolution.CommandTimeout = Constant.TimeOutInSecond;
                             SqlDataReader sqlReaderSolution = sqlCommandSolution.ExecuteReader();
                             if (candidate.CheckColumnName) dataTableSolutionShema = sqlReaderSolution.GetSchemaTable();
                             dataTableSolution.Load(sqlReaderSolution);
@@ -333,7 +337,7 @@ namespace DBI_PEA_Scoring.Utils.Dao
                     }
                     else
                     {
-                        comment += "Not pass => Point = 0\n";
+                        comment += "Not pass => Point = 0\nStop checking\n";
                     }
 
                     //Calculate Point

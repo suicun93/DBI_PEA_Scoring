@@ -11,7 +11,7 @@ namespace DBI_PEA_Scoring.Common
         public static int NumberOfQuestion = 10;
 
         //Configure SQL
-        public static int TimeOutInSecond = 5;
+        public static int TimeOutInSecond = 30;
         public static int MaxThreadPoolSize = 1;
         public static int MaxConnectionPoolSize = 1;
         public static double minusPoint = 0.1;
