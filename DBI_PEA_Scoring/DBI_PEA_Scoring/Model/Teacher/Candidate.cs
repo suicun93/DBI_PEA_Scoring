@@ -14,6 +14,7 @@ namespace DBI_PEA_Scoring.Model
             Schema = 4,
             DML = 5
         }
+
         public string CandidateId { get; set; }
         public string QuestionId { get; set; }
         public string QuestionRequirement { get; set; }

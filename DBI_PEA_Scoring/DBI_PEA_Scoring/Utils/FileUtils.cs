@@ -1,22 +1,19 @@
 ﻿using System;
 using System.IO;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace DBI_PEA_Scoring.Utils
 {
-    class FileUtils
+    internal class FileUtils
     {
         public static string SaveFileToLocation()
         {
             var fbd = new FolderBrowserDialog();
 
             // Show the FolderBrowserDialog.
-            DialogResult result = fbd.ShowDialog();
+            var result = fbd.ShowDialog();
             if (result == DialogResult.OK)
-            {
                 return fbd.SelectedPath;
-            }
             return "";
         }
 
@@ -33,7 +30,7 @@ namespace DBI_PEA_Scoring.Utils
         public static string GetFileLocation()
         {
             // Displays an OpenFileDialog so the user can select a File.  
-            OpenFileDialog ofd = new OpenFileDialog();
+            var ofd = new OpenFileDialog();
             ofd.Filter = "Data File|*.dat";
             ofd.Title = "Select a Data File";
             ofd.Multiselect = false;
@@ -52,7 +49,8 @@ namespace DBI_PEA_Scoring.Utils
         ///     Uri
         ///     If something goes wrong, return null
         /// </returns>
-        /// /// <exception cref="File">
+        /// ///
+        /// <exception cref="File">
         ///     When no file was found
         /// </exception>
         public static string GetFolderLocation()
@@ -60,7 +58,7 @@ namespace DBI_PEA_Scoring.Utils
             using (var fbd = new FolderBrowserDialog())
             {
                 //Show dialog select a folder
-                DialogResult result = fbd.ShowDialog();
+                var result = fbd.ShowDialog();
                 if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
                     //Get Files in folder
                     return fbd.SelectedPath;

@@ -5,21 +5,19 @@ using System.Threading;
 using System.Windows.Forms;
 using DBI_PEA_Scoring.Common;
 using DBI_PEA_Scoring.Model;
-using DBI_PEA_Scoring.Model.Teacher;
 using DBI_PEA_Scoring.Utils;
 
 namespace DBI_PEA_Scoring.UI
 {
     public partial class Grading : Form
     {
-        private List<Result> ListResults { get; set; }
-        private bool scored;
         //private List<Paper> ListTestItems = null;
-        private int count = 0;
+        private int count;
+
+        private bool scored;
 
         public Grading(List<Submission> Listsubmissions)
         {
-
             InitializeComponent();
             // Show Scoring Form and generate Score here
             ListResults = new List<Result>();
@@ -27,9 +25,9 @@ namespace DBI_PEA_Scoring.UI
             SetupUI();
 
             // Merge Question and submission to ListResults
-            foreach (Submission submission in Listsubmissions)
+            foreach (var submission in Listsubmissions)
             {
-                Result result = new Result
+                var result = new Result
                 {
                     // Add PaperNo
                     PaperNo = submission.PaperNo,
@@ -38,14 +36,14 @@ namespace DBI_PEA_Scoring.UI
                 };
 
                 // Add Answers
-                foreach (string answer in submission.ListAnswer)
+                foreach (var answer in submission.ListAnswer)
                     result.ListAnswers.Add(answer);
 
                 // Add Candidates
-                foreach (Paper paper in Constant.PaperSet.Papers)
+                foreach (var paper in Constant.PaperSet.Papers)
                     if (paper.PaperNo.Equals(result.PaperNo))
                     {
-                        foreach (Candidate candidate in paper.CandidateSet)
+                        foreach (var candidate in paper.CandidateSet)
                             result.ListCandidates.Add(candidate);
                         break;
                     }
@@ -55,6 +53,8 @@ namespace DBI_PEA_Scoring.UI
             }
             Show();
         }
+
+        private List<Result> ListResults { get; }
 
         private void SetupUI()
         {
@@ -71,7 +71,7 @@ namespace DBI_PEA_Scoring.UI
                 Name = "PaperNo"
             });
             // Initialize and add a text box column for score of each answer
-            for (int i = 0; i < Constant.PaperSet.QuestionSet.QuestionList.Count; i++)
+            for (var i = 0; i < Constant.PaperSet.QuestionSet.QuestionList.Count; i++)
                 scoreGridView.Columns.Add(new DataGridViewTextBoxColumn
                 {
                     Name = "Answer " + (i + 1)
@@ -79,8 +79,8 @@ namespace DBI_PEA_Scoring.UI
         }
 
         /// <summary>
-        /// Setup Min Max Threads in ThreadPool
-        /// Show Point procedure 
+        ///     Setup Min Max Threads in ThreadPool
+        ///     Show Point procedure
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -91,7 +91,7 @@ namespace DBI_PEA_Scoring.UI
             // This should be 1 because cpu is easy to run but HDD disk can not load over 2 threads in 1 time => wrong mark for student
             // So workerThreads = 1, completionPortThreads = 1;
             int workerThreads = Constant.MaxThreadPoolSize, completionPortThreads = Constant.MaxThreadPoolSize;
-            ThreadPool.SetMinThreads(workerThreads: workerThreads, completionPortThreads: completionPortThreads);
+            ThreadPool.SetMinThreads(workerThreads, completionPortThreads);
             ThreadPool.GetMinThreads(out workerThreads, out completionPortThreads);
             ThreadPool.SetMaxThreads(workerThreads, completionPortThreads);
 
@@ -101,22 +101,25 @@ namespace DBI_PEA_Scoring.UI
                 // Reset to count how many results has been marked.
                 count = 0;
                 // Populate the data source.
-                for (int row = 0; row < ListResults.Count; row++)
+                for (var row = 0; row < ListResults.Count; row++)
                 {
                     var currentResult = ListResults.ElementAt(row);
                     // Prepare 2 first columns
-                    scoreGridView.Invoke((MethodInvoker)(() =>
+                    scoreGridView.Invoke((MethodInvoker) (() =>
                     {
                         scoreGridView.Rows.Add(1);
                         scoreGridView.Rows[row].Cells[0].Value = currentResult.StudentID;
                         scoreGridView.Rows[row].Cells[1].Value = currentResult.PaperNo;
                     }));
-                    Input input = new Input(row, currentResult);
+                    var input = new Input(row, currentResult);
                     ThreadPool.QueueUserWorkItem(dontKnowHowItWork => GetPoint(input));
                 }
                 scored = true;
             }
-            else MessageBox.Show("Score has already got.");
+            else
+            {
+                MessageBox.Show("Score has already got.");
+            }
         }
 
         private void GetPoint(Input input)
@@ -124,28 +127,27 @@ namespace DBI_PEA_Scoring.UI
             input.Result.GetPoint();
             // Refresh to show point and scroll view to the last row
             // Show point of each question
-            scoreGridView.Invoke((MethodInvoker)(() =>
+            scoreGridView.Invoke((MethodInvoker) (() =>
             {
-                for (int questionOrder = 0; questionOrder < input.Result.ListCandidates.Count; questionOrder++)
-                {
-                    scoreGridView.Rows[input.Row].Cells[2 + questionOrder].Value = input.Result.Points[questionOrder].ToString();
-                }
+                for (var questionOrder = 0; questionOrder < input.Result.ListCandidates.Count; questionOrder++)
+                    scoreGridView.Rows[input.Row].Cells[2 + questionOrder].Value =
+                        input.Result.Points[questionOrder].ToString();
             }));
             CountDown();
         }
 
         /// <summary>
-        /// Handle ThreadPool Completion
+        ///     Handle ThreadPool Completion
         /// </summary>
         private void CountDown()
         {
             count++;
             if (count == ListResults.Count)
             {
-                exportButton.Invoke((MethodInvoker)(() => { exportButton.Enabled = true; }));
+                exportButton.Invoke((MethodInvoker) (() => { exportButton.Enabled = true; }));
 
                 // Done
-                DialogResult dialogResult = MessageBox.Show("Do you want to export result?", "Result", MessageBoxButtons.YesNo);
+                var dialogResult = MessageBox.Show("Do you want to export result?", "Result", MessageBoxButtons.YesNo);
                 if (dialogResult == DialogResult.Yes)
                 {
                     //do something
@@ -153,9 +155,7 @@ namespace DBI_PEA_Scoring.UI
                 }
                 else if (dialogResult == DialogResult.No)
                 {
-
                 }
-
             }
         }
 
@@ -165,7 +165,7 @@ namespace DBI_PEA_Scoring.UI
             try
             {
                 double maxPoint = 0;
-                foreach (Candidate candidate in ListResults.ElementAt(0).ListCandidates)
+                foreach (var candidate in ListResults.ElementAt(0).ListCandidates)
                     maxPoint += candidate.Point;
                 ExcelUtils.ExportResultsExcel(ListResults, maxPoint, ListResults.ElementAt(0).ListCandidates.Count);
             }
@@ -175,8 +175,14 @@ namespace DBI_PEA_Scoring.UI
             }
         }
 
-        private void Scoring_FormClosed(object sender, FormClosedEventArgs e) => Application.Exit();
+        private void Scoring_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            Application.Exit();
+        }
 
-        private void QuitButton_Click(object sender, EventArgs e) => Application.Exit();
+        private void QuitButton_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
+        }
     }
 }
