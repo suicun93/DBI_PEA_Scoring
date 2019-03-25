@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace DBI_PEA_Scoring.Properties {
+namespace DBI_PEA_Grading.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
