@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Threading.Tasks;
 using DBI_PEA_Scoring.Common;
 using DBI_PEA_Scoring.Model;
 using DataTable = System.Data.DataTable;
@@ -185,14 +186,26 @@ namespace DBI_PEA_Scoring.Utils.Dao
             using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
             {
                 connection.Open();
-
-                //Running answer query
-                using (SqlCommand sqlCommandAnswer = new SqlCommand("USE [" + dbAnswerName + "];\n" + answer + "", connection))
+                Task answerTask = Task.Factory.StartNew(() =>
                 {
-                    sqlCommandAnswer.CommandTimeout = Constant.TimeOutInSecond;
-                    SqlDataReader sqlReaderAnswer = sqlCommandAnswer.ExecuteReader();
-                    if (candidate.CheckColumnName) dataTableAnswerShema = sqlReaderAnswer.GetSchemaTable();
-                    dataTableAnswer.Load(sqlReaderAnswer);
+                    //Running answer query
+                    using (SqlCommand sqlCommandAnswer = new SqlCommand("USE [" + dbAnswerName + "];\n" + answer + "", connection))
+                    {
+                        sqlCommandAnswer.CommandTimeout = Constant.TimeOutInSecond;
+                        SqlDataReader sqlReaderAnswer = sqlCommandAnswer.ExecuteReader();
+                        if (candidate.CheckColumnName) dataTableAnswerShema = sqlReaderAnswer.GetSchemaTable();
+                        dataTableAnswer.Load(sqlReaderAnswer);
+                    }
+                });
+                answerTask.Wait(Constant.TimeOutInSecond * 1000);
+                if (!answerTask.IsCompleted)
+                {
+                    answerTask.Dispose();
+                    return new Dictionary<string, string>
+                    {
+                        {"Point", 0.ToString()},
+                        {"Comment", "Execution time out"}
+                    };
                 }
                 //Running Solution 
                 using (SqlCommand sqlCommandSolution = new SqlCommand("USE [" + dbSolutionName + "];\n" + candidate.Solution + "", connection))
