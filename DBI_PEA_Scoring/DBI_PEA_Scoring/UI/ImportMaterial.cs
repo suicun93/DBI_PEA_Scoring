@@ -51,8 +51,11 @@ namespace DBI_PEA_Scoring.UI
                     return;
                 }
                 questionTextBox.Text = QuestionPath;
+                //Set Number of Questions
+
                 // Get QuestionPackage from file
                 Constant.PaperSet = JsonUtils.LoadQuestion(QuestionPath) as PaperSet;
+
                 if (Constant.PaperSet == null || Constant.PaperSet.Papers.Count == 0)
                     throw new Exception("No question was found!");
             }

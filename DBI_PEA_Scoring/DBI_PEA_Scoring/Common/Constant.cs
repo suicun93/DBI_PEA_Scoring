@@ -8,7 +8,6 @@ namespace DBI_PEA_Scoring.Common
     {
         //public static Database[] listDB = null;
         public static List<string> ListDBTemp = new List<string>();
-        public static int NumberOfQuestion = 10;
 
         //Configure SQL
         public static int TimeOutInSecond = 10;

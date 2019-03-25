@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using DBI_PEA_Scoring.Common;
 using DBI_PEA_Scoring.Utils;
 
@@ -19,10 +18,10 @@ namespace DBI_PEA_Scoring.Model
 
         public Result()
         {
-            Points = new double[Constant.NumberOfQuestion];
+            Points = new double[Constant.PaperSet.QuestionSet.QuestionList.Count];
             ListAnswers = new List<string>();
             ListCandidates = new List<Candidate>();
-            Logs = new string[Constant.NumberOfQuestion];
+            Logs = new string[Constant.PaperSet.QuestionSet.QuestionList.Count];
         }
 
         /// <summary>
@@ -90,7 +89,7 @@ namespace DBI_PEA_Scoring.Model
             if (numberOfQuestion == 0)
             {
                 Logs[0] = "Wrong Paper No\n";
-                for (int i = 0; i < Constant.NumberOfQuestion; i++)
+                for (int i = 0; i < Constant.PaperSet.QuestionSet.QuestionList.Count; i++)
                 {
                     Points[i] = 0;
                 }
@@ -99,7 +98,7 @@ namespace DBI_PEA_Scoring.Model
             //// Select random DB
             //TestUtils.Database = Constant.listDB[(new Random()).Next(1, Common.Constant.listDB.Length) - 1];
             // Get mark one by one
-            for (int questionOrder = 0; questionOrder < 10; questionOrder++)
+            for (int questionOrder = 0; questionOrder < ListCandidates.Count; questionOrder++)
             {
                 try
                 {
