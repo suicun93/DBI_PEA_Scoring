@@ -49,7 +49,7 @@ namespace DBI_PEA_Scoring.UI
             this.label7 = new System.Windows.Forms.Label();
             this.serverNameTextBox = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
-            this.button3 = new System.Windows.Forms.Button();
+            this.GetMarkButton = new System.Windows.Forms.Button();
             this.label10 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
@@ -58,7 +58,7 @@ namespace DBI_PEA_Scoring.UI
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.Location = new System.Drawing.Point(31, 99);
-            this.label1.Text = "label1";
+            this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(54, 13);
             this.label1.TabIndex = 0;
             this.label1.Text = "Paper Set";
@@ -163,7 +163,7 @@ namespace DBI_PEA_Scoring.UI
             this.passwordTextBox.Name = "passwordTextBox";
             this.passwordTextBox.Size = new System.Drawing.Size(236, 20);
             this.passwordTextBox.TabIndex = 2;
-            this.passwordTextBox.Text = "123456";
+            this.passwordTextBox.Text = "sa";
             // 
             // label9
             // 
@@ -232,16 +232,17 @@ namespace DBI_PEA_Scoring.UI
             this.label6.TabIndex = 30;
             this.label6.Text = "Server Name";
             // 
-            // button3
+            // GetMarkButton
             // 
-            this.button3.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button3.Location = new System.Drawing.Point(159, 382);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(95, 31);
-            this.button3.TabIndex = 26;
-            this.button3.Text = "GET MARKS";
-            this.button3.UseVisualStyleBackColor = true;
-            this.button3.Click += new System.EventHandler(this.GetMarkButton_Click);
+            this.GetMarkButton.AccessibleName = "";
+            this.GetMarkButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.GetMarkButton.Location = new System.Drawing.Point(159, 382);
+            this.GetMarkButton.Name = "GetMarkButton";
+            this.GetMarkButton.Size = new System.Drawing.Size(95, 31);
+            this.GetMarkButton.TabIndex = 26;
+            this.GetMarkButton.Text = "GET MARKS";
+            this.GetMarkButton.UseVisualStyleBackColor = true;
+            this.GetMarkButton.Click += new System.EventHandler(this.GetMarkButton_Click);
             // 
             // label10
             // 
@@ -271,7 +272,7 @@ namespace DBI_PEA_Scoring.UI
             this.Controls.Add(this.label7);
             this.Controls.Add(this.serverNameTextBox);
             this.Controls.Add(this.label6);
-            this.Controls.Add(this.button3);
+            this.Controls.Add(this.GetMarkButton);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.ImportAnswerButton);
             this.Controls.Add(this.ImportPaperSetButton);
@@ -309,7 +310,7 @@ namespace DBI_PEA_Scoring.UI
         private Label label7;
         private TextBox serverNameTextBox;
         private Label label6;
-        private Button button3;
+        private Button GetMarkButton;
         private Label label10;
     }
 }

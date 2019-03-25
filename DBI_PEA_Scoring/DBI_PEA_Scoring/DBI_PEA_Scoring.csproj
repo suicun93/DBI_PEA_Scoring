@@ -8,7 +8,7 @@
     <OutputType>WinExe</OutputType>
     <RootNamespace>DBI_PEA_Scoring</RootNamespace>
     <AssemblyName>DBI_PEA_Scoring</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
     <TargetFrameworkProfile />
@@ -47,7 +47,9 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.IO.Compression.FileSystem" />
+    <Reference Include="System.IO.Compression.FileSystem">
+      <HintPath>..\..\..\DBI_ShuffleTool\QuestionShufferTool\packages\System.IO.Compression.FileSystem.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -60,14 +62,13 @@
   <ItemGroup>
     <Compile Include="Common\Constant.cs" />
     <Compile Include="Model\Input.cs" />
+    <Compile Include="Model\Teacher\Question.cs" />
+    <Compile Include="Model\Teacher\QuestionSet.cs" />
     <Compile Include="Model\Teacher\Candidate.cs" />
     <Compile Include="Model\Teacher\PaperSet.cs" />
     <Compile Include="Model\Result.cs" />
     <Compile Include="Model\Student\Submission.cs" />
     <Compile Include="Model\Teacher\Paper.cs" />
-
-    <Compile Include="Model\Teacher\Question.cs" />
-    <Compile Include="Model\Teacher\QuestionSet.cs" />
     <Compile Include="UI\ImportMaterial.cs">
       <SubType>Form</SubType>
     </Compile>
