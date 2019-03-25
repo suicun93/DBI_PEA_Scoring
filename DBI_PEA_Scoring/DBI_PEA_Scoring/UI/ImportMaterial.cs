@@ -30,6 +30,7 @@ namespace DBI_PEA_Scoring.UI
             passwordTextBox.Text = ConfigurationManager.AppSettings["password"];
             serverNameTextBox.Text = ConfigurationManager.AppSettings["serverName"];
             initialCatalogTextBox.Text = ConfigurationManager.AppSettings["initialCatalog"];
+            Constant.TimeOutInSecond = int.Parse(ConfigurationManager.AppSettings["timeOutInSecond"]);
 
             // Auto Check connection import DB Question set and Answer of student for debug cho nhanh
             CheckConnectionButton_Click(null, null);

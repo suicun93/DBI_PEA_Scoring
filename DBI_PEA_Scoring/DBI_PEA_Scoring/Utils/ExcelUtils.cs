@@ -126,8 +126,7 @@ namespace DBI_PEA_Scoring.Utils
         private static void AddChart(Worksheet worksheet, Range range, double left, double top, string title, string categoryTitle, string valueTitle)
         {
             // Add chart.
-            var charts = worksheet.ChartObjects() as ChartObjects;
-            if (charts != null)
+            if (worksheet.ChartObjects() is ChartObjects charts)
             {
                 var chartObject = charts.Add(left, top, 300, 300);
                 var chart = chartObject.Chart;
