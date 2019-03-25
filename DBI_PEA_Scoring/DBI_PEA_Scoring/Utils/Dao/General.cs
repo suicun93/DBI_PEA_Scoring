@@ -78,9 +78,9 @@ namespace DBI_PEA_Scoring.Utils.Dao
                 {
                     ExecuteSingleQuery("CREATE " + SchemaType.ProcCompareDbs, "master");
                 }
-                catch
+                catch(Exception e)
                 {
-                    return false;
+                    throw e;
                 }
             }
             return true;
