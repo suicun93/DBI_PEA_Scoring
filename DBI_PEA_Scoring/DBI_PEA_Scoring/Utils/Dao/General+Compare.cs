@@ -5,7 +5,6 @@ using System.Data.SqlClient;
 using System.Linq;
 using DBI_PEA_Scoring.Common;
 using DBI_PEA_Scoring.Model;
-using DBI_PEA_Scoring.Model.Teacher;
 using DataTable = System.Data.DataTable;
 // ReSharper disable SpecifyACultureInStringConversionExplicitly
 
@@ -60,10 +59,8 @@ namespace DBI_PEA_Scoring.Utils.Dao
             }
             else if (countSolutionTables > countAnswerTables)
             {
-                ratePoint = (double)countAnswerTables / countSolutionTables;
-                maxPoint = Math.Round(candidate.Point * ratePoint, 2);
                 comment += string.Concat("Answer has less columns than Solution database (", countAnswerTables, "<",
-                    countSolutionTables, ") => Decrease Max Point by ", ratePoint * 100, "% => Max Point = ", maxPoint, "\n");
+                    countSolutionTables, ")\n");
             }
             else
             {

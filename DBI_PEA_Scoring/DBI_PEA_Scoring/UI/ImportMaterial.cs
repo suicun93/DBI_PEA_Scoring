@@ -207,20 +207,16 @@ namespace DBI_PEA_Scoring.UI
             {
                 if (Listsubmissions == null || Listsubmissions.Count == 0)
                     MessageBox.Show("Please import students' answers", "Error");
-                else
-                if (Constant.PaperSet == null || Constant.PaperSet.Papers.Count == 0)
+                else if (Constant.PaperSet == null || Constant.PaperSet.Papers.Count == 0)
                     MessageBox.Show("Please import Paper Set", "Error");
-                else
-                if (!IsConnectedToDB)
+                else if (!IsConnectedToDB)
                     MessageBox.Show("Please test connect to Sql Server", "Error");
                 else
-                if (General.PrepareSpCompareDatabase())
                 {
+                    General.PrepareSpCompareDatabase();
                     var scoring = new Grading(Listsubmissions);
                     Hide();
                 }
-                else
-                    MessageBox.Show("DB connection error or Can not create sp_Compare!", "Error");
             }
             catch (Exception exception)
             {
