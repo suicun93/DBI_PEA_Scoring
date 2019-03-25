@@ -163,7 +163,7 @@ namespace DBI_PEA_Scoring.UI
             this.passwordTextBox.Name = "passwordTextBox";
             this.passwordTextBox.Size = new System.Drawing.Size(236, 20);
             this.passwordTextBox.TabIndex = 2;
-            this.passwordTextBox.Text = "sa";
+            this.passwordTextBox.Text = "123456";
             // 
             // label9
             // 
