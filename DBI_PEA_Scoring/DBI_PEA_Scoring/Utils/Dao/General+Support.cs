@@ -12,38 +12,40 @@ namespace DBI_PEA_Scoring.Utils.Dao
             try
             {
                 if (string.IsNullOrEmpty(dbScript.Trim()))
+                {
                     throw new Exception("DbScript for grading is empty!!!\n");
+                }
 
-                var queryGenerateAnswerDb = "CREATE DATABASE [" + dbAnswerName + "]\n" +
-                                            "GO\n" +
-                                            "USE " + "[" + dbAnswerName + "]\n" + dbScript;
+                string queryGenerateAnswerDb = "CREATE DATABASE [" + dbAnswerName + "]\n" +
+                                           "GO\n" +
+                                           "USE " + "[" + dbAnswerName + "]\n" + dbScript;
                 ExecuteSingleQuery(queryGenerateAnswerDb, "master");
 
-                var queryGenerateSolutionDb = "CREATE DATABASE [" + dbSolutionName + "]\n" +
-                                              "GO\n" +
-                                              "USE " + "[" + dbSolutionName + "]\n" + dbScript;
+                string queryGenerateSolutionDb = "CREATE DATABASE [" + dbSolutionName + "]\n" +
+                                             "GO\n" +
+                                             "USE " + "[" + dbSolutionName + "]\n" + dbScript;
                 ExecuteSingleQuery(queryGenerateSolutionDb, "master");
             }
-            catch (Exception e)
+            catch(Exception e)
             {
                 throw new Exception("Generate databases error: " + e.Message + "\n");
             }
         }
 
         /// <summary>
-        ///     Drop a Database
+        /// Drop a Database
         /// </summary>
         /// <param name="dbName">Database need to drop</param>
         /// <returns>
-        ///     "message error" if error
-        ///     "" if done
+        /// "message error" if error
+        /// "" if done
         /// </returns>
         public static void DropDatabase(string dbName)
         {
             try
             {
-                var dropQuery = "DROP DATABASE [" + dbName + "]";
-                ExecuteSingleQuery(dropQuery, "master");
+                string dropQuery = "DROP DATABASE [" + dbName + "]";
+                ExecuteSingleQuery(dropQuery , "master");
             }
             catch (Exception)
             {
@@ -63,7 +65,7 @@ namespace DBI_PEA_Scoring.Utils.Dao
                 InitialCatalog = initialCatalog,
                 MinPoolSize = Constant.MaxConnectionPoolSize,
                 MaxPoolSize = Constant.MaxConnectionPoolSize,
-                ConnectTimeout = Constant.TimeOutInSecond
+                ConnectTimeout = Constant.TimeOutInSecond,
             };
             var builder = Constant.SqlConnectionStringBuilder;
             using (var connection = new SqlConnection(builder.ConnectionString))

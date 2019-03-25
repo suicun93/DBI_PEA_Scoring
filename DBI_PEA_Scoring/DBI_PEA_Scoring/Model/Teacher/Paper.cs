@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace DBI_PEA_Scoring.Model.Teacher
 {
+
     [Serializable]
     public class Paper
     {

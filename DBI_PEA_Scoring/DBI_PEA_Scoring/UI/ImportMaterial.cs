@@ -17,9 +17,11 @@ namespace DBI_PEA_Scoring.UI
 {
     public partial class ImportMaterial : Form
     {
-        private readonly bool importForDebug = false;
+        public string QuestionPath { get; set; }
+        //public List<string> DBScriptList { get; set; }
+        public string AnswerPath { get; set; }
         private List<Submission> Listsubmissions;
-
+        private bool importForDebug = false;
         public ImportMaterial()
         {
             InitializeComponent();
@@ -37,14 +39,6 @@ namespace DBI_PEA_Scoring.UI
                 BrowseAnswerButton_Click(null, null);
             }
         }
-
-        public string QuestionPath { get; set; }
-
-        //public List<string> DBScriptList { get; set; }
-        public string AnswerPath { get; set; }
-
-        private bool IsConnectedToDB => statusConnectCheckBox.Checked;
-
         private void BrowseQuestionButton_Click(object sender, EventArgs e)
         {
             try
@@ -58,7 +52,9 @@ namespace DBI_PEA_Scoring.UI
                     // Duc
                     QuestionPath = @"C:\Users\hoangduc\Desktop\PaperSet.dat";
                 if (string.IsNullOrEmpty(QuestionPath))
+                {
                     return;
+                }
                 questionTextBox.Text = QuestionPath;
                 //Set Number of Questions
 
@@ -102,6 +98,7 @@ namespace DBI_PEA_Scoring.UI
                     answerTextBox.Text = "";
                 MessageBox.Show(ex.Message, "Error");
             }
+
         }
 
         private void GetAnswers(string AnswerPath)
@@ -111,7 +108,7 @@ namespace DBI_PEA_Scoring.UI
                 // Get all submission files
                 if (string.IsNullOrEmpty(AnswerPath))
                     return;
-                var directories = Directory.GetDirectories(AnswerPath);
+                string[] directories = Directory.GetDirectories(AnswerPath);
 
                 // Check Folder is empty or not
                 if (!directories.Any())
@@ -120,61 +117,63 @@ namespace DBI_PEA_Scoring.UI
                 // Look up StudentSolution
                 if (Directory.Exists(AnswerPath + "/StudentSolution"))
                 {
-                    var directory = AnswerPath + "/StudentSolution";
+                    string directory = AnswerPath + "/StudentSolution";
                     // List PaperNo
-                    var paperNoPaths = Directory.GetDirectories(directory);
+                    string[] paperNoPaths = Directory.GetDirectories(directory);
                     // Check bao nhieu de duoc import
                     if (!paperNoPaths.Any())
                         throw new Exception("No PaperNo was found in " + directory);
                     // Update UI
-                    answerTextBox.Invoke((MethodInvoker) (() => { answerTextBox.Text = AnswerPath; }));
-                    // PaperNo Found
-                    foreach (var paperNoPath in paperNoPaths)
+                    answerTextBox.Invoke((MethodInvoker)(() =>
                     {
-                        var paperNo = new DirectoryInfo(paperNoPath).Name;
+                        answerTextBox.Text = AnswerPath;
+                    }));
+                    // PaperNo Found
+                    foreach (string paperNoPath in paperNoPaths)
+                    {
+                        string paperNo = new DirectoryInfo(paperNoPath).Name;
                         // Xu ly cac folder Roll Number
-                        var rollNumberPaths =
-                            Directory.GetDirectories(paperNoPath); // Neu khong co roll number nao thi thoi
-                        foreach (var rollNumberPath in rollNumberPaths)
+                        string[] rollNumberPaths = Directory.GetDirectories(paperNoPath); // Neu khong co roll number nao thi thoi
+                        foreach (string rollNumberPath in rollNumberPaths)
                         {
-                            var rollNumber = new DirectoryInfo(rollNumberPath).Name;
-                            var solutionPaths = Directory.GetDirectories(rollNumberPath);
+                            string rollNumber = new DirectoryInfo(rollNumberPath).Name;
+                            string[] solutionPaths = Directory.GetDirectories(rollNumberPath);
                             // Init submission for student to add to list
-                            var submission = new Submission
+                            Submission submission = new Submission
                             {
                                 PaperNo = paperNo,
                                 StudentID = rollNumber
                             };
                             try
                             {
-                                var solutionPath = solutionPaths[0]; // "0" folder
-                                var zipFiles = Directory.GetFiles(solutionPath, "*.zip");
+                                string solutionPath = solutionPaths[0]; // "0" folder
+                                string[] zipFiles = Directory.GetFiles(solutionPath, "*.zip");
                                 // Check co nop bai hay khong
                                 if (zipFiles.Count() > 0)
                                 {
                                     // Student co nop answers
-                                    var zipSolutionPath = zipFiles[0];
+                                    string zipSolutionPath = zipFiles[0];
 
                                     // Extract zip
                                     if (Directory.Exists(solutionPath + "/extract"))
                                         Directory.Delete(solutionPath + "/extract", true);
                                     ZipFile.ExtractToDirectory(zipSolutionPath, solutionPath + "/extract");
-                                    var answerPaths = Directory.GetFiles(solutionPath + "/extract", "*.sql");
+                                    string[] answerPaths = Directory.GetFiles(solutionPath + "/extract", "*.sql");
 
                                     // Add the answer
-                                    foreach (var answerPath in answerPaths)
+                                    foreach (string answerPath in answerPaths)
+                                    {
                                         try
                                         {
-                                            var fileName =
-                                                Path.GetFileNameWithoutExtension(answerPath); // Get q1,q2,...
-                                            var questionOrder =
-                                                int.Parse(GetNumbers(fileName)) - 1; // remove "q/Q" letter // Edit this
+                                            string fileName = Path.GetFileNameWithoutExtension(answerPath); // Get q1,q2,...
+                                            int questionOrder = int.Parse(GetNumbers(fileName)) - 1; // remove "q/Q" letter // Edit this
                                             submission.ListAnswer[questionOrder] = File.ReadAllText(answerPath);
                                         }
                                         catch (Exception)
                                         {
                                             // Skip exception
                                         }
+                                    }
                                     // Delete Extract folder
                                     Directory.Delete(solutionPath + "/extract", true);
                                 }
@@ -188,9 +187,7 @@ namespace DBI_PEA_Scoring.UI
                     }
                 }
                 else
-                {
                     throw new Exception("StudentSolution not found in " + AnswerPath);
-                }
             }
             catch (Exception e)
             {
@@ -198,7 +195,7 @@ namespace DBI_PEA_Scoring.UI
             }
             finally
             {
-                Invoke((MethodInvoker) (() =>
+                Invoke((MethodInvoker)(() =>
                 {
                     Application.UseWaitCursor = false;
                     Text = "Import Material";
@@ -206,6 +203,7 @@ namespace DBI_PEA_Scoring.UI
                     GetMarkButton.Enabled = true;
                 }));
             }
+
         }
 
         private void GetMarkButton_Click(object sender, EventArgs e)
@@ -213,17 +211,11 @@ namespace DBI_PEA_Scoring.UI
             try
             {
                 if (Listsubmissions == null || Listsubmissions.Count == 0)
-                {
                     MessageBox.Show("Please import students' answers", "Error");
-                }
                 else if (Constant.PaperSet == null || Constant.PaperSet.Papers.Count == 0)
-                {
                     MessageBox.Show("Please import Paper Set", "Error");
-                }
                 else if (!IsConnectedToDB)
-                {
                     MessageBox.Show("Please test connect to Sql Server", "Error");
-                }
                 else
                 {
                     General.PrepareSpCompareDatabase();
@@ -235,14 +227,14 @@ namespace DBI_PEA_Scoring.UI
             {
                 MessageBox.Show(exception.Message);
             }
-        }
 
+        }
         private void CheckConnectionButton_Click(object sender, EventArgs e)
         {
-            var username = usernameTextBox.Text;
-            var password = passwordTextBox.Text;
-            var serverName = serverNameTextBox.Text;
-            var initialCatalog = initialCatalogTextBox.Text;
+            string username = usernameTextBox.Text;
+            string password = passwordTextBox.Text;
+            string serverName = serverNameTextBox.Text;
+            string initialCatalog = initialCatalogTextBox.Text;
             try
             {
                 if (General.CheckConnection(serverName, username, password, initialCatalog))
@@ -253,7 +245,6 @@ namespace DBI_PEA_Scoring.UI
                 MessageBox.Show("Can not connect, check again.\n" + ex.Message, "Error");
             }
         }
-
         private void StatusConnectCheckBox_CheckedChanged(object sender, EventArgs e)
         {
             if (IsConnectedToDB)
@@ -267,15 +258,13 @@ namespace DBI_PEA_Scoring.UI
                 checkConnectionButton.Enabled = false;
             }
         }
+        private bool IsConnectedToDB => statusConnectCheckBox.Checked;
 
         private void ImportMaterial_FormClosed(object sender, FormClosedEventArgs e)
         {
             Application.Exit();
         }
 
-        private string GetNumbers(string input)
-        {
-            return new string(input.Where(c => char.IsDigit(c)).ToArray());
-        }
+        private string GetNumbers(string input) => new string(input.Where(c => char.IsDigit(c)).ToArray());
     }
 }

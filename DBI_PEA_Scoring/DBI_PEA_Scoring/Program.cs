@@ -4,13 +4,13 @@ using DBI_PEA_Scoring.UI;
 
 namespace DBI_PEA_Scoring
 {
-    internal static class Program
+    static class Program
     {
         /// <summary>
-        ///     The main entry point for the application.
+        /// The main entry point for the application.
         /// </summary>
         [STAThread]
-        private static void Main()
+        static void Main()
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);

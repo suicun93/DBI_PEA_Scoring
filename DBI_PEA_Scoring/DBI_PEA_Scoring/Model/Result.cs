@@ -8,14 +8,6 @@ namespace DBI_PEA_Scoring.Model
 {
     public class Result
     {
-        public Result()
-        {
-            Points = new double[Constant.PaperSet.QuestionSet.QuestionList.Count];
-            ListAnswers = new List<string>();
-            ListCandidates = new List<Candidate>();
-            Logs = new string[Constant.PaperSet.QuestionSet.QuestionList.Count];
-        }
-
         public string StudentID { get; set; }
         public string PaperNo { get; set; }
         public string ExamCode { get; set; }
@@ -24,20 +16,28 @@ namespace DBI_PEA_Scoring.Model
         public double[] Points { get; set; }
         public string[] Logs { get; set; }
 
+        public Result()
+        {
+            Points = new double[Constant.PaperSet.QuestionSet.QuestionList.Count];
+            ListAnswers = new List<string>();
+            ListCandidates = new List<Candidate>();
+            Logs = new string[Constant.PaperSet.QuestionSet.QuestionList.Count];
+        }
+
         /// <summary>
-        ///     Get Sum of point
+        ///  Get Sum of point
         /// </summary>
         /// <returns> Sum of point(double)</returns>
         public double SumOfPoint()
         {
             double sum = 0;
-            foreach (var point in Points)
+            foreach (double point in Points)
                 sum += point;
             return sum;
         }
 
         /// <summary>
-        ///     Count Student's point by question and answer
+        /// Count Student's point by question and answer
         /// </summary>
         /// <param name="candidate">Question</param>
         /// <param name="answer">Student's answer</param>
@@ -79,31 +79,33 @@ namespace DBI_PEA_Scoring.Model
         }
 
         /// <summary>
-        ///     Get GradeAnswer function
+        /// Get GradeAnswer function
         /// </summary>
         public void GetPoint()
         {
             // Count number of candidate
-            var numberOfQuestion = ListCandidates.Count;
+            int numberOfQuestion = ListCandidates.Count;
             // Wrong PaperNo
             if (numberOfQuestion == 0)
             {
                 Logs[0] = "Wrong Paper No\n";
-                for (var i = 0; i < Constant.PaperSet.QuestionSet.QuestionList.Count; i++)
+                for (int i = 0; i < Constant.PaperSet.QuestionSet.QuestionList.Count; i++)
+                {
                     Points[i] = 0;
+                }
                 return;
             }
             //// Select random DB
             //TestUtils.Database = Constant.listDB[(new Random()).Next(1, Common.Constant.listDB.Length) - 1];
             // Get mark one by one
-            for (var questionOrder = 0; questionOrder < ListCandidates.Count; questionOrder++)
+            for (int questionOrder = 0; questionOrder < ListCandidates.Count; questionOrder++)
+            {
                 try
                 {
                     //bool correct = await Cham(ListCandidates.ElementAt(i), ListAnswers.ElementAt(i));
                     if (numberOfQuestion > questionOrder)
                     {
-                        var res = GradeAnswer(ListCandidates.ElementAt(questionOrder),
-                            ListAnswers.ElementAt(questionOrder), questionOrder);
+                        Dictionary<string, string> res = GradeAnswer(ListCandidates.ElementAt(questionOrder), ListAnswers.ElementAt(questionOrder), questionOrder);
                         //Exactly -> Log true and return 0 point
                         if (res != null)
                         {
@@ -120,8 +122,7 @@ namespace DBI_PEA_Scoring.Model
                     {
                         // Not enough candidate 
                         // It rarely happens, it's this project's demos and faults.
-                        throw new Exception("No questions found at question " + questionOrder + " paperNo = " +
-                                            PaperNo + "\n");
+                        throw new Exception("No questions found at question " + questionOrder + " paperNo = " + PaperNo + "\n");
                     }
                 }
                 catch (Exception e)
@@ -131,6 +132,7 @@ namespace DBI_PEA_Scoring.Model
                     Points[questionOrder] = 0;
                     Logs[questionOrder] = e.Message + "\n";
                 }
+            }
         }
     }
 }

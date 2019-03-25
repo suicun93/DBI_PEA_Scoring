@@ -5,20 +5,19 @@ using Newtonsoft.Json;
 
 namespace DBI_PEA_Scoring.Utils
 {
-    internal class JsonUtils
+    class JsonUtils
     {
         //Object to JsonString
         public static string SerializeJson(object obj)
         {
-            var jsonString = JsonConvert.SerializeObject(obj);
+            string jsonString = JsonConvert.SerializeObject(obj);
             return jsonString;
         }
 
         public static bool WriteJson(object obj, string path)
         {
             try
-            {
-//path with name of file, remember
+            {//path with name of file, remember
                 File.WriteAllText(path, SerializeJson(obj));
                 return true;
             }
@@ -27,10 +26,9 @@ namespace DBI_PEA_Scoring.Utils
                 return false;
             }
         }
-
         public static object LoadQuestion(string path)
         {
-            var jsonQuestion = File.ReadAllText(path);
+            string jsonQuestion = File.ReadAllText(path);
             return JsonConvert.DeserializeObject<PaperSet>(jsonQuestion);
         }
 
