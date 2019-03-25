@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Configuration;
 using System.Data.SqlClient;
 using DBI_PEA_Scoring.Common;
 
@@ -70,6 +71,14 @@ namespace DBI_PEA_Scoring.Utils.Dao
             using (var connection = new SqlConnection(builder.ConnectionString))
             {
                 connection.Open();
+                // Save to app config when login successfully
+                Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+                config.AppSettings.Settings["serverName"].Value = dataSource;
+                config.AppSettings.Settings["username"].Value = userId;
+                config.AppSettings.Settings["password"].Value = password;
+                config.AppSettings.Settings["initialCatalog"].Value = initialCatalog;
+                config.Save(ConfigurationSaveMode.Full, true);
+                ConfigurationManager.RefreshSection("appSettings");
                 return true;
             }
         }
