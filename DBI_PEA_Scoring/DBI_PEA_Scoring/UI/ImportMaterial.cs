@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Drawing;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using DBI_PEA_Scoring.Common;
 using DBI_PEA_Scoring.Model;
@@ -25,8 +25,13 @@ namespace DBI_PEA_Scoring.UI
         public ImportMaterial()
         {
             InitializeComponent();
+            // Get sql connection information from App.config
+            usernameTextBox.Text = ConfigurationManager.AppSettings["username"];
+            passwordTextBox.Text = ConfigurationManager.AppSettings["password"];
+            serverNameTextBox.Text = ConfigurationManager.AppSettings["serverName"];
+            initialCatalogTextBox.Text = ConfigurationManager.AppSettings["initialCatalog"];
 
-            // Auto Check connection import DB QUestion set and Answer of student for debug cho nhanh
+            // Auto Check connection import DB Question set and Answer of student for debug cho nhanh
             CheckConnectionButton_Click(null, null);
             if (importForDebug)
             {
@@ -228,7 +233,6 @@ namespace DBI_PEA_Scoring.UI
             }
 
         }
-
         private void CheckConnectionButton_Click(object sender, EventArgs e)
         {
             string username = usernameTextBox.Text;
@@ -245,80 +249,6 @@ namespace DBI_PEA_Scoring.UI
                 MessageBox.Show("Can not connect, check again.\n" + ex.Message, "Error");
             }
         }
-
-        private void BrowseDatabases_Click(object sender, EventArgs e)
-        {
-            //try
-            //{
-            //    // Get directory where student's submittion was saved
-            //    DBPath = FileUtils.GetFolderLocation();
-            //    dbPathTextBox.Text = DBPath;
-            //    // Get all submission files
-            //    string[] DBScriptFiles = Directory.GetFiles(DBPath, "*.sql");
-            //    if (DBScriptFiles.Count() == 0)
-            //        throw new Exception("No DB Script was found");
-            //    else
-            //        // Get SQL Script files path successfully -> process to generate DB
-            //        LoadDBScript(DBScriptFiles);
-            //}
-            //catch (Exception ex)
-            //{
-            //    dbPathTextBox.Text = "";
-            //    statusImportDatabaseProgressBar.Maximum = 0;
-            //    statusImportDatabaseProgressBar.Step = 1;
-            //    statusImportDatabaseProgressBar.Value = 0;
-            //    MessageBox.Show("Imported DB Failed\n" + ex.Message, "Error");
-            //}
-        }
-
-        //private void LoadDBScript(string[] dbScriptFiles)
-        //{
-        //    // reset listDB
-        //    Constant.listDB = null;
-        //    int dbCount = dbScriptFiles.Count();
-        //    statusImportDatabaseProgressBar.Maximum = dbCount;
-        //    statusImportDatabaseProgressBar.Step = 1;
-        //    statusImportDatabaseProgressBar.Value = 0;
-        //    int count = 0;
-        //    // Run and save information to local
-        //    foreach (string scriptFile in dbScriptFiles)
-        //    {
-        //        try
-        //        {
-        //            // Run file to generate database
-        //            RunFile(scriptFile);
-        //        }
-        //        catch (Exception)
-        //        {
-        //            //MessageBox.Show(e.Message + " at file " + Path.GetFileName(scriptFile), "Error");
-        //        }
-        //        // Get DB names and paths into constant
-        //        General.SavePathDB();
-        //        // Success -> change UI
-        //        count++;
-        //        statusImportDatabaseProgressBar.Value = count;
-
-        //    }
-        //    // If no DBs were imported -> throw exception
-        //    if (Constant.listDB == null)
-        //        throw new Exception("No DB scripts run");
-        //    // If Db was imported
-        //    importedDB = true;
-        //    browseDatabasesButton.Enabled = false;
-        //    // Report to user
-        //    string report = "Imported \n";
-        //    foreach (Database dbName in Constant.listDB)
-        //        report += "\t" + dbName.SourceDbName + "\n";
-        //    MessageBox.Show(report, "Success");
-        //}
-
-        //private void RunFile(string url)
-        //{
-        //    FileInfo file = new FileInfo(url);
-        //    string script = file.OpenText().ReadToEnd();
-        //    General.ExecuteSingleQuery(script);
-        //}
-
         private void StatusConnectCheckBox_CheckedChanged(object sender, EventArgs e)
         {
             if (IsConnectedToDB)
