@@ -53,7 +53,3 @@ E:\Capstone\DBI_PEA_Scoring\DBI_PEA_Scoring\DBI_PEA_Scoring\obj\Debug\DBI_PEA_Sc
 C:\Users\hoangduc\Desktop\Project\KhaoThi\DBI_PEA_Scoring\DBI_PEA_Scoring\obj\Debug\DBI_PEA_Scoring.UI.Grading.resources
 E:\Capstone\DBI_PEA_Scoring\DBI_PEA_Scoring\DBI_PEA_Scoring\bin\Debug\System.IO.Compression.FileSystem.dll
 E:\Capstone\DBI_PEA_Scoring\DBI_PEA_Scoring\DBI_PEA_Scoring\bin\Debug\System.IO.Compression.dll
-E:\Capstone\DBI_PEA_Scoring\DBI_PEA_Scoring\DBI_PEA_Scoring\bin\Debug\DBI_PEA_Scoring.exe.manifest
-E:\Capstone\DBI_PEA_Scoring\DBI_PEA_Scoring\DBI_PEA_Scoring\bin\Debug\DBI_PEA_Scoring.application
-E:\Capstone\DBI_PEA_Scoring\DBI_PEA_Scoring\DBI_PEA_Scoring\obj\Debug\DBI_PEA_Scoring.exe.manifest
-E:\Capstone\DBI_PEA_Scoring\DBI_PEA_Scoring\DBI_PEA_Scoring\obj\Debug\DBI_PEA_Scoring.application
