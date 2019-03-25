@@ -81,6 +81,7 @@ namespace DBI_PEA_Scoring.UI
                 Application.UseWaitCursor = true;
                 Text = "Import Material - Importing";
                 ImportAnswerButton.Enabled = false;
+                GetMarkButton.Enabled = false;
                 ThreadPool.QueueUserWorkItem(IDontKnowWhatItIs => GetAnswers(AnswerPath));
             }
             catch (Exception ex)
@@ -153,22 +154,25 @@ namespace DBI_PEA_Scoring.UI
 
                                     // Add the answer
                                     foreach (string answerPath in answerPaths)
+                                    {
                                         try
                                         {
                                             string fileName = Path.GetFileNameWithoutExtension(answerPath); // Get q1,q2,...
-                                            int questionOrder = int.Parse(fileName.Remove(0, 1)) - 1; // remove "q/Q" letter
+                                            int questionOrder = int.Parse(GetNumbers(fileName)) - 1; // remove "q/Q" letter // Edit this
                                             submission.ListAnswer[questionOrder] = File.ReadAllText(answerPath);
                                         }
                                         catch (Exception)
                                         {
-                                            // skip
+                                            // Skip exception
                                         }
+                                    }
+                                    // Delete Extract folder
                                     Directory.Delete(solutionPath + "/extract", true);
                                 }
                             }
                             catch (Exception)
                             {
-                                // skip
+                                // Skip exception
                             }
                             Listsubmissions.Add(submission);
                         }
@@ -188,6 +192,7 @@ namespace DBI_PEA_Scoring.UI
                     Application.UseWaitCursor = false;
                     Text = "Import Material";
                     ImportAnswerButton.Enabled = true;
+                    GetMarkButton.Enabled = true;
                 }));
             }
 
@@ -322,5 +327,7 @@ namespace DBI_PEA_Scoring.UI
         {
             Application.Exit();
         }
+
+        private string GetNumbers(string input) => new string(input.Where(c => char.IsDigit(c)).ToArray());
     }
 }
