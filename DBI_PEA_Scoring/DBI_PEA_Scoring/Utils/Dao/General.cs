@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using System.Globalization;
@@ -23,7 +25,7 @@ namespace DBI_PEA_Grading.Utils.Dao
                 connection.Open();
                 using (var command = new SqlCommand(query, connection))
                 {
-                    return (int) command.ExecuteScalar();
+                    return (int)command.ExecuteScalar();
                 }
             }
         }
@@ -85,6 +87,49 @@ namespace DBI_PEA_Grading.Utils.Dao
                     server.ConnectionContext.ExecuteNonQuery("Use master");
                     server.ConnectionContext.Disconnect();
                 }
+            }
+        }
+
+        public static void KillAllSessionSql()
+        {
+            try
+            {
+                string queryKillNow = "use master ";
+                var builder = new SqlConnectionStringBuilder()
+                {
+                    ConnectTimeout = Constant.TimeOutInSecond,
+                    DataSource = ConfigurationManager.AppSettings["serverName"],
+                    IntegratedSecurity = true,
+                    InitialCatalog = ConfigurationManager.AppSettings["initialCatalog"]
+                };
+                using (SqlConnection conn = new SqlConnection(builder.ConnectionString))
+                {
+                    conn.Open();
+                    string queryGetSession =
+                        "use master SELECT conn.session_id FROM sys.dm_exec_sessions AS sess JOIN sys.dm_exec_connections AS conn " +
+                        "ON sess.session_id = conn.session_id where program_name = '.Net SqlClient Data Provider' order by session_id asc";
+                    int countSession = 0;
+                    using (var command = new SqlCommand(queryGetSession, conn))
+                    {
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                int id = reader.GetInt32(0);
+                                queryKillNow += " KILL " + id + " ";
+                                countSession++;
+                            }
+                        }
+                    }
+                    using (var command = new SqlCommand(queryKillNow, conn))
+                    {
+                        command.ExecuteNonQuery();
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
             }
         }
 

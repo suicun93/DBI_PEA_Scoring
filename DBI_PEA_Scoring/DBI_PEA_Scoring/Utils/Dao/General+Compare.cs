@@ -52,15 +52,15 @@ namespace DBI_PEA_Grading.Utils.Dao
             comment += "Count Tables in database: ";
             if (countAnswerTables > countSolutionTables)
             {
-                ratePoint = (double) countSolutionTables / countAnswerTables;
+                ratePoint = (double)countSolutionTables / countAnswerTables;
                 maxPoint = Math.Round(candidate.Point * ratePoint, 2);
-                comment += string.Concat("Answer has more columns than Solution database (", countAnswerTables, ">",
-                    countSolutionTables, ") => Decrease Max Point by ", ratePoint * 100, "% => Max Point = ", maxPoint,
+                comment += string.Concat("Answer has more tables than Solution's database (", countAnswerTables, ">",
+                    countSolutionTables, ") => Decrease Max Point by ", Math.Round(ratePoint * 100, 2), "% => Max Point = ", maxPoint,
                     "\n");
             }
             else if (countSolutionTables > countAnswerTables)
             {
-                comment += string.Concat("Answer has less columns than Solution database (", countAnswerTables, "<",
+                comment += string.Concat("Answer has less tables than Solution's database (", countAnswerTables, "<",
                     countSolutionTables, ")\n");
             }
             else
@@ -429,7 +429,7 @@ namespace DBI_PEA_Grading.Utils.Dao
                     //Degree 50% of point if Answer has more resultSets than Solution
                     if (dataSetSolution.Tables.Count < dataSetAnswer.Tables.Count)
                     {
-                        var rate = (double) dataSetSolution.Tables.Count / dataSetAnswer.Tables.Count;
+                        var rate = (double)dataSetSolution.Tables.Count / dataSetAnswer.Tables.Count;
                         var rateFormatted = Math.Round(rate, 2);
                         comment = string.Concat(comment,
                             "Decrease Max Point by ", rateFormatted * 100,

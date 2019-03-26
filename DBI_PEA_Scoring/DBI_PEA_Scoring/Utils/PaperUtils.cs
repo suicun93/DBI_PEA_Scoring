@@ -16,12 +16,12 @@ namespace DBI_PEA_Grading.Utils
         /// <param name="candidate">Question and requirement to check</param>
         /// <param name="studentId"></param>
         /// <param name="answer">Answer of student</param>
+        /// <param name="questionOrder"></param>
         /// <returns>Result when compare 2 DB</returns>
         /// <exception cref="SqlException">
         ///     When something's wrong, throw exception to log error to KhaoThi
         /// </exception>
-        internal static Dictionary<string, string> SchemaType(Candidate candidate, string studentId, string answer,
-            int questionOrder)
+        internal static Dictionary<string, string> SchemaType(Candidate candidate, string studentId, string answer,int questionOrder)
         {
             var dbSolutionName = studentId.Replace(" ", "") + questionOrder + "_Solution" + "_" +
                                  new Random().Next(1000000000);
@@ -61,10 +61,11 @@ namespace DBI_PEA_Grading.Utils
                     throw new Exception("Compare error: " + e.Message);
                 }
                 // Execute query
-                return General.CompareTwoDatabases(dbAnswerName, dbSolutionName, dbEmptyName, candidate, errorMessage);
+                return Utilities.WithTimeout(() => General.CompareTwoDatabases(dbAnswerName, dbSolutionName, dbEmptyName, candidate, errorMessage), Constant.TimeOutInSecond);
             }
             finally
             {
+                General.KillAllSessionSql();
                 General.DropDatabase(dbAnswerName);
                 General.DropDatabase(dbSolutionName);
                 General.DropDatabase(dbEmptyName);
@@ -98,10 +99,11 @@ namespace DBI_PEA_Grading.Utils
                 else
                     General.GenerateDatabase(dbSolutionName, dbAnswerName, Constant.PaperSet.DBScriptList[0]);
                 //Compare
-                return General.CompareOneResultSet(dbAnswerName, dbSolutionName, answer, candidate);
+                return Utilities.WithTimeout(() => General.CompareOneResultSet(dbAnswerName, dbSolutionName, answer, candidate), Constant.TimeOutInSecond);
             }
             finally
             {
+                General.KillAllSessionSql();
                 General.DropDatabase(dbSolutionName);
                 General.DropDatabase(dbAnswerName);
             }
@@ -173,10 +175,11 @@ namespace DBI_PEA_Grading.Utils
                     if (e.InnerException != null) throw new Exception(e.InnerException.Message);
                     throw new Exception("Compare error: " + e.Message);
                 }
-                return General.CompareMoreResultSets(dbAnswerName, dbSolutionName, candidate, errorMessage);
+                return Utilities.WithTimeout(() => General.CompareMoreResultSets(dbAnswerName, dbSolutionName, candidate, errorMessage), Constant.TimeOutInSecond);
             }
             finally
             {
+                General.KillAllSessionSql();
                 General.DropDatabase(dbSolutionName);
                 General.DropDatabase(dbAnswerName);
             }
@@ -185,7 +188,6 @@ namespace DBI_PEA_Grading.Utils
         /// <summary>
         ///     Execute Query and compare 2 effected tables
         /// </summary>
-        /// <param name="dbScript"></param>
         /// <param name="candidate">Question and requirement to check</param>
         /// <param name="studentId"></param>
         /// <param name="answer">Answer of student</param>
@@ -232,10 +234,11 @@ namespace DBI_PEA_Grading.Utils
                     if (e.InnerException != null) throw new Exception("Compare error: " + e.InnerException.Message);
                     throw new Exception("Compare error: " + e.Message);
                 }
-                return General.CompareMoreResultSets(dbAnswerName, dbSolutionName, candidate, errorMessage);
+                return Utilities.WithTimeout(() => General.CompareMoreResultSets(dbAnswerName, dbSolutionName, candidate, errorMessage), Constant.TimeOutInSecond);
             }
             finally
             {
+                General.KillAllSessionSql();
                 General.DropDatabase(dbSolutionName);
                 General.DropDatabase(dbAnswerName);
             }
