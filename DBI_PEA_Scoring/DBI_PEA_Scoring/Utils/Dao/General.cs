@@ -17,16 +17,16 @@ namespace DBI_PEA_Scoring.Utils.Dao
         {
             try
             {
-                string query = string.Concat("USE [", databaseName,
+                var query = string.Concat("USE [", databaseName,
                     "]\nSELECT COUNT(*) from information_schema.tables\r\nWHERE table_type = \'base table\'");
                 //Prepare connection
                 var builder = Constant.SqlConnectionStringBuilder;
-                using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
+                using (var connection = new SqlConnection(builder.ConnectionString))
                 {
                     connection.Open();
-                    using (SqlCommand command = new SqlCommand(query, connection))
+                    using (var command = new SqlCommand(query, connection))
                     {
-                        return (int)command.ExecuteScalar();
+                        return (int) command.ExecuteScalar();
                     }
                 }
             }
@@ -34,7 +34,6 @@ namespace DBI_PEA_Scoring.Utils.Dao
             {
                 throw e;
             }
-
         }
 
         public static DataSet GetDataSetFromReader(string query)
@@ -42,9 +41,9 @@ namespace DBI_PEA_Scoring.Utils.Dao
             try
             {
                 var builder = Constant.SqlConnectionStringBuilder;
-                DataSet dts = new DataSet();
+                var dts = new DataSet();
                 // Connect to SQL
-                using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
+                using (var connection = new SqlConnection(builder.ConnectionString))
                 {
                     connection.Open();
                     //1. Check number of tables
@@ -62,7 +61,6 @@ namespace DBI_PEA_Scoring.Utils.Dao
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <returns></returns>
         public static bool PrepareSpCompareDatabase()
@@ -78,7 +76,7 @@ namespace DBI_PEA_Scoring.Utils.Dao
                 {
                     ExecuteSingleQuery("CREATE " + SchemaType.ProcCompareDbs, "master");
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
                     throw e;
                 }
@@ -87,7 +85,7 @@ namespace DBI_PEA_Scoring.Utils.Dao
         }
 
         /// <summary>
-        /// Execute Single Query    
+        ///     Execute Single Query
         /// </summary>
         /// <param name="query">Query to execute</param>
         /// <param name="catalog"></param>
@@ -114,14 +112,15 @@ namespace DBI_PEA_Scoring.Utils.Dao
 
         public static List<TestCase> GetTestCasesPoint(Candidate candidate)
         {
-            Match matchResult = Regex.Match(candidate.TestQuery, @"(/\*(.|[\r\n])*?\*/)|(--(.*|[\r\n]))", RegexOptions.Singleline);
+            var matchResult = Regex.Match(candidate.TestQuery, @"(/\*(.|[\r\n])*?\*/)|(--(.*|[\r\n]))",
+                RegexOptions.Singleline);
 
-            List<TestCase> tcpList = new List<TestCase>();
-            int count = 0;
-            TestCase tcp = new TestCase();
+            var tcpList = new List<TestCase>();
+            var count = 0;
+            var tcp = new TestCase();
             while (matchResult.Success)
             {
-                string matchFormatted = matchResult.Value.Split('*')[1];
+                var matchFormatted = matchResult.Value.Split('*')[1];
                 if (count++ % 2 == 0)
                 {
                     tcp.Point = double.Parse(matchFormatted, CultureInfo.InvariantCulture);
@@ -135,17 +134,13 @@ namespace DBI_PEA_Scoring.Utils.Dao
                 matchResult = matchResult.NextMatch();
             }
             if (tcpList.Count == 0)
-            {
-                tcpList.Add(new TestCase()
+                tcpList.Add(new TestCase
                 {
                     Description = "",
                     Point = candidate.Point
                 });
-            }
             return tcpList;
         }
-
-
     }
 
     public class TestCase
@@ -154,4 +149,3 @@ namespace DBI_PEA_Scoring.Utils.Dao
         public string Description { get; set; }
     }
 }
-

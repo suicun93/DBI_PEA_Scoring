@@ -4,7 +4,6 @@ using System.Data.SqlClient;
 using System.Linq;
 using DBI_PEA_Scoring.Common;
 using DBI_PEA_Scoring.Model;
-using DBI_PEA_Scoring.Model.Teacher;
 using DBI_PEA_Scoring.Utils.Dao;
 
 namespace DBI_PEA_Scoring.Utils
@@ -21,18 +20,24 @@ namespace DBI_PEA_Scoring.Utils
         /// <exception cref="SqlException">
         ///     When something's wrong, throw exception to log error to KhaoThi
         /// </exception>
-        internal static Dictionary<string, string> SchemaType(Candidate candidate, string studentId, string answer, int questionOrder)
+        internal static Dictionary<string, string> SchemaType(Candidate candidate, string studentId, string answer,
+            int questionOrder)
         {
-            string dbSolutionName = studentId.Replace(" ", "") + questionOrder + "_Solution" + "_" + new Random().Next(1000000000);
-            string dbAnswerName = studentId.Replace(" ", "") + "_" + questionOrder + "_Answer" + "_" + new Random().Next(1000000000);
-            string dbEmptyName = studentId.Replace(" ", "") + questionOrder + "_EmptyDb" + "_" + new Random().Next(1000000000);
-            string querySolution = string.Concat("create database [", dbSolutionName, "]\nGO\nUSE [", dbSolutionName, "]\n", candidate.Solution);
-            string queryAnswer = string.Concat("create database [", dbAnswerName, "]\nGO\nUSE [", dbAnswerName, "]\n", answer);
-            string queryEmptyDb = string.Concat("create database [", dbEmptyName, "]");
+            var dbSolutionName = studentId.Replace(" ", "") + questionOrder + "_Solution" + "_" +
+                                 new Random().Next(1000000000);
+            var dbAnswerName = studentId.Replace(" ", "") + "_" + questionOrder + "_Answer" + "_" +
+                               new Random().Next(1000000000);
+            var dbEmptyName = studentId.Replace(" ", "") + questionOrder + "_EmptyDb" + "_" +
+                              new Random().Next(1000000000);
+            var querySolution = string.Concat("create database [", dbSolutionName, "]\nGO\nUSE [", dbSolutionName,
+                "]\n", candidate.Solution);
+            var queryAnswer = string.Concat("create database [", dbAnswerName, "]\nGO\nUSE [", dbAnswerName, "]\n",
+                answer);
+            var queryEmptyDb = string.Concat("create database [", dbEmptyName, "]");
 
             try
             {
-                string errorMessage = "";
+                var errorMessage = "";
                 // Execute query
                 try
                 {
@@ -44,9 +49,7 @@ namespace DBI_PEA_Scoring.Utils
                     if (e.InnerException != null)
                         errorMessage = string.Concat("Answer query error: ", e.InnerException.Message, "\n");
                     else
-                    {
                         errorMessage = string.Concat("Answer query error: ", e.Message, "\n");
-                    }
                 }
                 try
                 {
@@ -79,22 +82,21 @@ namespace DBI_PEA_Scoring.Utils
         /// <exception cref="Exception">
         ///     When something's wrong, throw exception to log error to KhaoThi
         /// </exception>
-        internal static Dictionary<string, string> SelectType(Candidate candidate, string studentId, string answer, int questionOrder)
+        internal static Dictionary<string, string> SelectType(Candidate candidate, string studentId, string answer,
+            int questionOrder)
         {
-            string dbSolutionName = studentId.Replace(" ", "") + questionOrder + "_Solution" + "_" + new Random().Next(1000000000);
-            string dbAnswerName = studentId.Replace(" ", "") + questionOrder + "_Answer" + "_" + new Random().Next(1000000000);
+            var dbSolutionName = studentId.Replace(" ", "") + questionOrder + "_Solution" + "_" +
+                                 new Random().Next(1000000000);
+            var dbAnswerName = studentId.Replace(" ", "") + questionOrder + "_Answer" + "_" +
+                               new Random().Next(1000000000);
 
             try
             {
                 //Generate 2 new DB for student's answer and solution
                 if (Constant.PaperSet.DBScriptList.Count > 1)
-                {
                     General.GenerateDatabase(dbSolutionName, dbAnswerName, Constant.PaperSet.DBScriptList[1]);
-                }
                 else
-                {
                     General.GenerateDatabase(dbSolutionName, dbAnswerName, Constant.PaperSet.DBScriptList[0]);
-                }
                 //Compare
                 return General.CompareOneResultSet(dbAnswerName, dbSolutionName, answer, candidate);
             }
@@ -106,7 +108,7 @@ namespace DBI_PEA_Scoring.Utils
         }
 
         /// <summary>
-        ///  Execute Query and compare 2 effected tables
+        ///     Execute Query and compare 2 effected tables
         /// </summary>
         /// <param name="candidate"></param>
         /// <param name="studentId"></param>
@@ -116,10 +118,13 @@ namespace DBI_PEA_Scoring.Utils
         /// <exception cref="Exception">
         ///     When something's wrong, throw exception to log to Khao Thi.
         /// </exception>
-        internal static Dictionary<string, string> DMLType(Candidate candidate, string studentId, string answer, int questionOrder)
+        internal static Dictionary<string, string> DMLType(Candidate candidate, string studentId, string answer,
+            int questionOrder)
         {
-            string dbSolutionName = studentId.Replace(" ", "") + questionOrder + "_Solution" + "_" + new Random().Next(10000000);
-            string dbAnswerName = studentId.Replace(" ", "") + questionOrder + "_Answer" + "_" + new Random().Next(10000000);
+            var dbSolutionName = studentId.Replace(" ", "") + questionOrder + "_Solution" + "_" +
+                                 new Random().Next(10000000);
+            var dbAnswerName = studentId.Replace(" ", "") + questionOrder + "_Answer" + "_" +
+                               new Random().Next(10000000);
 
 
             //Generate 2 new DB for student's answer and solution
@@ -127,28 +132,19 @@ namespace DBI_PEA_Scoring.Utils
             //Create db from solution at schema question
             string queryDbForDml;
             if (Constant.PaperSet.DBScriptList.Count > 1)
-            {
                 queryDbForDml = Constant.PaperSet.DBScriptList[1];
-            }
             else
-            {
                 queryDbForDml = Constant.PaperSet.DBScriptList[0];
-            }
             if (candidate.RelatedSchema)
             {
                 queryDbForDml = "";
                 foreach (var question in Constant.PaperSet.QuestionSet.QuestionList)
-                {
                     if (question.Candidates.ElementAt(0).QuestionType == Candidate.QuestionTypes.Schema)
                     {
                         foreach (var candi in question.Candidates)
-                        {
                             queryDbForDml = string.Concat(queryDbForDml, "\n", candi.Solution);
-                        }
                         break;
                     }
-
-                }
             }
 
             try
@@ -156,7 +152,7 @@ namespace DBI_PEA_Scoring.Utils
                 //Generate databases for solution and answer
                 General.GenerateDatabase(dbSolutionName, dbAnswerName, queryDbForDml);
 
-                string errorMessage = "";
+                var errorMessage = "";
                 // Execute query
                 try
                 {
@@ -187,7 +183,7 @@ namespace DBI_PEA_Scoring.Utils
         }
 
         /// <summary>
-        ///  Execute Query and compare 2 effected tables
+        ///     Execute Query and compare 2 effected tables
         /// </summary>
         /// <param name="dbScript"></param>
         /// <param name="candidate">Question and requirement to check</param>
@@ -198,23 +194,22 @@ namespace DBI_PEA_Scoring.Utils
         /// <exception cref="Exception">
         ///     When something's wrong, throw exception to log to Khao Thi.
         /// </exception>
-        internal static Dictionary<string, string> TriggerProcedureType(Candidate candidate, string studentId, string answer, int questionOrder)
+        internal static Dictionary<string, string> TriggerProcedureType(Candidate candidate, string studentId,
+            string answer, int questionOrder)
         {
-            string dbSolutionName = studentId.Replace(" ", "") + questionOrder + "_Solution" + "_" + new Random().Next(10000000);
-            string dbAnswerName = studentId.Replace(" ", "") + questionOrder + "_Answer" + "_" + new Random().Next(10000000);
+            var dbSolutionName = studentId.Replace(" ", "") + questionOrder + "_Solution" + "_" +
+                                 new Random().Next(10000000);
+            var dbAnswerName = studentId.Replace(" ", "") + questionOrder + "_Answer" + "_" +
+                               new Random().Next(10000000);
 
             //Generate 2 new DB for student's answer and solution
             if (Constant.PaperSet.DBScriptList.Count > 1)
-            {
                 General.GenerateDatabase(dbSolutionName, dbAnswerName, Constant.PaperSet.DBScriptList[1]);
-            }
             else
-            {
                 General.GenerateDatabase(dbSolutionName, dbAnswerName, Constant.PaperSet.DBScriptList[0]);
-            }
             try
             {
-                string errorMessage = "";
+                var errorMessage = "";
                 // Execute query
                 try
                 {
