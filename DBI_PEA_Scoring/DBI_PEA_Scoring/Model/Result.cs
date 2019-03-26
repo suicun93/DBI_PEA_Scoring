@@ -31,10 +31,7 @@ namespace DBI_PEA_Grading.Model
         /// <returns> Sum of point(double)</returns>
         public double SumOfPoint()
         {
-            double sum = 0;
-            foreach (var point in Points)
-                sum += point;
-            return sum;
+            return Points.Sum();
         }
 
         /// <summary>
@@ -106,9 +103,6 @@ namespace DBI_PEA_Grading.Model
                     //bool correct = await Cham(ListCandidates.ElementAt(i), ListAnswers.ElementAt(i));
                     if (numberOfQuestion > questionOrder)
                     {
-                        //var res = Utilities.WithTimeout(
-                        //    () => GradeAnswer(ListCandidates.ElementAt(order),
-                        //        ListAnswers.ElementAt(order), order), Constant.TimeOutInSecond);
                         var res = GradeAnswer(ListCandidates.ElementAt(questionOrder), ListAnswers.ElementAt(questionOrder), questionOrder);
                         //Exactly -> Log true and return 0 point
                         if (res != null)
