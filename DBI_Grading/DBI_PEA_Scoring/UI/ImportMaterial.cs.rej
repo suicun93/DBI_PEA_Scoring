@@ -1,0 +1,22 @@
+diff a/DBI_PEA_Scoring/DBI_PEA_Scoring/UI/ImportMaterial.cs b/DBI_PEA_Scoring/DBI_PEA_Scoring/UI/ImportMaterial.cs	(rejected hunks)
+@@ -23,8 +23,18 @@
+         public ImportMaterial()
+         {
+             InitializeComponent();
+-            // Auto Check connection
+-            CheckConnectionButton_Click(null, null);
++            // Auto Check connection import DB QUestion set and Answer of student for debug cho nhanh
++            try
++            {
++                CheckConnectionButton_Click(null, null);
++            }
++            catch (Exception) { }
++            
++            try
++            {
++                BrowseQuestionButton_Click(null, null);
++            }
++            catch (Exception) { }
+         }
+         private void BrowseQuestionButton_Click(object sender, EventArgs e)
+         {
