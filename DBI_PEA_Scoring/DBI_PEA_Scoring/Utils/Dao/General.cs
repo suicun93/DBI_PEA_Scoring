@@ -1,63 +1,48 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Globalization;
 using System.Text.RegularExpressions;
-using DBI_PEA_Scoring.Common;
-using DBI_PEA_Scoring.Model;
+using DBI_PEA_Grading.Common;
+using DBI_PEA_Grading.Model.Teacher;
 using Microsoft.SqlServer.Management.Common;
 using Microsoft.SqlServer.Management.Smo;
 
-namespace DBI_PEA_Scoring.Utils.Dao
+namespace DBI_PEA_Grading.Utils.Dao
 {
     public partial class General
     {
         public static int GetNumberOfTablesInDatabase(string databaseName)
         {
-            try
+            var query = string.Concat("USE [", databaseName,
+                "]\nSELECT COUNT(*) from information_schema.tables\r\nWHERE table_type = \'base table\'");
+            //Prepare connection
+            var builder = Constant.SqlConnectionStringBuilder;
+            using (var connection = new SqlConnection(builder.ConnectionString))
             {
-                var query = string.Concat("USE [", databaseName,
-                    "]\nSELECT COUNT(*) from information_schema.tables\r\nWHERE table_type = \'base table\'");
-                //Prepare connection
-                var builder = Constant.SqlConnectionStringBuilder;
-                using (var connection = new SqlConnection(builder.ConnectionString))
+                connection.Open();
+                using (var command = new SqlCommand(query, connection))
                 {
-                    connection.Open();
-                    using (var command = new SqlCommand(query, connection))
-                    {
-                        return (int) command.ExecuteScalar();
-                    }
+                    return (int) command.ExecuteScalar();
                 }
-            }
-            catch (Exception e)
-            {
-                throw e;
             }
         }
 
         public static DataSet GetDataSetFromReader(string query)
         {
-            try
+            var builder = Constant.SqlConnectionStringBuilder;
+            var dts = new DataSet();
+            // Connect to SQL
+            using (var connection = new SqlConnection(builder.ConnectionString))
             {
-                var builder = Constant.SqlConnectionStringBuilder;
-                var dts = new DataSet();
-                // Connect to SQL
-                using (var connection = new SqlConnection(builder.ConnectionString))
+                connection.Open();
+                //1. Check number of tables
+                using (var sqlDataAdapter = new SqlDataAdapter(query, connection))
                 {
-                    connection.Open();
-                    //1. Check number of tables
-                    using (var sqlDataAdapter = new SqlDataAdapter(query, connection))
-                    {
-                        sqlDataAdapter.Fill(dts);
-                    }
+                    sqlDataAdapter.Fill(dts);
                 }
-                return dts;
             }
-            catch (Exception e)
-            {
-                throw e;
-            }
+            return dts;
         }
 
         /// <summary>
@@ -72,14 +57,7 @@ namespace DBI_PEA_Scoring.Utils.Dao
             catch
             {
                 // ProcCompareDbsCreate has been created
-                try
-                {
-                    ExecuteSingleQuery("CREATE " + SchemaType.ProcCompareDbs, "master");
-                }
-                catch (Exception e)
-                {
-                    throw e;
-                }
+                ExecuteSingleQuery("CREATE " + SchemaType.ProcCompareDbs, "master");
             }
             return true;
         }

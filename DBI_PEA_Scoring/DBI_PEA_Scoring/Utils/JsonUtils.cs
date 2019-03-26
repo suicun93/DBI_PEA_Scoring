@@ -1,9 +1,9 @@
 ﻿using System.IO;
-using DBI_PEA_Scoring.Model;
-using DBI_PEA_Scoring.Model.Teacher;
+using DBI_PEA_Grading.Model.Student;
+using DBI_PEA_Grading.Model.Teacher;
 using Newtonsoft.Json;
 
-namespace DBI_PEA_Scoring.Utils
+namespace DBI_PEA_Grading.Utils
 {
     internal class JsonUtils
     {

@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
-using DBI_PEA_Scoring.Common;
-using DBI_PEA_Scoring.Model;
-using DBI_PEA_Scoring.Utils.Dao;
+using DBI_PEA_Grading.Common;
+using DBI_PEA_Grading.Model.Teacher;
+using DBI_PEA_Grading.Utils.Dao;
 
-namespace DBI_PEA_Scoring.Utils
+namespace DBI_PEA_Grading.Utils
 {
     public class PaperUtils
     {
@@ -118,7 +118,7 @@ namespace DBI_PEA_Scoring.Utils
         /// <exception cref="Exception">
         ///     When something's wrong, throw exception to log to Khao Thi.
         /// </exception>
-        internal static Dictionary<string, string> DMLType(Candidate candidate, string studentId, string answer,
+        internal static Dictionary<string, string> DmlType(Candidate candidate, string studentId, string answer,
             int questionOrder)
         {
             var dbSolutionName = studentId.Replace(" ", "") + questionOrder + "_Solution" + "_" +

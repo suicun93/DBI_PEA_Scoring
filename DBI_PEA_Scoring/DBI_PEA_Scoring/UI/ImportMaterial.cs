@@ -7,13 +7,13 @@ using System.IO.Compression;
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
-using DBI_PEA_Scoring.Common;
-using DBI_PEA_Scoring.Model;
-using DBI_PEA_Scoring.Model.Teacher;
-using DBI_PEA_Scoring.Utils;
-using DBI_PEA_Scoring.Utils.Dao;
+using DBI_PEA_Grading.Common;
+using DBI_PEA_Grading.Model.Student;
+using DBI_PEA_Grading.Model.Teacher;
+using DBI_PEA_Grading.Utils;
+using General = DBI_PEA_Grading.Utils.Dao.General;
 
-namespace DBI_PEA_Scoring.UI
+namespace DBI_PEA_Grading.UI
 {
     public partial class ImportMaterial : Form
     {

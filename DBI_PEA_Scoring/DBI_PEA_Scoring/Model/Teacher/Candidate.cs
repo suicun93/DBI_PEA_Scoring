@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace DBI_PEA_Scoring.Model
+namespace DBI_PEA_Grading.Model.Teacher
 {
     [Serializable]
     public class Candidate

@@ -2,15 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using DBI_PEA_Scoring.Model;
+using DBI_PEA_Grading.Model;
 using Microsoft.Office.Interop.Excel;
 
-namespace DBI_PEA_Scoring.Utils
+namespace DBI_PEA_Grading.Utils
 {
     internal class ExcelUtils
     {
-        private static int LastRowOfResultSheet;
-        private static WorksheetFunction wsf;
+        public static int LastRowOfResultSheet { get; private set; }
+        private static WorksheetFunction _wsf;
 
         public static void ExportResultsExcel(List<Result> results, double maxPoint, int numOfQuestion)
         {
@@ -24,18 +24,17 @@ namespace DBI_PEA_Scoring.Utils
                     excelApp.Visible = true;
                     //Open Workbook
                     var book = excelApp.Workbooks.Add(missing);
-                    wsf = excelApp.WorksheetFunction;
+                    _wsf = excelApp.WorksheetFunction;
 
                     //Add Result Sheet
                     AddResultSheet(book.Worksheets[1], results, maxPoint, numOfQuestion);
 
                     //Add Detail Sheet
-                    AddDetailSheet(book.Sheets.Add(After: book.Sheets[book.Sheets.Count]), results, maxPoint,
+                    AddDetailSheet(book.Sheets.Add(After: book.Sheets[book.Sheets.Count]), results,
                         numOfQuestion);
 
                     //Add Analyze Sheet
-                    AddDataAnalyzeSheet(book.Sheets.Add(After: book.Sheets[book.Sheets.Count]), results, maxPoint,
-                        numOfQuestion, book.Worksheets[1]);
+                    AddDataAnalyzeSheet(book.Sheets.Add(After: book.Sheets[book.Sheets.Count]), book.Worksheets[1]);
 
                     //Saving file to location
 
@@ -53,7 +52,7 @@ namespace DBI_PEA_Scoring.Utils
             }
         }
 
-        private static void AddDetailSheet(Worksheet sheetDetail, List<Result> results, double maxPoint,
+        private static void AddDetailSheet(Worksheet sheetDetail, List<Result> results,
             int numOfQuestion)
         {
             sheetDetail.Name = "02_Detail";
@@ -96,8 +95,7 @@ namespace DBI_PEA_Scoring.Utils
             sheetDetail.Range["A:X"].RowHeight = 20;
         }
 
-        private static void AddDataAnalyzeSheet(Worksheet sheetDataAnalyze, List<Result> results, double maxPoint,
-            int numOfQuestion, Worksheet sheetResult)
+        private static void AddDataAnalyzeSheet(Worksheet sheetDataAnalyze, Worksheet sheetResult)
         {
             //Insert Title
             sheetDataAnalyze.Name = "03_DataAnalyze";
@@ -113,7 +111,7 @@ namespace DBI_PEA_Scoring.Utils
             {
                 lastRow++;
                 sheetDataAnalyze.Cells[lastRow, 1] = string.Concat("'>=", i);
-                sheetDataAnalyze.Cells[lastRow, 2] = wsf.CountIfs(scoreRange, string.Concat(">=", i), scoreRange,
+                sheetDataAnalyze.Cells[lastRow, 2] = _wsf.CountIfs(scoreRange, string.Concat(">=", i), scoreRange,
                     string.Concat("<", i + 1));
             }
             //Add Score Line Chart

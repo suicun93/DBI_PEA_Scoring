@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Configuration;
 using System.Data.SqlClient;
-using DBI_PEA_Scoring.Common;
+using DBI_PEA_Grading.Common;
 
-namespace DBI_PEA_Scoring.Utils.Dao
+namespace DBI_PEA_Grading.Utils.Dao
 {
     partial class General
     {
@@ -48,7 +48,7 @@ namespace DBI_PEA_Scoring.Utils.Dao
             catch (Exception)
             {
                 // If DB is not exist or some exception here, we let them out.
-                Constant.ListDBTemp.Add(dbName);
+                Constant.ListDbTemp.Add(dbName);
             }
         }
 

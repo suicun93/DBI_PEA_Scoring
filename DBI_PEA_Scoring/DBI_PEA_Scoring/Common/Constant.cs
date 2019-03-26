@@ -1,21 +1,19 @@
 ﻿using System.Collections.Generic;
 using System.Data.SqlClient;
-using DBI_PEA_Scoring.Model.Teacher;
+using DBI_PEA_Grading.Model.Teacher;
 
-namespace DBI_PEA_Scoring.Common
+namespace DBI_PEA_Grading.Common
 {
     public class Constant
     {
         //public static Database[] listDB = null;
-        public static List<string> ListDBTemp = new List<string>();
+        public static List<string> ListDbTemp = new List<string>();
 
         //Configure SQL
-        public static int TimeOutInSecond = 10;
+        public static int TimeOutInSecond;
 
         public static int MaxThreadPoolSize = 1;
         public static int MaxConnectionPoolSize = 1;
-
-        public static double minusPoint = 0.1;
 
         // This will be configured in General.cs when user check connection to sql.
         public static SqlConnectionStringBuilder SqlConnectionStringBuilder = null;

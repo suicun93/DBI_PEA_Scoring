@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
-using DBI_PEA_Scoring.Common;
-using DBI_PEA_Scoring.Model;
-using DBI_PEA_Scoring.Utils;
+using DBI_PEA_Grading.Common;
+using DBI_PEA_Grading.Model;
+using DBI_PEA_Grading.Model.Student;
+using DBI_PEA_Grading.Utils;
 
-namespace DBI_PEA_Scoring.UI
+namespace DBI_PEA_Grading.UI
 {
     public partial class Grading : Form
     {
@@ -74,7 +75,7 @@ namespace DBI_PEA_Scoring.UI
             for (var i = 0; i < Constant.PaperSet.QuestionSet.QuestionList.Count; i++)
                 scoreGridView.Columns.Add(new DataGridViewTextBoxColumn
                 {
-                    Name = "Answer " + (i + 1)
+                    Name = "Question " + (i + 1)
                 });
         }
 

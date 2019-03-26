@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Windows.Forms;
 
-namespace DBI_PEA_Scoring.UI
+namespace DBI_PEA_Grading.UI
 {
     partial class ImportMaterial
     {

@@ -2,7 +2,7 @@
 using System.IO;
 using System.Windows.Forms;
 
-namespace DBI_PEA_Scoring.Utils
+namespace DBI_PEA_Grading.Utils
 {
     internal class FileUtils
     {
@@ -31,8 +31,8 @@ namespace DBI_PEA_Scoring.Utils
         {
             // Displays an OpenFileDialog so the user can select a File.  
             var ofd = new OpenFileDialog();
-            ofd.Filter = "Data File|*.dat";
-            ofd.Title = "Select a Data File";
+            ofd.Filter = @"Data File|*.dat";
+            ofd.Title = @"Select a Data File";
             ofd.Multiselect = false;
             // If the user clicked OK in the dialog and  
             // a .DAT file was selected, take the local path of it.  

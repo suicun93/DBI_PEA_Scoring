@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using DBI_PEA_Scoring.Common;
-using DBI_PEA_Scoring.Utils;
+using DBI_PEA_Grading.Common;
+using DBI_PEA_Grading.Model.Teacher;
+using DBI_PEA_Grading.Utils;
 
-namespace DBI_PEA_Scoring.Model
+namespace DBI_PEA_Grading.Model
 {
     public class Result
     {
@@ -46,8 +47,9 @@ namespace DBI_PEA_Scoring.Model
         ///     True if correct
         ///     False if incorrect.
         /// </returns>
-        /// <exception cref="SQLException">
+        /// <exception>
         ///     if exception was found, throw it for GetPoint function to handle
+        ///     <cref>SQLException</cref>
         /// </exception>
         private Dictionary<string, string> GradeAnswer(Candidate candidate, string answer, int questionOrder)
         {
@@ -65,7 +67,7 @@ namespace DBI_PEA_Scoring.Model
                     return PaperUtils.SelectType(candidate, StudentID, answer, questionOrder);
                 case Candidate.QuestionTypes.DML:
                     // DML: Insert/Delete/Update Question
-                    return PaperUtils.DMLType(candidate, StudentID, answer, questionOrder);
+                    return PaperUtils.DmlType(candidate, StudentID, answer, questionOrder);
                 case Candidate.QuestionTypes.Procedure:
                     // Procedure Question
                     return PaperUtils.TriggerProcedureType(candidate, StudentID, answer, questionOrder);
@@ -77,6 +79,8 @@ namespace DBI_PEA_Scoring.Model
                     throw new Exception("This question type has not been supported yet.");
             }
         }
+
+
 
         /// <summary>
         ///     Get GradeAnswer function
@@ -102,8 +106,10 @@ namespace DBI_PEA_Scoring.Model
                     //bool correct = await Cham(ListCandidates.ElementAt(i), ListAnswers.ElementAt(i));
                     if (numberOfQuestion > questionOrder)
                     {
-                        var res = GradeAnswer(ListCandidates.ElementAt(questionOrder),
-                            ListAnswers.ElementAt(questionOrder), questionOrder);
+                        //var res = Utilities.WithTimeout(
+                        //    () => GradeAnswer(ListCandidates.ElementAt(order),
+                        //        ListAnswers.ElementAt(order), order), Constant.TimeOutInSecond);
+                        var res = GradeAnswer(ListCandidates.ElementAt(questionOrder), ListAnswers.ElementAt(questionOrder), questionOrder);
                         //Exactly -> Log true and return 0 point
                         if (res != null)
                         {

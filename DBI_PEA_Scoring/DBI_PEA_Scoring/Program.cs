@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Windows.Forms;
-using DBI_PEA_Scoring.UI;
+using DBI_PEA_Grading.UI;
 
-namespace DBI_PEA_Scoring
+namespace DBI_PEA_Grading
 {
     internal static class Program
     {

@@ -1,4 +1,4 @@
-﻿namespace DBI_PEA_Scoring.Utils.Dao
+﻿namespace DBI_PEA_Grading.Utils.Dao
 {
     internal class SchemaType
     {
