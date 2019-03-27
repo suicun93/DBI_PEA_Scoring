@@ -87,6 +87,11 @@ namespace DBI_Grading.UI
 
         private void BrowseAnswerButton_Click(object sender, EventArgs e)
         {
+            if (Constant.PaperSet == null)
+            {
+                MessageBox.Show("You must import PaperSet first to get number question count!");
+                return;
+            }
             // Init List submissions
             Listsubmissions = new List<Submission>();
             try
@@ -103,7 +108,8 @@ namespace DBI_Grading.UI
                 Text = "Import Material - Importing";
                 ImportAnswerButton.Enabled = false;
                 GetMarkButton.Enabled = false;
-                ThreadPool.QueueUserWorkItem(callBack => GetAnswers(AnswerPath));
+                Thread t = new Thread(() => SafeThreadCaller(() => GetAnswers(), ExceptionHandler));
+                t.Start();
             }
             catch (Exception ex)
             {
@@ -113,7 +119,24 @@ namespace DBI_Grading.UI
             }
         }
 
-        private void GetAnswers(string AnswerPath)
+        void SafeThreadCaller(Action method, Action<Exception> handler)
+        {
+            try
+            {
+                method?.Invoke();
+            }
+            catch (Exception e)
+            {
+                handler(e);
+            }
+        }
+
+        void ExceptionHandler(Exception e)
+        {
+            MessageBox.Show(e.Message);
+        }
+
+        private void GetAnswers()
         {
             try
             {
@@ -136,7 +159,7 @@ namespace DBI_Grading.UI
                     if (!paperNoPaths.Any())
                         throw new Exception("No PaperNo was found in " + directory);
                     // Update UI
-                    answerTextBox.Invoke((MethodInvoker) (() => { answerTextBox.Text = AnswerPath; }));
+                    answerTextBox.Invoke((MethodInvoker)(() => { answerTextBox.Text = AnswerPath; }));
                     // PaperNo Found
                     foreach (var paperNoPath in paperNoPaths)
                     {
@@ -203,11 +226,11 @@ namespace DBI_Grading.UI
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.Message);
+                throw e;
             }
             finally
             {
-                Invoke((MethodInvoker) (() =>
+                Invoke((MethodInvoker)(() =>
                 {
                     Application.UseWaitCursor = false;
                     Text = "Import Material";
@@ -277,14 +300,8 @@ namespace DBI_Grading.UI
             }
         }
 
-        private void ImportMaterial_FormClosed(object sender, FormClosedEventArgs e)
-        {
-            Application.Exit();
-        }
+        private void ImportMaterial_FormClosed(object sender, FormClosedEventArgs e) => Application.Exit();
 
-        private string GetNumbers(string input)
-        {
-            return new string(input.Where(c => char.IsDigit(c)).ToArray());
-        }
+        private string GetNumbers(string input) => new string(input.Where(c => char.IsDigit(c)).ToArray());
     }
 }
