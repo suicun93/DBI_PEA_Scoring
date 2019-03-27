@@ -23,9 +23,9 @@ namespace DBI_Grading.UI
         public ImportMaterial()
         {
             InitializeComponent();
+            // Get sql connection information from App.config
             try
             {
-                // Get sql connection information from App.config
                 usernameTextBox.Text = ConfigurationManager.AppSettings["username"];
                 passwordTextBox.Text = ConfigurationManager.AppSettings["password"];
                 serverNameTextBox.Text = ConfigurationManager.AppSettings["serverName"];
@@ -277,14 +277,8 @@ namespace DBI_Grading.UI
             }
         }
 
-        private void ImportMaterial_FormClosed(object sender, FormClosedEventArgs e)
-        {
-            Application.Exit();
-        }
+        private void ImportMaterial_FormClosed(object sender, FormClosedEventArgs e) => Application.Exit();
 
-        private string GetNumbers(string input)
-        {
-            return new string(input.Where(c => char.IsDigit(c)).ToArray());
-        }
+        private string GetNumbers(string input) => new string(input.Where(c => char.IsDigit(c)).ToArray());
     }
 }
