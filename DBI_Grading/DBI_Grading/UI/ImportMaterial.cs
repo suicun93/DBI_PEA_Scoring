@@ -150,9 +150,9 @@ namespace DBI_Grading.UI
                     throw new Exception("Folder StudentSolution was not found in " + AnswerPath);
 
                 // Look up StudentSolution
-                if (Directory.Exists(AnswerPath + "/StudentSolution"))
+                if (Directory.Exists(AnswerPath + @"\StudentSolution"))
                 {
-                    var directory = AnswerPath + "/StudentSolution";
+                    var directory = AnswerPath + @"\StudentSolution";
                     // List PaperNo
                     var paperNoPaths = Directory.GetDirectories(directory);
                     // Check bao nhieu de duoc import
@@ -170,7 +170,6 @@ namespace DBI_Grading.UI
                         foreach (var rollNumberPath in rollNumberPaths)
                         {
                             var rollNumber = new DirectoryInfo(rollNumberPath).Name;
-                            var solutionPaths = Directory.GetDirectories(rollNumberPath);
                             // Init submission for student to add to list
                             var submission = new Submission
                             {
@@ -179,13 +178,17 @@ namespace DBI_Grading.UI
                             };
                             try
                             {
-                                var solutionPath = solutionPaths[0]; // "0" folder
-                                var zipFiles = Directory.GetFiles(solutionPath, "*.zip");
+                                if (!Directory.Exists(rollNumberPath + @"\0"))
+                                {
+                                    throw new Exception("Folder 0 not found with " + rollNumber);
+                                }
+                                var solutionPath = rollNumberPath + @"\0"; // "0" folder
+                                //var zipFiles = Directory.GetFiles(solutionPath, "*.zip");
                                 // Check co nop bai hay khong
-                                if (zipFiles.Count() > 0)
+                                if (File.Exists(solutionPath + @"\Solution.zip"))
                                 {
                                     // Student co nop answers
-                                    var zipSolutionPath = zipFiles[0];
+                                    var zipSolutionPath = solutionPath + @"\Solution.zip";
 
                                     // Extract zip
                                     if (Directory.Exists(solutionPath + "/extract"))
