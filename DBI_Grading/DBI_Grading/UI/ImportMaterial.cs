@@ -178,14 +178,14 @@ namespace DBI_Grading.UI
                             };
                             try
                             {
-                                if (!Directory.Exists(rollNumberPath + @"\0"))
-                                {
+                                if (!Directory.Exists(rollNumberPath + @"\0")) 
                                     throw new Exception("Folder 0 not found with " + rollNumber);
-                                }
+                               
                                 var solutionPath = rollNumberPath + @"\0"; // "0" folder
-                                //var zipFiles = Directory.GetFiles(solutionPath, "*.zip");
-                                // Check co nop bai hay khong
-                                if (File.Exists(solutionPath + @"\Solution.zip"))
+                                // Check tool cua thay co bi thieu Solution.zip khong
+                                if (!File.Exists(solutionPath + @"\Solution.zip"))
+                                    throw new Exception("Solution.zip was not found with " + rollNumber);
+                                else
                                 {
                                     // Student co nop answers
                                     var zipSolutionPath = solutionPath + @"\Solution.zip";
