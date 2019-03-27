@@ -81,10 +81,10 @@
     <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.IO.Compression">
-      <HintPath>..\..\..\Self\Grading\packages\System.IO.Compression.dll</HintPath>
+      <HintPath>..\packages\System.IO.Compression.dll</HintPath>
     </Reference>
     <Reference Include="System.IO.Compression.FileSystem">
-      <HintPath>..\..\..\Self\Grading\packages\System.IO.Compression.FileSystem.dll</HintPath>
+      <HintPath>..\packages\System.IO.Compression.FileSystem.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
