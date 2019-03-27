@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
-using System.Globalization;
-using System.Text.RegularExpressions;
 using DBI_Grading.Common;
-using DBI_Grading.Model.Teacher;
 using Microsoft.SqlServer.Management.Common;
 using Microsoft.SqlServer.Management.Smo;
 
@@ -25,13 +21,13 @@ namespace DBI_Grading.Utils.Dao
                 connection.Open();
                 using (var command = new SqlCommand(query, connection))
                 {
-                    return (int)command.ExecuteScalar();
+                    return (int) command.ExecuteScalar();
                 }
             }
         }
 
         /// <summary>
-        /// Get DataSet
+        ///     Get DataSet
         /// </summary>
         /// <param name="query"></param>
         /// <returns></returns>
@@ -54,15 +50,16 @@ namespace DBI_Grading.Utils.Dao
         }
 
         /// <summary>
-        /// Get DataSet
+        ///     Get DataSet
         /// </summary>
         /// <param name="query"></param>
-        /// <returns>datatable[1] as Schema of Table
-        /// datatable[0] as Data of Table
+        /// <returns>
+        ///     datatable[1] as Schema of Table
+        ///     datatable[0] as Data of Table
         /// </returns>
         public static DataTable[] GetDataTableFromReader(string query)
         {
-            DataTable[] dataTables = new DataTable[2];
+            var dataTables = new DataTable[2];
             dataTables[0] = new DataTable();
             dataTables[1] = new DataTable();
             var builder = Constant.SqlConnectionStringBuilder;
@@ -198,38 +195,38 @@ namespace DBI_Grading.Utils.Dao
         }
 
         /// <summary>
-        /// To kill all session connected to sql server from the tool
+        ///     To kill all session connected to sql server from the tool
         /// </summary>
         public static void KillAllSessionSql()
         {
             try
             {
-                string queryKillNow = "use master ";
-                var builder = new SqlConnectionStringBuilder()
+                var queryKillNow = "use master ";
+                var builder = new SqlConnectionStringBuilder
                 {
                     ConnectTimeout = Constant.TimeOutInSecond,
                     DataSource = ConfigurationManager.AppSettings["serverName"],
                     IntegratedSecurity = true,
                     InitialCatalog = ConfigurationManager.AppSettings["initialCatalog"]
                 };
-                using (SqlConnection conn = new SqlConnection(builder.ConnectionString))
+                using (var conn = new SqlConnection(builder.ConnectionString))
                 {
                     conn.Open();
-                    string queryGetSession = "SELECT conn.session_id, host_name, program_name,\n" +
-                                             "    nt_domain, login_name, connect_time, last_request_end_time \n" +
-                                             "FROM sys.dm_exec_sessions AS sess\n" +
-                                             "JOIN sys.dm_exec_connections AS conn\n" +
-                                             "   ON sess.session_id = conn.session_id\n" +
-                                             "   WHERE program_name = '.Net SqlClient Data Provider' " +
-                                             "AND login_name = '" + ConfigurationManager.AppSettings["username"] + "'";
-                    int countSession = 0;
+                    var queryGetSession = "SELECT conn.session_id, host_name, program_name,\n" +
+                                          "    nt_domain, login_name, connect_time, last_request_end_time \n" +
+                                          "FROM sys.dm_exec_sessions AS sess\n" +
+                                          "JOIN sys.dm_exec_connections AS conn\n" +
+                                          "   ON sess.session_id = conn.session_id\n" +
+                                          "   WHERE program_name = '.Net SqlClient Data Provider' " +
+                                          "AND login_name = '" + ConfigurationManager.AppSettings["username"] + "'";
+                    var countSession = 0;
                     using (var command = new SqlCommand(queryGetSession, conn))
                     {
-                        using (SqlDataReader reader = command.ExecuteReader())
+                        using (var reader = command.ExecuteReader())
                         {
                             while (reader.Read())
                             {
-                                int id = reader.GetInt32(0);
+                                var id = reader.GetInt32(0);
                                 queryKillNow += " KILL " + id + " ";
                                 countSession++;
                             }

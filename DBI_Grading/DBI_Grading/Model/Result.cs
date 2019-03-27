@@ -81,7 +81,6 @@ namespace DBI_Grading.Model
         }
 
 
-
         /// <summary>
         ///     Get GradeAnswer function
         /// </summary>
@@ -109,7 +108,8 @@ namespace DBI_Grading.Model
                         //var res = Utilities.WithTimeout(
                         //    () => GradeAnswer(ListCandidates.ElementAt(order),
                         //        ListAnswers.ElementAt(order), order), Constant.TimeOutInSecond);
-                        var res = GradeAnswer(ListCandidates.ElementAt(questionOrder), ListAnswers.ElementAt(questionOrder), questionOrder);
+                        var res = GradeAnswer(ListCandidates.ElementAt(questionOrder),
+                            ListAnswers.ElementAt(questionOrder), questionOrder);
                         //Exactly -> Log true and return 0 point
                         if (res != null)
                         {

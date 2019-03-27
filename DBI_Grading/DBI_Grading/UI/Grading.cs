@@ -109,12 +109,12 @@ namespace DBI_Grading.UI
                 {
                     var currentResult = ListResults.ElementAt(row);
                     // Prepare 2 first columns
-                    scoreGridView.Invoke((MethodInvoker)(() =>
-                   {
-                       scoreGridView.Rows.Add(1);
-                       scoreGridView.Rows[row].Cells[0].Value = currentResult.StudentID;
-                       scoreGridView.Rows[row].Cells[1].Value = currentResult.PaperNo;
-                   }));
+                    scoreGridView.Invoke((MethodInvoker) (() =>
+                    {
+                        scoreGridView.Rows.Add(1);
+                        scoreGridView.Rows[row].Cells[0].Value = currentResult.StudentID;
+                        scoreGridView.Rows[row].Cells[1].Value = currentResult.PaperNo;
+                    }));
                     var input = new Input(row, currentResult);
                     ThreadPool.QueueUserWorkItem(callBack => Grade(input));
                 }
@@ -131,13 +131,13 @@ namespace DBI_Grading.UI
             input.Result.GetPoint();
             // Refresh to show point and scroll view to the last row
             // Show point of each question
-            scoreGridView.Invoke((MethodInvoker)(() =>
-           {
-               scoreGridView.Rows[input.Row].Cells[2].Value = input.Result.SumOfPoint();
-               for (var questionOrder = 0; questionOrder < input.Result.ListCandidates.Count; questionOrder++)
-                   scoreGridView.Rows[input.Row].Cells[3 + questionOrder].Value =
-                       input.Result.Points[questionOrder].ToString();
-           }));
+            scoreGridView.Invoke((MethodInvoker) (() =>
+            {
+                scoreGridView.Rows[input.Row].Cells[2].Value = input.Result.SumOfPoint();
+                for (var questionOrder = 0; questionOrder < input.Result.ListCandidates.Count; questionOrder++)
+                    scoreGridView.Rows[input.Row].Cells[3 + questionOrder].Value =
+                        input.Result.Points[questionOrder].ToString();
+            }));
             CountDown();
         }
 
@@ -149,7 +149,7 @@ namespace DBI_Grading.UI
             count++;
             if (count == ListResults.Count)
             {
-                exportButton.Invoke((MethodInvoker)(() => { exportButton.Enabled = true; }));
+                exportButton.Invoke((MethodInvoker) (() => { exportButton.Enabled = true; }));
 
                 // Done
                 var dialogResult = MessageBox.Show("Do you want to export result?", "Result", MessageBoxButtons.YesNo);

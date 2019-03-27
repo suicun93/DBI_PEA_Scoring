@@ -11,7 +11,7 @@ using DBI_Grading.Common;
 using DBI_Grading.Model.Student;
 using DBI_Grading.Model.Teacher;
 using DBI_Grading.Utils;
-using General = DBI_Grading.Utils.Dao.General;
+using DBI_Grading.Utils.Dao;
 
 namespace DBI_Grading.UI
 {
@@ -136,7 +136,7 @@ namespace DBI_Grading.UI
                     if (!paperNoPaths.Any())
                         throw new Exception("No PaperNo was found in " + directory);
                     // Update UI
-                    answerTextBox.Invoke((MethodInvoker)(() => { answerTextBox.Text = AnswerPath; }));
+                    answerTextBox.Invoke((MethodInvoker) (() => { answerTextBox.Text = AnswerPath; }));
                     // PaperNo Found
                     foreach (var paperNoPath in paperNoPaths)
                     {
@@ -207,13 +207,13 @@ namespace DBI_Grading.UI
             }
             finally
             {
-                Invoke((MethodInvoker)(() =>
-               {
-                   Application.UseWaitCursor = false;
-                   Text = "Import Material";
-                   ImportAnswerButton.Enabled = true;
-                   GetMarkButton.Enabled = true;
-               }));
+                Invoke((MethodInvoker) (() =>
+                {
+                    Application.UseWaitCursor = false;
+                    Text = "Import Material";
+                    ImportAnswerButton.Enabled = true;
+                    GetMarkButton.Enabled = true;
+                }));
             }
         }
 
@@ -277,8 +277,14 @@ namespace DBI_Grading.UI
             }
         }
 
-        private void ImportMaterial_FormClosed(object sender, FormClosedEventArgs e) => Application.Exit();
+        private void ImportMaterial_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            Application.Exit();
+        }
 
-        private string GetNumbers(string input) => new string(input.Where(c => char.IsDigit(c)).ToArray());
+        private string GetNumbers(string input)
+        {
+            return new string(input.Where(c => char.IsDigit(c)).ToArray());
+        }
     }
 }

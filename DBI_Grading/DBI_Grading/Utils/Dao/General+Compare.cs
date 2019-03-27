@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.SqlClient;
+﻿using System.Data;
 using System.Linq;
-using DBI_Grading.Common;
-using DBI_Grading.Model.Teacher;
 
 // ReSharper disable SpecifyACultureInStringConversionExplicitly
 
@@ -66,7 +61,7 @@ namespace DBI_Grading.Utils.Dao
         }
 
         /// <summary>
-        /// Compare 2 DataSet
+        ///     Compare 2 DataSet
         /// </summary>
         /// <param name="dataSetAnswer"></param>
         /// <param name="dataSetSolution"></param>
@@ -79,9 +74,7 @@ namespace DBI_Grading.Utils.Dao
                 foreach (DataTable dataTableAnswer in dataSetAnswer.Tables)
                 {
                     if (CompareTwoDataTablesByRow(dataTableAnswer, dataTableSolution))
-                    {
                         break;
-                    }
                     countComparison++;
                 }
                 if (countComparison == dataSetAnswer.Tables.Count)
@@ -89,6 +82,5 @@ namespace DBI_Grading.Utils.Dao
             }
             return true;
         }
-
     }
 }

@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlClient;
 using System.Linq;
-using DBI_Grading.Common;
 using DBI_Grading.Model.Teacher;
 using DBI_Grading.Utils.Dao;
 
 namespace DBI_Grading.Utils
 {
-    class CompareUtils
+    internal class CompareUtils
     {
         /// <summary>
         ///     Compare 2 databases
@@ -50,10 +48,11 @@ namespace DBI_Grading.Utils
             comment += "Count Tables in database: ";
             if (countAnswerTables > countSolutionTables)
             {
-                var ratePoint = (double)countSolutionTables / countAnswerTables;
+                var ratePoint = (double) countSolutionTables / countAnswerTables;
                 maxPoint = Math.Round(candidate.Point * ratePoint, 2);
                 comment += string.Concat("Answer has more tables than Solution's database (", countAnswerTables, ">",
-                    countSolutionTables, ") => Decrease Max Point by ", Math.Round(ratePoint * 100, 2), "% => Max Point = ", maxPoint,
+                    countSolutionTables, ") => Decrease Max Point by ", Math.Round(ratePoint * 100, 2),
+                    "% => Max Point = ", maxPoint,
                     "\n");
             }
             else if (countSolutionTables > countAnswerTables)
@@ -161,10 +160,11 @@ namespace DBI_Grading.Utils
             Candidate candidate)
         {
             //Running answer query// index 0 as data table, index 1 as schema table
-            DataTable[] dataTableAnswer = General.GetDataTableFromReader("USE [" + dbAnswerName + "];\n" + answer + "");
+            var dataTableAnswer = General.GetDataTableFromReader("USE [" + dbAnswerName + "];\n" + answer + "");
 
             //Running Solution 
-            DataTable[] dataTableSolution = General.GetDataTableFromReader("USE [" + dbSolutionName + "];\n" + candidate.Solution + "");
+            var dataTableSolution =
+                General.GetDataTableFromReader("USE [" + dbSolutionName + "];\n" + candidate.Solution + "");
 
             //Number of testcases
             var numOfTc = 0;
@@ -288,11 +288,10 @@ namespace DBI_Grading.Utils
                 gradePoint = Math.Round(tcCount * tcPoint + gradePoint, 2);
             comment = string.Concat("Total Point: ", gradePoint, "/", candidate.Point, "\n", comment);
             return new Dictionary<string, string>
-                {
-                    {"Point", gradePoint.ToString()},
-                    {"Comment", comment}
-                };
-
+            {
+                {"Point", gradePoint.ToString()},
+                {"Comment", comment}
+            };
         }
 
         /// <summary>
@@ -336,12 +335,14 @@ namespace DBI_Grading.Utils
 
                 if (General.CompareTwoDataSetsByRow(dataSetAnswer, dataSetSolution))
                 {
-                    var ratePoint = (double)dataSetSolution.Tables.Count / dataSetAnswer.Tables.Count;
+                    var ratePoint = (double) dataSetSolution.Tables.Count / dataSetAnswer.Tables.Count;
                     var maxTcPoint = Math.Round(testCase.Point * ratePoint, 2);
                     if (dataSetAnswer.Tables.Count > dataSetSolution.Tables.Count)
                     {
-                        comment += string.Concat("Answer has more tables than Solution's database (", dataSetAnswer.Tables.Count, ">",
-                            dataSetSolution.Tables.Count, ") => Decrease Max Point by ", Math.Round(ratePoint * 100, 2), "% => Max TC Point = ", maxTcPoint,
+                        comment += string.Concat("Answer has more tables than Solution's database (",
+                            dataSetAnswer.Tables.Count, ">",
+                            dataSetSolution.Tables.Count, ") => Decrease Max Point by ", Math.Round(ratePoint * 100, 2),
+                            "% => Max TC Point = ", maxTcPoint,
                             "\n");
                         countTesting--;
                     }
@@ -358,12 +359,10 @@ namespace DBI_Grading.Utils
             comment = string.Concat("Total Point: ", gradePoint, "/", candidate.Point, "\n", comment);
             gradePoint = countTrueTc == testCases.Count ? maxPoint : gradePoint;
             return new Dictionary<string, string>
-                    {
-                        {"Point", gradePoint.ToString()},
-                        {"Comment", comment}
-                    };
+            {
+                {"Point", gradePoint.ToString()},
+                {"Comment", comment}
+            };
         }
-
     }
 }
-

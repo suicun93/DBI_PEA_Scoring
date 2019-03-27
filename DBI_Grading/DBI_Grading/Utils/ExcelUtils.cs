@@ -9,8 +9,8 @@ namespace DBI_Grading.Utils
 {
     internal class ExcelUtils
     {
-        public static int LastRowOfResultSheet { get; private set; }
         private static WorksheetFunction _wsf;
+        public static int LastRowOfResultSheet { get; private set; }
 
         public static void ExportResultsExcel(List<Result> results, double maxPoint, int numOfQuestion)
         {

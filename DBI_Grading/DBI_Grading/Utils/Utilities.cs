@@ -8,7 +8,7 @@ using DBI_Grading.Model.Teacher;
 
 namespace DBI_Grading.Utils
 {
-    class Utilities
+    internal class Utilities
     {
         public static T WithTimeout<T>(Func<T> proc, int duration)
         {
@@ -33,40 +33,38 @@ namespace DBI_Grading.Utils
 
             // not sure if this is really needed in general
             while (t.ThreadState != ThreadState.Running)
-            {
                 Thread.Sleep(0);
-            }
 
-            if (!reset.WaitOne(duration*1000))
+            if (!reset.WaitOne(duration * 1000))
             {
                 t.Abort();
                 throw new TimeoutException();
             }
 
             if (ex != null)
-            {
                 throw ex;
-            }
             return r;
         }
 
         public static List<TestCase> GetTestCases(Candidate candidate)
         {
-            Match matchPoint = Regex.Match(candidate.TestQuery, @"(/\*(.|[\r\n])*?\*/)|(--(.*|[\r\n]))", RegexOptions.Singleline);
-            Match matchQuery = Regex.Match(candidate.TestQuery + "/*", @"(\*/(.|[\r\n])*?/\*)|(--(.*|[\r\n]))", RegexOptions.Multiline);
-            List<string> queryList = new List<string>();
+            var matchPoint = Regex.Match(candidate.TestQuery, @"(/\*(.|[\r\n])*?\*/)|(--(.*|[\r\n]))",
+                RegexOptions.Singleline);
+            var matchQuery = Regex.Match(candidate.TestQuery + "/*", @"(\*/(.|[\r\n])*?/\*)|(--(.*|[\r\n]))",
+                RegexOptions.Multiline);
+            var queryList = new List<string>();
             while (matchQuery.Success)
             {
                 queryList.Add(matchQuery.Value.Split('/')[1].Trim());
                 matchQuery = matchQuery.NextMatch();
             }
 
-            List<TestCase> tcpList = new List<TestCase>();
-            int count = 0;
-            TestCase tcp = new TestCase();
+            var tcpList = new List<TestCase>();
+            var count = 0;
+            var tcp = new TestCase();
             while (matchPoint.Success)
             {
-                string matchFormatted = matchPoint.Value.Split('*')[1];
+                var matchFormatted = matchPoint.Value.Split('*')[1];
                 if (count++ % 2 == 0)
                 {
                     tcp.Point = double.Parse(matchFormatted, CultureInfo.InvariantCulture);
@@ -98,4 +96,3 @@ namespace DBI_Grading.Utils
         }
     }
 }
-
