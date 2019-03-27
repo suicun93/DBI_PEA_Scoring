@@ -128,7 +128,7 @@ namespace DBI_PEA_Grading.UI
                     if (!paperNoPaths.Any())
                         throw new Exception("No PaperNo was found in " + directory);
                     // Update UI
-                    answerTextBox.Invoke((MethodInvoker) (() => { answerTextBox.Text = AnswerPath; }));
+                    answerTextBox.Invoke((MethodInvoker)(() => { answerTextBox.Text = AnswerPath; }));
                     // PaperNo Found
                     foreach (var paperNoPath in paperNoPaths)
                     {
@@ -195,17 +195,17 @@ namespace DBI_PEA_Grading.UI
             }
             catch (Exception e)
             {
-                throw e;
+                MessageBox.Show(e.Message);
             }
             finally
             {
-                Invoke((MethodInvoker) (() =>
-                {
-                    Application.UseWaitCursor = false;
-                    Text = "Import Material";
-                    ImportAnswerButton.Enabled = true;
-                    GetMarkButton.Enabled = true;
-                }));
+                Invoke((MethodInvoker)(() =>
+               {
+                   Application.UseWaitCursor = false;
+                   Text = "Import Material";
+                   ImportAnswerButton.Enabled = true;
+                   GetMarkButton.Enabled = true;
+               }));
             }
         }
 
