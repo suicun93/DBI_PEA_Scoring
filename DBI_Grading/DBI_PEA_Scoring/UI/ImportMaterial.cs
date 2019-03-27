@@ -23,12 +23,20 @@ namespace DBI_PEA_Grading.UI
         public ImportMaterial()
         {
             InitializeComponent();
-            // Get sql connection information from App.config
-            usernameTextBox.Text = ConfigurationManager.AppSettings["username"];
-            passwordTextBox.Text = ConfigurationManager.AppSettings["password"];
-            serverNameTextBox.Text = ConfigurationManager.AppSettings["serverName"];
-            initialCatalogTextBox.Text = ConfigurationManager.AppSettings["initialCatalog"];
-            Constant.TimeOutInSecond = int.Parse(ConfigurationManager.AppSettings["timeOutInSecond"]);
+            try
+            {
+                // Get sql connection information from App.config
+                usernameTextBox.Text = ConfigurationManager.AppSettings["username"];
+                passwordTextBox.Text = ConfigurationManager.AppSettings["password"];
+                serverNameTextBox.Text = ConfigurationManager.AppSettings["serverName"];
+                initialCatalogTextBox.Text = ConfigurationManager.AppSettings["initialCatalog"];
+                Constant.TimeOutInSecond = int.Parse(ConfigurationManager.AppSettings["timeOutInSecond"]);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Load config error " + e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Application.Exit();
+            }
 
             // Auto Check connection import DB Question set and Answer of student for debug cho nhanh
             CheckConnectionButton_Click(null, null);
