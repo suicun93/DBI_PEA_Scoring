@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{F10D30B5-FF50-4C5F-92BA-6FC82E6F36B7}</ProjectGuid>
+    <ProjectGuid>{507D0910-96EC-426B-A87F-D5F0ECCDF919}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <RootNamespace>DBI_PEA_Scoring</RootNamespace>
     <AssemblyName>DBI_PEA_Scoring</AssemblyName>
@@ -56,11 +56,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Office.Interop.Excel, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
-      <HintPath>..\..\DBI_Grading\DBI_Grading\packages\Microsoft.Office.Interop.Excel.15.0.4795.1000\lib\net20\Microsoft.Office.Interop.Excel.dll</HintPath>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </Reference>
-    <Reference Include="Microsoft.Office.Interop.Word, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
-      <HintPath>..\..\DBI_Grading\DBI_Grading\packages\Microsoft.Office.Interop.Word.15.0.4797.1003\lib\net20\Microsoft.Office.Interop.Word.dll</HintPath>
+      <HintPath>..\packages\Microsoft.Office.Interop.Excel.15.0.4795.1000\lib\net20\Microsoft.Office.Interop.Excel.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="microsoft.sqlserver.batchparser, Version=11.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=AMD64">
@@ -79,16 +75,16 @@
       <HintPath>..\packages\Microsoft.SqlServer.SqlClrProvider.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\..\DBI_Grading\DBI_Grading\packages\Newtonsoft.Json.11.0.1\lib\net40\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\Newtonsoft.Json.11.0.1\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.IO.Compression">
-      <HintPath>..\..\..\DBI_ShuffleTool\QuestionShufferTool\packages\System.IO.Compression.dll</HintPath>
+      <HintPath>..\packages\System.IO.Compression.dll</HintPath>
     </Reference>
     <Reference Include="System.IO.Compression.FileSystem">
-      <HintPath>..\..\..\DBI_ShuffleTool\QuestionShufferTool\packages\System.IO.Compression.FileSystem.dll</HintPath>
+      <HintPath>..\packages\System.IO.Compression.FileSystem.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -131,6 +127,7 @@
     <Compile Include="Utils\FileUtils.cs" />
     <Compile Include="Utils\JsonUtils.cs" />
     <Compile Include="Utils\PaperUtils.cs" />
+    <Compile Include="Utils\Utilities.cs" />
     <EmbeddedResource Include="UI\ImportMaterial.resx">
       <DependentUpon>ImportMaterial.cs</DependentUpon>
     </EmbeddedResource>

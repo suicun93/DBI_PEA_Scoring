@@ -27,3 +27,10 @@ E:\Capstone\DBI_PEA_Scoring\DBI_PEA_Scoring\DBI_PEA_Scoring\obj\Debug\DBI_PEA_Gr
 E:\Capstone\DBI_PEA_Scoring\DBI_PEA_Scoring\DBI_PEA_Scoring\obj\Debug\DBI_PEA_Grading.csproj.CopyComplete
 E:\Capstone\DBI_PEA_Scoring\DBI_PEA_Scoring\DBI_PEA_Scoring\obj\Debug\DBI_PEA_Grading.exe
 E:\Capstone\DBI_PEA_Scoring\DBI_PEA_Scoring\DBI_PEA_Scoring\obj\Debug\DBI_PEA_Grading.pdb
+C:\Users\hoangduc\Desktop\Project\KhaoThi\DBI_Grading\DBI_PEA_Scoring\obj\Debug\DBI_PEA_Grading.csprojAssemblyReference.cache
+C:\Users\hoangduc\Desktop\Project\KhaoThi\DBI_Grading\DBI_PEA_Scoring\obj\Debug\DBI_PEA_Grading.UI.ImportMaterial.resources
+C:\Users\hoangduc\Desktop\Project\KhaoThi\DBI_Grading\DBI_PEA_Scoring\obj\Debug\DBI_PEA_Grading.Properties.Resources.resources
+C:\Users\hoangduc\Desktop\Project\KhaoThi\DBI_Grading\DBI_PEA_Scoring\obj\Debug\DBI_PEA_Grading.UI.Grading.resources
+C:\Users\hoangduc\Desktop\Project\KhaoThi\DBI_Grading\DBI_PEA_Scoring\obj\Debug\DBI_PEA_Grading.csproj.GenerateResource.cache
+C:\Users\hoangduc\Desktop\Project\KhaoThi\DBI_Grading\DBI_PEA_Scoring\obj\Debug\DBI_PEA_Grading.exe
+C:\Users\hoangduc\Desktop\Project\KhaoThi\DBI_Grading\DBI_PEA_Scoring\obj\Debug\DBI_PEA_Grading.pdb
