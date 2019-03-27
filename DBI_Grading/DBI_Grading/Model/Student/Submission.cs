@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using DBI_PEA_Grading.Common;
+using DBI_Grading.Common;
 
-namespace DBI_PEA_Grading.Model.Student
+namespace DBI_Grading.Model.Student
 {
     [Serializable]
     public class Submission

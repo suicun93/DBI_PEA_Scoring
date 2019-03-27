@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
-using DBI_PEA_Grading.Common;
-using DBI_PEA_Grading.Model;
-using DBI_PEA_Grading.Model.Student;
-using DBI_PEA_Grading.Utils;
+using DBI_Grading.Common;
+using DBI_Grading.Model;
+using DBI_Grading.Model.Student;
+using DBI_Grading.Utils;
 
-namespace DBI_PEA_Grading.UI
+namespace DBI_Grading.UI
 {
     public partial class Grading : Form
     {

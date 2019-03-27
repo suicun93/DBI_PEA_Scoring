@@ -2,7 +2,7 @@
 using System.IO;
 using System.Windows.Forms;
 
-namespace DBI_PEA_Grading.Utils
+namespace DBI_Grading.Utils
 {
     internal class FileUtils
     {

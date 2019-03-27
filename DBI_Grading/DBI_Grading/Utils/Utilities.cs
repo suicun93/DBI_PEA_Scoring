@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 
-namespace DBI_PEA_Grading.Utils
+namespace DBI_Grading.Utils
 {
     class Utilities
     {

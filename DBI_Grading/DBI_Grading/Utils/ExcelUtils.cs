@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using DBI_PEA_Grading.Model;
+using DBI_Grading.Model;
 using Microsoft.Office.Interop.Excel;
 
-namespace DBI_PEA_Grading.Utils
+namespace DBI_Grading.Utils
 {
     internal class ExcelUtils
     {

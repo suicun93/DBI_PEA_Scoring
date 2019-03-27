@@ -5,12 +5,12 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Globalization;
 using System.Text.RegularExpressions;
-using DBI_PEA_Grading.Common;
-using DBI_PEA_Grading.Model.Teacher;
+using DBI_Grading.Common;
+using DBI_Grading.Model.Teacher;
 using Microsoft.SqlServer.Management.Common;
 using Microsoft.SqlServer.Management.Smo;
 
-namespace DBI_PEA_Grading.Utils.Dao
+namespace DBI_Grading.Utils.Dao
 {
     public partial class General
     {

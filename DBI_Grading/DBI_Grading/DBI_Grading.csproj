@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{507D0910-96EC-426B-A87F-D5F0ECCDF919}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>DBI_PEA_Scoring</RootNamespace>
-    <AssemblyName>DBI_PEA_Scoring</AssemblyName>
+    <RootNamespace>DBI_Grading</RootNamespace>
+    <AssemblyName>DBI_Grading</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>

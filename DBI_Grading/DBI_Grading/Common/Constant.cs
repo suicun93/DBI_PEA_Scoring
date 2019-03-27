@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Data.SqlClient;
-using DBI_PEA_Grading.Model.Teacher;
+using DBI_Grading.Model.Teacher;
 
-namespace DBI_PEA_Grading.Common
+namespace DBI_Grading.Common
 {
     public class Constant
     {

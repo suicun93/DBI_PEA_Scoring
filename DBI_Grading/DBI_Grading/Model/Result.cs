@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using DBI_PEA_Grading.Common;
-using DBI_PEA_Grading.Model.Teacher;
-using DBI_PEA_Grading.Utils;
+using DBI_Grading.Common;
+using DBI_Grading.Model.Teacher;
+using DBI_Grading.Utils;
 
-namespace DBI_PEA_Grading.Model
+namespace DBI_Grading.Model
 {
     public class Result
     {

@@ -1,4 +1,4 @@
-﻿namespace DBI_PEA_Grading.Model
+﻿namespace DBI_Grading.Model
 {
     public class Input
     {

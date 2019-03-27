@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Configuration;
 using System.Data.SqlClient;
-using DBI_PEA_Grading.Common;
+using DBI_Grading.Common;
 
-namespace DBI_PEA_Grading.Utils.Dao
+namespace DBI_Grading.Utils.Dao
 {
     partial class General
     {

@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
-using DBI_PEA_Grading.Common;
-using DBI_PEA_Grading.Model.Teacher;
+using DBI_Grading.Common;
+using DBI_Grading.Model.Teacher;
 
 // ReSharper disable SpecifyACultureInStringConversionExplicitly
 
-namespace DBI_PEA_Grading.Utils.Dao
+namespace DBI_Grading.Utils.Dao
 {
     public partial class General
     {
