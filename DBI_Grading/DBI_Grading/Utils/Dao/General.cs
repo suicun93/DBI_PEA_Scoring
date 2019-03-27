@@ -38,6 +38,7 @@ namespace DBI_Grading.Utils.Dao
         public static DataSet GetDataSetFromReader(string query)
         {
             var builder = Constant.SqlConnectionStringBuilder;
+            builder.MultipleActiveResultSets = true;
             var dts = new DataSet();
             // Connect to SQL
             using (var connection = new SqlConnection(builder.ConnectionString))
@@ -56,12 +57,14 @@ namespace DBI_Grading.Utils.Dao
         /// Get DataSet
         /// </summary>
         /// <param name="query"></param>
-        /// <returns>datatable[0] as Schema of Table
-        /// datatable[1] as Data of Table
+        /// <returns>datatable[1] as Schema of Table
+        /// datatable[0] as Data of Table
         /// </returns>
         public static DataTable[] GetDataTableFromReader(string query)
         {
             DataTable[] dataTables = new DataTable[2];
+            dataTables[0] = new DataTable();
+            dataTables[1] = new DataTable();
             var builder = Constant.SqlConnectionStringBuilder;
             using (var connection = new SqlConnection(builder.ConnectionString))
             {
@@ -70,8 +73,8 @@ namespace DBI_Grading.Utils.Dao
                 {
                     sqlCommandAnswer.CommandTimeout = Constant.TimeOutInSecond;
                     var sqlReaderAnswer = sqlCommandAnswer.ExecuteReader();
-                    dataTables[0] = sqlReaderAnswer.GetSchemaTable();
-                    dataTables[1].Load(sqlReaderAnswer);
+                    dataTables[1] = sqlReaderAnswer.GetSchemaTable();
+                    dataTables[0].Load(sqlReaderAnswer);
                 }
                 return dataTables;
             }
@@ -194,6 +197,9 @@ namespace DBI_Grading.Utils.Dao
             }
         }
 
+        /// <summary>
+        /// To kill all session connected to sql server from the tool
+        /// </summary>
         public static void KillAllSessionSql()
         {
             try
@@ -209,9 +215,13 @@ namespace DBI_Grading.Utils.Dao
                 using (SqlConnection conn = new SqlConnection(builder.ConnectionString))
                 {
                     conn.Open();
-                    string queryGetSession =
-                        "use master SELECT conn.session_id FROM sys.dm_exec_sessions AS sess JOIN sys.dm_exec_connections AS conn " +
-                        "ON sess.session_id = conn.session_id where program_name = '.Net SqlClient Data Provider' order by session_id asc";
+                    string queryGetSession = "SELECT conn.session_id, host_name, program_name,\n" +
+                                             "    nt_domain, login_name, connect_time, last_request_end_time \n" +
+                                             "FROM sys.dm_exec_sessions AS sess\n" +
+                                             "JOIN sys.dm_exec_connections AS conn\n" +
+                                             "   ON sess.session_id = conn.session_id\n" +
+                                             "   WHERE program_name = '.Net SqlClient Data Provider' " +
+                                             "AND login_name = '" + ConfigurationManager.AppSettings["username"] + "'";
                     int countSession = 0;
                     using (var command = new SqlCommand(queryGetSession, conn))
                     {
@@ -236,43 +246,5 @@ namespace DBI_Grading.Utils.Dao
                 Console.WriteLine(e.Message);
             }
         }
-
-        public static List<TestCase> GetTestCasesPoint(Candidate candidate)
-        {
-            var matchResult = Regex.Match(candidate.TestQuery, @"(/\*(.|[\r\n])*?\*/)|(--(.*|[\r\n]))",
-                RegexOptions.Singleline);
-
-            var tcpList = new List<TestCase>();
-            var count = 0;
-            var tcp = new TestCase();
-            while (matchResult.Success)
-            {
-                var matchFormatted = matchResult.Value.Split('*')[1];
-                if (count++ % 2 == 0)
-                {
-                    tcp.Point = double.Parse(matchFormatted, CultureInfo.InvariantCulture);
-                }
-                else
-                {
-                    tcp.Description = matchFormatted;
-                    tcpList.Add(tcp);
-                    tcp = new TestCase();
-                }
-                matchResult = matchResult.NextMatch();
-            }
-            if (tcpList.Count == 0)
-                tcpList.Add(new TestCase
-                {
-                    Description = "",
-                    Point = candidate.Point
-                });
-            return tcpList;
-        }
-    }
-
-    public class TestCase
-    {
-        public double Point { get; set; }
-        public string Description { get; set; }
     }
 }

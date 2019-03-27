@@ -36,7 +36,7 @@ namespace DBI_Grading.Utils.Dao
         /// <returns>
         ///     true = same
         /// </returns>
-        internal static bool CompareTwoDataSetsByExcept(DataTable dataTableAnswer, DataTable dataTableSolution)
+        internal static bool CompareTwoDataTablesByExcept(DataTable dataTableAnswer, DataTable dataTableSolution)
         {
             return !dataTableAnswer.AsEnumerable().Except(dataTableSolution.AsEnumerable(), DataRowComparer.Default)
                        .Any() && !dataTableSolution.AsEnumerable()
@@ -51,7 +51,7 @@ namespace DBI_Grading.Utils.Dao
         /// <returns>
         ///     true = same
         /// </returns>
-        internal static bool CompareTwoDataSetsByRow(DataTable dataTableAnswer, DataTable dataTableSolution)
+        internal static bool CompareTwoDataTablesByRow(DataTable dataTableAnswer, DataTable dataTableSolution)
         {
             if (dataTableSolution.Rows.Count != dataTableAnswer.Rows.Count ||
                 dataTableSolution.Columns.Count != dataTableAnswer.Columns.Count) return false;
@@ -65,7 +65,30 @@ namespace DBI_Grading.Utils.Dao
             return true;
         }
 
-
+        /// <summary>
+        /// Compare 2 DataSet
+        /// </summary>
+        /// <param name="dataSetAnswer"></param>
+        /// <param name="dataSetSolution"></param>
+        /// <returns></returns>
+        internal static bool CompareTwoDataSetsByRow(DataSet dataSetAnswer, DataSet dataSetSolution)
+        {
+            var countComparison = 0;
+            foreach (DataTable dataTableSolution in dataSetSolution.Tables)
+            {
+                foreach (DataTable dataTableAnswer in dataSetAnswer.Tables)
+                {
+                    if (CompareTwoDataTablesByRow(dataTableAnswer, dataTableSolution))
+                    {
+                        break;
+                    }
+                    countComparison++;
+                }
+                if (countComparison == dataSetAnswer.Tables.Count)
+                    return false;
+            }
+            return true;
+        }
 
     }
 }

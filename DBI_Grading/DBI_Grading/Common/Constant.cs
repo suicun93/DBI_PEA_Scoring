@@ -13,7 +13,7 @@ namespace DBI_Grading.Common
         public static int TimeOutInSecond;
 
         public static int MaxThreadPoolSize = 1;
-        public static int MaxConnectionPoolSize = 2;
+        public static int MaxConnectionPoolSize = 100;
 
         // This will be configured in General.cs when user check connection to sql.
         public static SqlConnectionStringBuilder SqlConnectionStringBuilder = null;

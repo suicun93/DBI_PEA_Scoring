@@ -22,6 +22,7 @@ namespace DBI_Grading.Utils
                 try
                 {
                     excelApp.Visible = true;
+                    excelApp.EnableAnimations = false;
                     //Open Workbook
                     var book = excelApp.Workbooks.Add(missing);
                     _wsf = excelApp.WorksheetFunction;
@@ -39,6 +40,8 @@ namespace DBI_Grading.Utils
                     //Saving file to location
 
                     book.Sheets[1].Select(missing);
+
+                    excelApp.EnableAnimations = true;
                 }
                 // Should get by type of exception but chua co thoi gian research and debug. -> 2.0
                 catch (Exception e)
