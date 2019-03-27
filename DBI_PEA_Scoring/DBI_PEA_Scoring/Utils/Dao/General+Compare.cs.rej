@@ -1,9 +1,0 @@
-diff a/DBI_PEA_Scoring/DBI_PEA_Scoring/Utils/Dao/General+Compare.cs b/DBI_PEA_Scoring/DBI_PEA_Scoring/Utils/Dao/General+Compare.cs	(rejected hunks)
-@@ -33,6 +33,7 @@
-                     connection.Open();
-                     using (SqlCommand commandCompare = new SqlCommand(compareQuery, connection))
-                     {
-+                        commandCompare.CommandTimeout = Constant.TimeOutInSecond;
-                         using (SqlDataReader reader = commandCompare.ExecuteReader())
-                         {
-                             string result = string.Concat("Check Table structure:\n", "Table Name\t",
