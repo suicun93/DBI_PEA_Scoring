@@ -61,7 +61,7 @@ namespace DBI_Grading.Utils
                     throw new Exception("Compare error: " + e.Message);
                 }
                 // Execute query
-                return Utilities.WithTimeout(() => General.CompareTwoDatabases(dbAnswerName, dbSolutionName, dbEmptyName, candidate, errorMessage), Constant.TimeOutInSecond);
+                return Utilities.WithTimeout(() => CompareUtils.SchemaType(dbAnswerName, dbSolutionName, dbEmptyName, candidate, errorMessage), Constant.TimeOutInSecond);
             }
             finally
             {
@@ -99,7 +99,7 @@ namespace DBI_Grading.Utils
                 else
                     General.GenerateDatabase(dbSolutionName, dbAnswerName, Constant.PaperSet.DBScriptList[0]);
                 //Compare
-                return Utilities.WithTimeout(() => General.CompareOneResultSet(dbAnswerName, dbSolutionName, answer, candidate), Constant.TimeOutInSecond);
+                return Utilities.WithTimeout(() => CompareUtils.SelectType(dbAnswerName, dbSolutionName, answer, candidate), Constant.TimeOutInSecond);
             }
             finally
             {
@@ -175,7 +175,7 @@ namespace DBI_Grading.Utils
                     if (e.InnerException != null) throw new Exception(e.InnerException.Message);
                     throw new Exception("Compare error: " + e.Message);
                 }
-                return Utilities.WithTimeout(() => General.CompareMoreResultSets(dbAnswerName, dbSolutionName, candidate, errorMessage), Constant.TimeOutInSecond);
+                return Utilities.WithTimeout(() => CompareUtils.OthersType(dbAnswerName, dbSolutionName, candidate, errorMessage), Constant.TimeOutInSecond);
             }
             finally
             {
@@ -234,7 +234,7 @@ namespace DBI_Grading.Utils
                     if (e.InnerException != null) throw new Exception("Compare error: " + e.InnerException.Message);
                     throw new Exception("Compare error: " + e.Message);
                 }
-                return Utilities.WithTimeout(() => General.CompareMoreResultSets(dbAnswerName, dbSolutionName, candidate, errorMessage), Constant.TimeOutInSecond);
+                return Utilities.WithTimeout(() => CompareUtils.OthersType(dbAnswerName, dbSolutionName, candidate, errorMessage), Constant.TimeOutInSecond);
             }
             finally
             {

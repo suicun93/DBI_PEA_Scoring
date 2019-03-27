@@ -5,10 +5,10 @@ namespace DBI_Grading.Utils
 {
     class Utilities
     {
-        public static R WithTimeout<R>(Func<R> proc, int duration)
+        public static T WithTimeout<T>(Func<T> proc, int duration)
         {
             var reset = new AutoResetEvent(false);
-            var r = default(R);
+            var r = default(T);
             Exception ex = null;
 
             var t = new Thread(() =>
