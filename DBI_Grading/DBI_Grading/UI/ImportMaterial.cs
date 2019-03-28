@@ -17,7 +17,6 @@ namespace DBI_Grading.UI
 {
     public partial class ImportMaterial : Form
     {
-        private readonly bool importForDebug = false;
         private List<Submission> Listsubmissions;
 
         public ImportMaterial()
@@ -34,17 +33,12 @@ namespace DBI_Grading.UI
             }
             catch (Exception e)
             {
-                MessageBox.Show("Load config error " + e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Load config error: " + e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Application.Exit();
             }
 
             // Auto Check connection import DB Question set and Answer of student for debug cho nhanh
             CheckConnectionButton_Click(null, null);
-            if (importForDebug)
-            {
-                BrowseQuestionButton_Click(null, null);
-                BrowseAnswerButton_Click(null, null);
-            }
         }
 
         public string QuestionPath { get; set; }
@@ -58,14 +52,7 @@ namespace DBI_Grading.UI
         {
             try
             {
-                // Get link to file
-                if (!importForDebug)
-                    QuestionPath = FileUtils.GetFileLocation();
-                else
-                    // Bao
-                    //QuestionPath = @"E:\OneDrive\000 SWP\Sample\DBI_Exam\03_Sample_for_Testing_New_Phase_(09.03)\01_From_Shuffle\PaperSet.dat";
-                    // Duc
-                    QuestionPath = @"C:\Users\hoangduc\Desktop\PaperSet.dat";
+                QuestionPath = FileUtils.GetFileLocation();
                 if (string.IsNullOrEmpty(QuestionPath))
                     return;
                 questionTextBox.Text = QuestionPath;
@@ -97,18 +84,14 @@ namespace DBI_Grading.UI
             try
             {
                 // Get directory where student's submittion was saved
-                if (!importForDebug)
-                    AnswerPath = FileUtils.GetFolderLocation();
-                else
-                    // Bao
-                    //AnswerPath = @"D:\Sys\Desktop\tmp";
-                    // Duc
-                    AnswerPath = @"C:\Users\hoangduc\Desktop\02_From_Submission";
+                AnswerPath = FileUtils.GetFolderLocation();
+                if (string.IsNullOrEmpty(AnswerPath))
+                    return;
                 Application.UseWaitCursor = true;
                 Text = "Import Material - Importing";
                 ImportAnswerButton.Enabled = false;
                 GetMarkButton.Enabled = false;
-                Thread t = new Thread(() => SafeThreadCaller(() => GetAnswers(), ExceptionHandler));
+                var t = new Thread(() => SafeThreadCaller(() => GetAnswers(), ExceptionHandler));
                 t.Start();
             }
             catch (Exception ex)
@@ -119,7 +102,7 @@ namespace DBI_Grading.UI
             }
         }
 
-        void SafeThreadCaller(Action method, Action<Exception> handler)
+        private void SafeThreadCaller(Action method, Action<Exception> handler)
         {
             try
             {
@@ -131,7 +114,7 @@ namespace DBI_Grading.UI
             }
         }
 
-        void ExceptionHandler(Exception e)
+        private void ExceptionHandler(Exception e)
         {
             MessageBox.Show(e.Message);
         }
@@ -178,41 +161,40 @@ namespace DBI_Grading.UI
                             };
                             try
                             {
-                                if (!Directory.Exists(rollNumberPath + @"\0")) 
+                                if (!Directory.Exists(rollNumberPath + @"\0"))
                                     throw new Exception("Folder 0 not found with " + rollNumber);
-                               
+
                                 var solutionPath = rollNumberPath + @"\0"; // "0" folder
                                 // Check tool cua thay co bi thieu Solution.zip khong
                                 if (!File.Exists(solutionPath + @"\Solution.zip"))
-                                    throw new Exception("Solution.zip was not found with " + rollNumber);
-                                else
                                 {
-                                    // Student co nop answers
-                                    var zipSolutionPath = solutionPath + @"\Solution.zip";
-
-                                    // Extract zip
-                                    if (Directory.Exists(solutionPath + "/extract"))
-                                        Directory.Delete(solutionPath + "/extract", true);
-                                    ZipFile.ExtractToDirectory(zipSolutionPath, solutionPath + "/extract");
-                                    var answerPaths = Directory.GetFiles(solutionPath + "/extract", "*.sql");
-
-                                    // Add the answer
-                                    foreach (var answerPath in answerPaths)
-                                        try
-                                        {
-                                            var fileName =
-                                                Path.GetFileNameWithoutExtension(answerPath); // Get q1,q2,...
-                                            var questionOrder =
-                                                int.Parse(GetNumbers(fileName)) - 1; // remove "q/Q" letter // Edit this
-                                            submission.ListAnswer[questionOrder] = File.ReadAllText(answerPath);
-                                        }
-                                        catch (Exception)
-                                        {
-                                            // Skip exception
-                                        }
-                                    // Delete Extract folder
-                                    Directory.Delete(solutionPath + "/extract", true);
+                                    throw new Exception("Solution.zip was not found with " + rollNumber);
                                 }
+                                // Student co nop answers
+                                var zipSolutionPath = solutionPath + @"\Solution.zip";
+
+                                // Extract zip
+                                if (Directory.Exists(solutionPath + "/extract"))
+                                    Directory.Delete(solutionPath + "/extract", true);
+                                ZipFile.ExtractToDirectory(zipSolutionPath, solutionPath + "/extract");
+                                var answerPaths = Directory.GetFiles(solutionPath + "/extract", "*.sql");
+
+                                // Add the answer
+                                foreach (var answerPath in answerPaths)
+                                    try
+                                    {
+                                        var fileName =
+                                            Path.GetFileNameWithoutExtension(answerPath); // Get q1,q2,...
+                                        var questionOrder =
+                                            int.Parse(GetNumbers(fileName)) - 1; // remove "q/Q" letter // Edit this
+                                        submission.ListAnswer[questionOrder] = File.ReadAllText(answerPath);
+                                    }
+                                    catch (Exception)
+                                    {
+                                        // Skip exception
+                                    }
+                                // Delete Extract folder
+                                Directory.Delete(solutionPath + "/extract", true);
                             }
                             catch (Exception)
                             {
@@ -234,12 +216,12 @@ namespace DBI_Grading.UI
             finally
             {
                 Invoke((MethodInvoker)(() =>
-                {
-                    Application.UseWaitCursor = false;
-                    Text = "Import Material";
-                    ImportAnswerButton.Enabled = true;
-                    GetMarkButton.Enabled = true;
-                }));
+               {
+                   Application.UseWaitCursor = false;
+                   Text = "Import Material";
+                   ImportAnswerButton.Enabled = true;
+                   GetMarkButton.Enabled = true;
+               }));
             }
         }
 
@@ -262,7 +244,7 @@ namespace DBI_Grading.UI
                 else
                 {
                     General.PrepareSpCompareDatabase();
-                    var scoring = new Grading(Listsubmissions);
+                    new Grading(Listsubmissions);
                     Hide();
                 }
             }
@@ -303,8 +285,14 @@ namespace DBI_Grading.UI
             }
         }
 
-        private void ImportMaterial_FormClosed(object sender, FormClosedEventArgs e) => Application.Exit();
+        private void ImportMaterial_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            Application.Exit();
+        }
 
-        private string GetNumbers(string input) => new string(input.Where(c => char.IsDigit(c)).ToArray());
+        private string GetNumbers(string input)
+        {
+            return new string(input.Where(c => char.IsDigit(c)).ToArray());
+        }
     }
 }
