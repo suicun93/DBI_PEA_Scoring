@@ -172,12 +172,12 @@ namespace DBI_Grading.UI
                                 }
                                 // Student co nop answers
                                 var zipSolutionPath = solutionPath + @"\Solution.zip";
-
+                                var extractPath = solutionPath + @"\extract";
                                 // Extract zip
-                                if (Directory.Exists(solutionPath + @"\extract"))
-                                    Directory.Delete(solutionPath + @"\extract", true);
-                                ZipFile.ExtractToDirectory(zipSolutionPath, solutionPath + @"\extract");
-                                var answerPaths = FileExtension.GetAllSql(solutionPath + @"\extract");
+                                if (Directory.Exists(extractPath))
+                                    Directory.Delete(extractPath, true);
+                                ZipFile.ExtractToDirectory(zipSolutionPath, extractPath);
+                                var answerPaths = FileExtension.GetAllSql(extractPath);
 
                                 // Add the answer
                                 foreach (var answerPath in answerPaths)
@@ -186,16 +186,16 @@ namespace DBI_Grading.UI
                                         var fileName =
                                             Path.GetFileNameWithoutExtension(answerPath); // Get q1,q2,...
                                         var questionOrder =
-                                            int.Parse(StringExtension.GetNumbers(fileName)) - 1; // remove "q/Q" letter // Edit this
+                                            int.Parse(StringExtension.GetNumbers(fileName)) - 1; // remove all non-numeric characters
                                         submission.ListAnswer[questionOrder] = File.ReadAllText(answerPath);
-                                        submission.AnswerPaths[questionOrder] = answerPath;
+                                        submission.AnswerPaths[questionOrder] = answerPath.Substring(extractPath.Length+1); // substring without /extract
                                     }
                                     catch (Exception)
                                     {
                                         // Skip exception
                                     }
                                 // Delete Extract folder
-                                Directory.Delete(solutionPath + "/extract", true);
+                                Directory.Delete(extractPath, true);
                             }
                             catch (Exception)
                             {
