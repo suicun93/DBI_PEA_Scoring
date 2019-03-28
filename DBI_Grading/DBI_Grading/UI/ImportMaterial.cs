@@ -174,10 +174,10 @@ namespace DBI_Grading.UI
                                 var zipSolutionPath = solutionPath + @"\Solution.zip";
 
                                 // Extract zip
-                                if (Directory.Exists(solutionPath + "/extract"))
-                                    Directory.Delete(solutionPath + "/extract", true);
-                                ZipFile.ExtractToDirectory(zipSolutionPath, solutionPath + "/extract");
-                                var answerPaths = Directory.GetFiles(solutionPath + "/extract", "*.sql");
+                                if (Directory.Exists(solutionPath + @"\extract"))
+                                    Directory.Delete(solutionPath + @"\extract", true);
+                                ZipFile.ExtractToDirectory(zipSolutionPath, solutionPath + @"\extract");
+                                var answerPaths = FileExtension.GetAllSql(solutionPath + @"\extract");
 
                                 // Add the answer
                                 foreach (var answerPath in answerPaths)
@@ -186,8 +186,9 @@ namespace DBI_Grading.UI
                                         var fileName =
                                             Path.GetFileNameWithoutExtension(answerPath); // Get q1,q2,...
                                         var questionOrder =
-                                            int.Parse(GetNumbers(fileName)) - 1; // remove "q/Q" letter // Edit this
+                                            int.Parse(StringExtension.GetNumbers(fileName)) - 1; // remove "q/Q" letter // Edit this
                                         submission.ListAnswer[questionOrder] = File.ReadAllText(answerPath);
+                                        submission.AnswerPaths[questionOrder] = answerPath;
                                     }
                                     catch (Exception)
                                     {
@@ -290,9 +291,6 @@ namespace DBI_Grading.UI
             Application.Exit();
         }
 
-        private string GetNumbers(string input)
-        {
-            return new string(input.Where(c => char.IsDigit(c)).ToArray());
-        }
+
     }
 }

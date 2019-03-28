@@ -114,6 +114,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common\Constant.cs" />
+    <Compile Include="Common\FileExtension.cs" />
+    <Compile Include="Common\StringExtension.cs" />
     <Compile Include="Model\Input.cs" />
     <Compile Include="Model\Teacher\Question.cs" />
     <Compile Include="Model\Teacher\QuestionSet.cs" />

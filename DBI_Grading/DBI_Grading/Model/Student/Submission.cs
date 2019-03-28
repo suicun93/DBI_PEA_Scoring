@@ -10,8 +10,13 @@ namespace DBI_Grading.Model.Student
         public Submission()
         {
             ListAnswer = new List<string>();
+            AnswerPaths = new List<string>();
+
             for (var i = 0; i < Constant.PaperSet.QuestionSet.QuestionList.Count; i++)
+            {
                 ListAnswer.Add("");
+                AnswerPaths.Add("Empty");
+            }
         }
 
         public Submission(string studentID, string paperNo)
@@ -19,11 +24,13 @@ namespace DBI_Grading.Model.Student
             StudentID = studentID;
             PaperNo = paperNo;
             ListAnswer = new List<string>();
+            AnswerPaths = new List<string>();
         }
 
         public string StudentID { get; set; }
         public string PaperNo { get; set; }
         public List<string> ListAnswer { get; set; }
+        public List<string> AnswerPaths { get; set; }
 
         public void AddAnswer(string answer)
         {
