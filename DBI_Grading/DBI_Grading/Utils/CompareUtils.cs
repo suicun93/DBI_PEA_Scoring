@@ -22,7 +22,7 @@ namespace DBI_Grading.Utils
         ///     "false" if wrong
         ///     message error from sqlserver if error
         /// </returns>
-        public static Dictionary<string, string> SchemaType(string dbAnswerName, string dbSolutionName,
+        public static Dictionary<string, string> CompareSchemaType(string dbAnswerName, string dbSolutionName,
             string dbEmptyName, Candidate candidate, string errorMessage)
         {
             //Prepare query
@@ -155,7 +155,7 @@ namespace DBI_Grading.Utils
         ///     "false" if wrong
         ///     message error from sqlserver if error
         /// </returns>
-        public static Dictionary<string, string> SelectType(string dbAnswerName, string dbSolutionName,
+        public static Dictionary<string, string> CompareSelectType(string dbAnswerName, string dbSolutionName,
             string answer,
             Candidate candidate)
         {
@@ -307,7 +307,7 @@ namespace DBI_Grading.Utils
         ///     "false" if wrong
         ///     message error from sqlserver if error
         /// </returns>
-        public static Dictionary<string, string> OthersType(string dbAnswerName, string dbSolutionName,
+        public static Dictionary<string, string> CompareOthersType(string dbAnswerName, string dbSolutionName,
             Candidate candidate, string errorMessage)
         {
             //Get testcases from comment in test query

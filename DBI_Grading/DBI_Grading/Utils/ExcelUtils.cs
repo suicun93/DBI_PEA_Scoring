@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using DBI_Grading.Model;
+using DBI_Grading.Model.Student;
 using Microsoft.Office.Interop.Excel;
 
 namespace DBI_Grading.Utils
@@ -12,7 +13,7 @@ namespace DBI_Grading.Utils
         private static WorksheetFunction _wsf;
         public static int LastRowOfResultSheet { get; private set; }
 
-        public static void ExportResultsExcel(List<Result> results, double maxPoint, int numOfQuestion)
+        public static void ExportResultsExcel(List<Result> results, List<Submission> submissions, double maxPoint, int numOfQuestion)
         {
             //Open Excel
             try
@@ -34,6 +35,10 @@ namespace DBI_Grading.Utils
                     AddDetailSheet(book.Sheets.Add(After: book.Sheets[book.Sheets.Count]), results,
                         numOfQuestion);
 
+                    //Add Answer Sheet
+                    AddAnswerPathSheet(book.Sheets.Add(After: book.Sheets[book.Sheets.Count]), submissions,
+                        numOfQuestion);
+
                     //Add Analyze Sheet
                     AddDataAnalyzeSheet(book.Sheets.Add(After: book.Sheets[book.Sheets.Count]), book.Worksheets[1]);
 
@@ -53,6 +58,36 @@ namespace DBI_Grading.Utils
             {
                 throw new Exception("You must install Office to export.\n" + ex.Message);
             }
+        }
+
+        private static void AddAnswerPathSheet(Worksheet sheetAnswerPath, List<Submission> submissions, int numOfQuestion)
+        {
+            sheetAnswerPath.Name = "03_AnswerPath";
+            //Insert Title
+            var lastRow = sheetAnswerPath.Cells.SpecialCells(XlCellType.xlCellTypeLastCell).Row;
+            sheetAnswerPath.Cells[lastRow, 1] = "No";
+            sheetAnswerPath.Cells[lastRow, 2] = "Paper No";
+            sheetAnswerPath.Cells[lastRow, 3] = "Login";
+            for (var i = 4; i < 4 + numOfQuestion; i++)
+                sheetAnswerPath.Cells[lastRow, i] = string.Concat("Q", i - 3);
+            //Insert Data
+            for (int i = 0; i < submissions.Count; i++)
+            {
+                Submission submission = submissions[i];
+                lastRow++;
+                sheetAnswerPath.Cells[lastRow, 1] = lastRow - 1;
+                sheetAnswerPath.Cells[lastRow, 2] = submission.PaperNo;
+                sheetAnswerPath.Cells[lastRow, 3] = submission.StudentID;
+                for (var j = 0; j < submission.AnswerPaths.Count; j++)
+                {
+                    sheetAnswerPath.Cells[lastRow, j + 4] = submission.AnswerPaths[j];
+                }
+            }
+            //Fit columns
+            sheetAnswerPath.Columns.AutoFit();
+            sheetAnswerPath.Range["A:X"].VerticalAlignment = XlVAlign.xlVAlignTop;
+            sheetAnswerPath.Range["D:X"].ColumnWidth = 30;
+            sheetAnswerPath.Range["A:X"].RowHeight = 20;
         }
 
         private static void AddDetailSheet(Worksheet sheetDetail, List<Result> results,
@@ -101,7 +136,7 @@ namespace DBI_Grading.Utils
         private static void AddDataAnalyzeSheet(Worksheet sheetDataAnalyze, Worksheet sheetResult)
         {
             //Insert Title
-            sheetDataAnalyze.Name = "03_DataAnalyze";
+            sheetDataAnalyze.Name = "04_DataAnalyze";
 
             //Add 
 
@@ -160,6 +195,7 @@ namespace DBI_Grading.Utils
             for (var i = 8; i < 8 + numOfQuestion; i++)
                 sheetResult.Cells[lastRow, i] = string.Concat("Q", i - 7);
             sheetResult.Cells[lastRow, numOfQuestion + 8] = "Log Details";
+            sheetResult.Cells[lastRow, numOfQuestion + 9] = "Answer Path";
 
             //Insert Data
             foreach (var result in results)
@@ -175,17 +211,20 @@ namespace DBI_Grading.Utils
                 sheetResult.Cells[lastRow, 7].Formula = $"=E{lastRow}/F{lastRow}*10";
                 for (var i = 8; i < 8 + numOfQuestion; i++)
                 {
-                    var hyper = "02_Detail!" + (char) (61 + i) + lastRow + "";
+                    var hyper = "02_Detail!" + (char)(61 + i) + lastRow + "";
                     sheetResult.Cells[lastRow, i] = result.Points[i - 8];
                     sheetResult.Hyperlinks.Add(sheetResult.Cells[lastRow, i], "", hyper);
                 }
                 sheetResult.Cells[lastRow, numOfQuestion + 8] = "View Details";
                 sheetResult.Hyperlinks.Add(sheetResult.Cells[lastRow, numOfQuestion + 8], "",
                     "02_Detail!D" + lastRow + "", "View Details");
+                sheetResult.Cells[lastRow, numOfQuestion + 9] = "View AnswerPath";
+                sheetResult.Hyperlinks.Add(sheetResult.Cells[lastRow, numOfQuestion + 9], "",
+                    "03_AnswerPath!C" + lastRow + "", "View AnswerPath");
             }
             //Fit columns
             sheetResult.Columns.AutoFit();
-            sheetResult.Range["A:G"].VerticalAlignment = XlVAlign.xlVAlignTop;
+            //sheetResult.Range["A:G"].VerticalAlignment = XlVAlign.xlVAlignTop;
             LastRowOfResultSheet = lastRow;
         }
     }
