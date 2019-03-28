@@ -63,23 +63,27 @@ namespace DBI_Grading.UI
             // Initialize and add a text box column for StudentID
             scoreGridView.Columns.Add(new DataGridViewTextBoxColumn
             {
-                Name = "StudentID"
+                Name = "StudentID",
+                SortMode = DataGridViewColumnSortMode.NotSortable
             });
             // Initialize and add a text box column for paperNo
             scoreGridView.Columns.Add(new DataGridViewTextBoxColumn
             {
-                Name = "PaperNo"
+                Name = "PaperNo",
+                SortMode = DataGridViewColumnSortMode.NotSortable
             });
             // Initialize and add a text box column for Total Point
             scoreGridView.Columns.Add(new DataGridViewTextBoxColumn
             {
-                Name = "Total Point"
+                Name = "Total Point",
+                SortMode = DataGridViewColumnSortMode.NotSortable
             });
             // Initialize and add a text box column for score of each answer
             for (var i = 0; i < Constant.PaperSet.QuestionSet.QuestionList.Count; i++)
                 scoreGridView.Columns.Add(new DataGridViewTextBoxColumn
                 {
-                    Name = "Question " + (i + 1)
+                    Name = "Question " + (i + 1),
+                    SortMode = DataGridViewColumnSortMode.NotSortable
                 });
         }
 
