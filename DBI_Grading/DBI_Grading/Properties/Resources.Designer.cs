@@ -22,7 +22,7 @@ namespace DBI_Grading.Properties {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Resources {
+    public class Resources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace DBI_Grading.Properties {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("DBI_Grading.Properties.Resources", typeof(Resources).Assembly);
@@ -51,12 +51,46 @@ namespace DBI_Grading.Properties {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
             set {
                 resourceCulture = value;
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to PROC sp_CompareDb
+        ///(
+        ///	@SourceDB SYSNAME,
+        ///	@TargetDb SYSNAME
+        ///)
+        ///AS
+        ///BEGIN
+        ////*
+        ///	DECLARE @SourceDB SYSNAME=&apos;DB1&apos;,@TargetDb SYSNAME=&apos;DB2&apos;
+        ///*/
+        ///	SET NOCOUNT ON;
+        ///	SET ANSI_WARNINGS ON;
+        ///	SET ANSI_NULLS ON;   
+        ///
+        ///	DECLARE @sqlStr VARCHAR(8000)
+        ///	SET @SourceDB = RTRIM(LTRIM(@SourceDB))
+        ///	IF DB_ID(@SourceDB) IS NULL 
+        ///	BEGIN
+        ///		PRINT &apos;Error: Unable to find the database &apos;+ @SourceDB +&apos;!!!&apos;
+        ///		RETURN
+        ///	END
+        ///
+        ///	SET @TargetDb = RTRIM(LTRIM(@TargetDb))
+        ///	IF DB_ID(@SourceDB) IS NULL 
+        ///	BEGIN
+        ///		PRINT &apos;Error: Unable t [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string ImportMaterialStartCompareDb {
+            get {
+                return ResourceManager.GetString("ImportMaterialStartCompareDb", resourceCulture);
             }
         }
     }

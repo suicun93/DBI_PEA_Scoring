@@ -2,6 +2,8 @@
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
+using System.Reflection;
+using System.Resources;
 using DBI_Grading.Common;
 using Microsoft.SqlServer.Management.Common;
 using Microsoft.SqlServer.Management.Smo;
@@ -79,14 +81,15 @@ namespace DBI_Grading.Utils.Dao
         /// <returns></returns>
         public static bool PrepareSpCompareDatabase()
         {
+            ResourceManager rm = new ResourceManager("DBI_Grading.Properties.Resources", Assembly.GetExecutingAssembly());
             try
             {
-                ExecuteSingleQuery("ALTER " + SchemaType.ProcCompareDbs, "master");
+                ExecuteSingleQuery("ALTER " + rm.GetString("ImportMaterialStartCompareDb"), "master");
             }
             catch
             {
                 // ProcCompareDbsCreate has been created
-                ExecuteSingleQuery("CREATE " + SchemaType.ProcCompareDbs, "master");
+                ExecuteSingleQuery("CREATE " + rm.GetString("ImportMaterialStartCompareDb"), "master");
             }
             return true;
         }
