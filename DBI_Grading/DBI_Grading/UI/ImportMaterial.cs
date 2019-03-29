@@ -161,30 +161,37 @@ namespace DBI_Grading.UI
                             };
                             try
                             {
-                                var answerPathsBackUp = FileUtils.GetAllSql(rollNumberPath);
-
+                                string errorLog = "Answer not found.\n";
+                                string[] answerPaths = new string[0];
+                                string extractPath = "";
+                                // Student co nop answers khong
                                 if (!Directory.Exists(rollNumberPath + @"\0"))
-                                    throw new Exception("Folder 0 not found with " + rollNumber);
-
-                                var solutionPath = rollNumberPath + @"\0"; // "0" folder
-                                // Check tool cua thay co bi thieu Solution.zip khong
-                                if (!File.Exists(solutionPath + @"\Solution.zip"))
+                                    errorLog += "Folder 0 not found with " + rollNumber + "\n";
+                                else
                                 {
-                                    throw new Exception("Solution.zip was not found with " + rollNumber);
-                                }
-                                // Student co nop answers
-                                var zipSolutionPath = solutionPath + @"\Solution.zip";
-                                var extractPath = solutionPath + @"\extract";
-                                // Extract zip
-                                if (Directory.Exists(extractPath))
-                                    Directory.Delete(extractPath, true);
-                                ZipFile.ExtractToDirectory(zipSolutionPath, extractPath);
-                                var answerPaths = FileUtils.GetAllSql(extractPath);
-                                if (answerPaths.Length == 0 && answerPathsBackUp.Length > 0)
-                                {
-                                    answerPaths = answerPathsBackUp;
+                                    var solutionPath = rollNumberPath + @"\0"; // "0" folder
+                                                                               // Check tool cua thay co bi thieu Solution.zip khong
+                                    if (!File.Exists(solutionPath + @"\Solution.zip"))
+                                    {
+                                        errorLog += "Solution.zip was not found with " + rollNumber + "\n";
+                                    }
+                                    else
+                                    {
+                                        var zipSolutionPath = solutionPath + @"\Solution.zip";
+                                        extractPath = solutionPath + @"\extract";
+                                        // Extract zip
+                                        if (Directory.Exists(extractPath))
+                                            Directory.Delete(extractPath, true);
+                                        ZipFile.ExtractToDirectory(zipSolutionPath, extractPath);
+                                    }
                                 }
 
+                                // Get all sql file
+                                answerPaths = FileUtils.GetAllSql(rollNumberPath);
+                                if (answerPaths.Length == 0)
+                                {
+                                    throw new Exception(errorLog);
+                                }
                                 // Add the answer
                                 foreach (var answerPath in answerPaths)
                                     try
@@ -194,14 +201,15 @@ namespace DBI_Grading.UI
                                         var questionOrder =
                                             int.Parse(StringUtils.GetNumbers(fileName)) - 1; // remove all non-numeric characters
                                         submission.ListAnswer[questionOrder] = File.ReadAllText(answerPath);
-                                        submission.AnswerPaths[questionOrder] = answerPath.Substring(extractPath.Length+1); // substring without /extract
+                                        submission.AnswerPaths[questionOrder] = answerPath.Substring(rollNumberPath.Length + 1); // substring without /extract
                                     }
                                     catch (Exception)
                                     {
                                         // Skip exception
                                     }
                                 // Delete Extract folder
-                                Directory.Delete(extractPath, true);
+                                if (!string.IsNullOrEmpty(extractPath))
+                                    Directory.Delete(extractPath, true);
                             }
                             catch (Exception)
                             {
