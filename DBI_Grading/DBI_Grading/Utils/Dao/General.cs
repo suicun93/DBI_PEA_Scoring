@@ -57,11 +57,9 @@ namespace DBI_Grading.Utils.Dao
         ///     datatable[1] as Schema of Table
         ///     datatable[0] as Data of Table
         /// </returns>
-        public static DataTable[] GetDataTableFromReader(string query)
+        public static DataTable GetDataTableFromReader(string query)
         {
-            var dataTables = new DataTable[2];
-            dataTables[0] = new DataTable();
-            dataTables[1] = new DataTable();
+            var dataTable = new DataTable();
             var builder = Constant.SqlConnectionStringBuilder;
             using (var connection = new SqlConnection(builder.ConnectionString))
             {
@@ -70,10 +68,9 @@ namespace DBI_Grading.Utils.Dao
                 {
                     sqlCommandAnswer.CommandTimeout = Constant.TimeOutInSecond;
                     var sqlReaderAnswer = sqlCommandAnswer.ExecuteReader();
-                    dataTables[1] = sqlReaderAnswer.GetSchemaTable();
-                    dataTables[0].Load(sqlReaderAnswer);
+                    dataTable.Load(sqlReaderAnswer);
                 }
-                return dataTables;
+                return dataTable;
             }
         }
 

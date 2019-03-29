@@ -177,7 +177,7 @@ namespace DBI_Grading.UI
                                 if (Directory.Exists(extractPath))
                                     Directory.Delete(extractPath, true);
                                 ZipFile.ExtractToDirectory(zipSolutionPath, extractPath);
-                                var answerPaths = FileExtension.GetAllSql(extractPath);
+                                var answerPaths = FileUtils.GetAllSql(extractPath);
 
                                 // Add the answer
                                 foreach (var answerPath in answerPaths)
@@ -186,7 +186,7 @@ namespace DBI_Grading.UI
                                         var fileName =
                                             Path.GetFileNameWithoutExtension(answerPath); // Get q1,q2,...
                                         var questionOrder =
-                                            int.Parse(StringExtension.GetNumbers(fileName)) - 1; // remove all non-numeric characters
+                                            int.Parse(StringUtils.GetNumbers(fileName)) - 1; // remove all non-numeric characters
                                         submission.ListAnswer[questionOrder] = File.ReadAllText(answerPath);
                                         submission.AnswerPaths[questionOrder] = answerPath.Substring(extractPath.Length+1); // substring without /extract
                                     }

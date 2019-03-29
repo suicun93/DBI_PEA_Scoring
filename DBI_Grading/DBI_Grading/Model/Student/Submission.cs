@@ -15,7 +15,7 @@ namespace DBI_Grading.Model.Student
             for (var i = 0; i < Constant.PaperSet.QuestionSet.QuestionList.Count; i++)
             {
                 ListAnswer.Add("");
-                AnswerPaths.Add("Empty");
+                AnswerPaths.Add("Cannot found");
             }
         }
 

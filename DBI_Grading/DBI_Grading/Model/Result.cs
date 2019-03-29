@@ -96,18 +96,12 @@ namespace DBI_Grading.Model
                     Points[i] = 0;
                 return;
             }
-            //// Select random DB
-            //TestUtils.Database = Constant.listDB[(new Random()).Next(1, Common.Constant.listDB.Length) - 1];
             // Get mark one by one
             for (var questionOrder = 0; questionOrder < ListCandidates.Count; questionOrder++)
                 try
                 {
-                    //bool correct = await Cham(ListCandidates.ElementAt(i), ListAnswers.ElementAt(i));
                     if (numberOfQuestion > questionOrder)
                     {
-                        //var res = Utilities.WithTimeout(
-                        //    () => GradeAnswer(ListCandidates.ElementAt(order),
-                        //        ListAnswers.ElementAt(order), order), Constant.TimeOutInSecond);
                         var res = GradeAnswer(ListCandidates.ElementAt(questionOrder),
                             ListAnswers.ElementAt(questionOrder), questionOrder);
                         //Exactly -> Log true and return 0 point

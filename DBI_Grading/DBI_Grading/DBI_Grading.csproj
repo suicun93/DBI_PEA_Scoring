@@ -114,8 +114,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common\Constant.cs" />
-    <Compile Include="Common\FileExtension.cs" />
-    <Compile Include="Common\StringExtension.cs" />
     <Compile Include="Model\Input.cs" />
     <Compile Include="Model\Teacher\Question.cs" />
     <Compile Include="Model\Teacher\QuestionSet.cs" />
@@ -146,6 +144,8 @@
     <Compile Include="Utils\FileUtils.cs" />
     <Compile Include="Utils\JsonUtils.cs" />
     <Compile Include="Utils\PaperUtils.cs" />
+    <Compile Include="Utils\StringUtils.cs" />
+    <Compile Include="Utils\ThreadUtils.cs" />
     <Compile Include="Utils\Utilities.cs" />
     <EmbeddedResource Include="UI\ImportMaterial.resx">
       <DependentUpon>ImportMaterial.cs</DependentUpon>

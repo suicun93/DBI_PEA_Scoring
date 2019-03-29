@@ -14,11 +14,13 @@ namespace DBI_Grading.UI
     {
         private int count;
         private bool scored;
+        private List<Submission> ListSubmissions;
 
         public Grading(List<Submission> listsubmissions)
         {
             InitializeComponent();
             // Show Scoring Form and generate Score here
+            ListSubmissions = listsubmissions;
             ListResults = new List<Result>();
             //Prepare();
             SetupUI();
@@ -176,7 +178,7 @@ namespace DBI_Grading.UI
                 double maxPoint = 0;
                 foreach (var candidate in ListResults.ElementAt(0).ListCandidates)
                     maxPoint += candidate.Point;
-                ExcelUtils.ExportResultsExcel(ListResults, maxPoint, ListResults.ElementAt(0).ListCandidates.Count);
+                ExcelUtils.ExportResultsExcel(ListResults, ListSubmissions, maxPoint, ListResults.ElementAt(0).ListCandidates.Count);
             }
             catch (Exception ex)
             {

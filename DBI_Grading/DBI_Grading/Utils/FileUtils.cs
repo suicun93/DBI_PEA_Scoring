@@ -6,6 +6,8 @@ namespace DBI_Grading.Utils
 {
     internal class FileUtils
     {
+        internal static string[] GetAllSql(string rootPath) => Directory.GetFiles(rootPath, "*.sql", SearchOption.AllDirectories);
+
         public static string SaveFileToLocation()
         {
             var fbd = new FolderBrowserDialog();

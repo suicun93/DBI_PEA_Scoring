@@ -48,7 +48,7 @@ namespace DBI_Grading.Utils
             comment += "Count Tables in database: ";
             if (countAnswerTables > countSolutionTables)
             {
-                var ratePoint = (double) countSolutionTables / countAnswerTables;
+                var ratePoint = (double)countSolutionTables / countAnswerTables;
                 maxPoint = Math.Round(candidate.Point * ratePoint, 2);
                 comment += string.Concat("Answer has more tables than Solution's database (", countAnswerTables, ">",
                     countSolutionTables, ") => Decrease Max Point by ", Math.Round(ratePoint * 100, 2),
@@ -156,15 +156,16 @@ namespace DBI_Grading.Utils
         ///     message error from sqlserver if error
         /// </returns>
         public static Dictionary<string, string> CompareSelectType(string dbAnswerName, string dbSolutionName,
-            string answer,
-            Candidate candidate)
+            string answer, Candidate candidate)
         {
             //Running answer query// index 0 as data table, index 1 as schema table
             var dataTableAnswer = General.GetDataTableFromReader("USE [" + dbAnswerName + "];\n" + answer + "");
 
-            //Running Solution 
-            var dataTableSolution =
-                General.GetDataTableFromReader("USE [" + dbSolutionName + "];\n" + candidate.Solution + "");
+            //Running Tq 
+            var dataTableTq = General.GetDataTableFromReader("USE [" + dbSolutionName + "];\n" + candidate.TestQuery + "");
+
+            //Running Tq 
+            var dataTableSolution = General.GetDataTableFromReader("USE [" + dbSolutionName + "];\n" + candidate.Solution + "");
 
             //Number of testcases
             var numOfTc = 0;
@@ -186,100 +187,77 @@ namespace DBI_Grading.Utils
             //Count testcases true
             var tcCount = 0;
 
+            //Format column name
+            General.LowerCaseColumnName(dataTableAnswer);
+            General.LowerCaseColumnName(dataTableSolution);
+            General.LowerCaseColumnName(dataTableAnswer);
+
             //STARTING FOR GRADING
             comment += "- Check Data: ";
-            if (General.CompareTwoDataTablesByExcept(dataTableSolution[0], dataTableAnswer[0]))
+            try
             {
-                gradePoint += dataPoint;
-                comment += string.Concat("Passed => +", dataPoint, "\n");
-
-                //1. Check if distinct is required
-                if (candidate.CheckDistinct)
+                if (General.CompareData(dataTableAnswer.Copy(), dataTableTq.Copy()))
                 {
-                    comment += "- Check distinct: ";
-                    //Compare number of rows
-                    if (dataTableSolution[0].Rows.Count == dataTableAnswer[0].Rows.Count)
-                    {
-                        tcCount++;
-                        comment += string.Concat("Passed => +", tcPoint, "\n");
-                    }
-                    else
-                    {
-                        comment += "Not pass\n";
-                    }
-                }
+                    gradePoint += dataPoint;
+                    comment += string.Concat("Passed => +", dataPoint, "\n");
 
-                //2. Check if sort is required
-                if (candidate.RequireSort)
-                {
-                    comment += "- Check sort: ";
-                    //Use distinct to remove all duplicate rows
-                    var queryCheckSortAnswer = "USE [" + dbAnswerName + "];\nSELECT DISTINCT* FROM (" + answer +
-                                               "\nOFFSET 0 ROWS) " + "[" + dbAnswerName + "]";
-                    var queryCheckSortSolution = "USE [" + dbSolutionName + "];\nSELECT DISTINCT* FROM (" +
-                                                 candidate.Solution + "\nOFFSET 0 ROWS) " + "[" + dbSolutionName +
-                                                 "]";
-                    DataTable dataTableSortAnswer;
-                    DataTable dataTableSortSolution;
-                    //Running Answer Sort query
-                    try
+                    //1. Check if distinct is required
+                    if (candidate.CheckDistinct)
                     {
-                        dataTableSortAnswer = General.GetDataTableFromReader(queryCheckSortAnswer)[0];
-                        dataTableSortSolution = General.GetDataTableFromReader(queryCheckSortSolution)[0];
-                    }
-                    catch
-                    {
-                        try
+                        comment += "- Check distinct: ";
+                        //Compare number of rows
+                        if (dataTableTq.Rows.Count == dataTableAnswer.Rows.Count)
                         {
-                            queryCheckSortAnswer =
-                                "USE [" + dbAnswerName + "];\nSELECT DISTINCT* FROM (" + answer + "\n) " + "[" +
-                                dbAnswerName + "]";
-                            queryCheckSortSolution =
-                                "USE [" + dbSolutionName + "];\nSELECT DISTINCT* FROM (" + candidate.Solution +
-                                "\n) " + "[" + dbSolutionName + "]";
-
-                            dataTableSortAnswer = General.GetDataTableFromReader(queryCheckSortAnswer)[0];
-                            dataTableSortSolution = General.GetDataTableFromReader(queryCheckSortSolution)[0];
+                            tcCount++;
+                            comment += string.Concat("Passed => +", tcPoint, "\n");
                         }
-                        catch
+                        else
                         {
-                            dataTableSortAnswer = dataTableAnswer[0];
-                            dataTableSortSolution = dataTableSolution[0];
+                            comment += "Not pass\n";
                         }
                     }
 
-                    //Compare number of rows
-                    if (General.CompareTwoDataTablesByRow(dataTableSortAnswer, dataTableSortSolution))
+                    //2. Check if sort is required
+                    if (candidate.RequireSort)
                     {
-                        tcCount++;
-                        comment += string.Concat("Passed => +", tcPoint, "\n");
+                        comment += "- Check sort: ";
+                        //Compare row by row
+                        if (General.CompareTwoDataTablesByRow(dataTableAnswer.Copy(), dataTableSolution.Copy()))
+                        {
+                            tcCount++;
+                            comment += string.Concat("Passed => +", tcPoint, "\n");
+                        }
+                        else
+                        {
+                            comment += "Not pass\n";
+                        }
                     }
-                    else
+                    //3. Check if checkColumnName is required
+                    if (candidate.CheckColumnName)
                     {
-                        comment += "Not pass\n";
+                        comment += "- Check Columns Name: ";
+                        var resCompareColumnName = General.CompareColumnsName(dataTableAnswer, dataTableTq);
+                        if (resCompareColumnName.Equals(""))
+                        {
+                            tcCount++;
+                            comment += string.Concat("Passed => +", tcPoint, "\n");
+                        }
+                        else
+                        {
+                            comment += string.Concat(resCompareColumnName, "\n");
+                        }
                     }
                 }
-                //3. Check if checkColumnName is required
-                if (candidate.CheckColumnName)
+                else
                 {
-                    comment += "- Check Columns Name: ";
-                    var resCompareColumnName =
-                        General.CompareColumnsNameOfTables(dataTableAnswer[1], dataTableSolution[1]);
-                    if (resCompareColumnName.Equals(""))
-                    {
-                        tcCount++;
-                        comment += string.Concat("Passed => +", tcPoint, "\n");
-                    }
-                    else
-                    {
-                        comment += string.Concat(resCompareColumnName, "\n");
-                    }
+                    comment += "Not pass => Point = 0\nStop checking\n";
                 }
             }
-            else
+            catch (Exception e)
             {
-                comment += "Not pass => Point = 0\nStop checking\n";
+                throw new Exception(comment + e.Message + " => Point = 0");
             }
+
 
             //Calculate Point
             if (numOfTc > 0 && numOfTc == tcCount)
@@ -311,7 +289,7 @@ namespace DBI_Grading.Utils
             Candidate candidate, string errorMessage)
         {
             //Get testcases from comment in test query
-            var testCases = Utilities.GetTestCases(candidate);
+            var testCases = StringUtils.GetTestCases(candidate);
 
             //Commnet
             var comment = errorMessage;
@@ -320,40 +298,46 @@ namespace DBI_Grading.Utils
 
             double gradePoint = 0;
             var maxPoint = candidate.Point;
-
-            foreach (var testCase in testCases)
+            try
             {
-                comment += string.Concat("TC ", ++countTesting, ": ",
-                    testCase.Description, " - ");
-                // Prepare query
-                var queryAnswer = "USE [" + dbAnswerName + "] \n" + testCase.TestQuery;
-                var querySolution = "USE [" + dbSolutionName + "] \n" + testCase.TestQuery;
-
-                // Prepare DataSet  
-                var dataSetAnswer = General.GetDataSetFromReader(queryAnswer);
-                var dataSetSolution = General.GetDataSetFromReader(querySolution);
-
-                if (General.CompareTwoDataSetsByRow(dataSetAnswer, dataSetSolution))
+                foreach (var testCase in testCases)
                 {
-                    var ratePoint = (double) dataSetSolution.Tables.Count / dataSetAnswer.Tables.Count;
-                    var maxTcPoint = Math.Round(testCase.Point * ratePoint, 2);
-                    if (dataSetAnswer.Tables.Count > dataSetSolution.Tables.Count)
+                    comment += string.Concat("TC ", ++countTesting, ": ",
+                        testCase.Description, " - ");
+                    // Prepare query
+                    var queryAnswer = "USE [" + dbAnswerName + "] \n" + testCase.TestQuery;
+                    var querySolution = "USE [" + dbSolutionName + "] \n" + testCase.TestQuery;
+
+                    // Prepare DataSet  
+                    var dataSetAnswer = General.GetDataSetFromReader(queryAnswer);
+                    var dataSetSolution = General.GetDataSetFromReader(querySolution);
+
+                    if (General.CompareTwoDataSetsByRow(dataSetAnswer, dataSetSolution))
                     {
-                        comment += string.Concat("Answer has more tables than Solution's database (",
-                            dataSetAnswer.Tables.Count, ">",
-                            dataSetSolution.Tables.Count, ") => Decrease Max Point by ", Math.Round(ratePoint * 100, 2),
-                            "% => Max TC Point = ", maxTcPoint,
-                            "\n");
-                        countTesting--;
+                        var ratePoint = (double)dataSetSolution.Tables.Count / dataSetAnswer.Tables.Count;
+                        var maxTcPoint = Math.Round(testCase.Point * ratePoint, 2);
+                        if (dataSetAnswer.Tables.Count > dataSetSolution.Tables.Count)
+                        {
+                            comment += string.Concat("Answer has more tables than Solution's database (",
+                                dataSetAnswer.Tables.Count, ">",
+                                dataSetSolution.Tables.Count, ") => Decrease Max Point by ", Math.Round(ratePoint * 100, 2),
+                                "% => Max TC Point = ", maxTcPoint,
+                                "\n");
+                            countTesting--;
+                        }
+                        gradePoint += maxTcPoint;
+                        comment += string.Concat("Passed => +", maxTcPoint, "\n");
+                        countTrueTc++;
                     }
-                    gradePoint += maxTcPoint;
-                    comment += string.Concat("Passed => +", maxTcPoint, "\n");
-                    countTrueTc++;
+                    else
+                    {
+                        comment += "Not pass\n";
+                    }
                 }
-                else
-                {
-                    comment += "Not pass\n";
-                }
+            }
+            catch (Exception e)
+            {
+                throw new Exception(comment + e.Message);
             }
 
             comment = string.Concat("Total Point: ", gradePoint, "/", candidate.Point, "\n", comment);

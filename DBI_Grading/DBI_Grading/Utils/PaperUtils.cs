@@ -62,7 +62,7 @@ namespace DBI_Grading.Utils
                     throw new Exception("Compare error: " + e.Message);
                 }
                 // Execute query
-                return Utilities.WithTimeout(
+                return ThreadUtils.WithTimeout(
                     () => CompareUtils.CompareSchemaType(dbAnswerName, dbSolutionName, dbEmptyName, candidate, errorMessage),
                     Constant.TimeOutInSecond);
             }
@@ -102,7 +102,7 @@ namespace DBI_Grading.Utils
                 else
                     General.GenerateDatabase(dbSolutionName, dbAnswerName, Constant.PaperSet.DBScriptList[0]);
                 //Compare
-                return Utilities.WithTimeout(
+                return ThreadUtils.WithTimeout(
                     () => CompareUtils.CompareSelectType(dbAnswerName, dbSolutionName, answer, candidate),
                     Constant.TimeOutInSecond);
             }
@@ -180,7 +180,7 @@ namespace DBI_Grading.Utils
                     if (e.InnerException != null) throw new Exception(e.InnerException.Message);
                     throw new Exception("Compare error: " + e.Message);
                 }
-                return Utilities.WithTimeout(
+                return ThreadUtils.WithTimeout(
                     () => CompareUtils.CompareOthersType(dbAnswerName, dbSolutionName, candidate, errorMessage),
                     Constant.TimeOutInSecond);
             }
@@ -241,7 +241,7 @@ namespace DBI_Grading.Utils
                     if (e.InnerException != null) throw new Exception("Compare error: " + e.InnerException.Message);
                     throw new Exception("Compare error: " + e.Message);
                 }
-                return Utilities.WithTimeout(
+                return ThreadUtils.WithTimeout(
                     () => CompareUtils.CompareOthersType(dbAnswerName, dbSolutionName, candidate, errorMessage),
                     Constant.TimeOutInSecond);
             }
