@@ -166,9 +166,11 @@ namespace DBI_Grading.UI
                                 string extractPath = "";
                                 // Student co nop answers khong
                                 if (!Directory.Exists(rollNumberPath + @"\0"))
+                                    // Khong nop duoc phai nho khao thi copy file len
                                     errorLog += "Folder 0 not found with " + rollNumber + "\n";
                                 else
                                 {
+                                    // Nop thanh cong thi di vao \0\Solution.zip
                                     var solutionPath = rollNumberPath + @"\0"; // "0" folder
                                                                                // Check tool cua thay co bi thieu Solution.zip khong
                                     if (!File.Exists(solutionPath + @"\Solution.zip"))
@@ -179,10 +181,20 @@ namespace DBI_Grading.UI
                                     {
                                         var zipSolutionPath = solutionPath + @"\Solution.zip";
                                         extractPath = solutionPath + @"\extract";
+                                        // Delete extract folder if it is already
+                                        try{
+                                            if (Directory.Exists(extractPath))
+                                                Directory.Delete(extractPath, true);
+                                        }catch(Exception) {// skip}
                                         // Extract zip
-                                        if (Directory.Exists(extractPath))
-                                            Directory.Delete(extractPath, true);
-                                        ZipFile.ExtractToDirectory(zipSolutionPath, extractPath);
+                                        try {
+                                            ZipFile.ExtractToDirectory(zipSolutionPath, extractPath);
+                                            // Extract zip inside
+                                            string[] zipfiles = Directory.GetFiles(extractPath, "*.zip", SearchOption.AllDirectories);
+                                            foreach(string zipFile in zipfiles) {
+                                                ZipFile.ExtractToDirectory(zipFile, extractPath);
+                                            }
+                                        }catch(Exception){// skip}
                                     }
                                 }
 
