@@ -24,6 +24,7 @@ namespace DBI_Grading.Model
         public List<Candidate> ListCandidates { get; set; }
         public double[] Points { get; set; }
         public string[] Logs { get; set; }
+        private double MaxPoint = 0;
 
         /// <summary>
         ///     Get Sum of point
@@ -34,7 +35,9 @@ namespace DBI_Grading.Model
             double sum = 0;
             foreach (var point in Points)
                 sum += point;
-            return sum;
+            sum = Math.Round(sum, 2);
+            if (sum >= MaxPoint) sum = MaxPoint;
+                return sum;
         }
 
         /// <summary>
@@ -67,7 +70,15 @@ namespace DBI_Grading.Model
                     return PaperUtils.SelectType(candidate, StudentID, answer, questionOrder);
                 case Candidate.QuestionTypes.DML:
                     // DML: Insert/Delete/Update Question
-                    return PaperUtils.DmlType(candidate, StudentID, answer, questionOrder);
+                    string schemaAnswer = null;
+                    for (int i = 0; i < ListCandidates.Count; i++)
+                    {
+                        if (ListCandidates[i].QuestionType == Candidate.QuestionTypes.Schema)
+                        {
+                            schemaAnswer = ListAnswers[i];
+                        }
+                    }
+                    return PaperUtils.DmlType(candidate, StudentID, answer, questionOrder, ListCandidates, schemaAnswer);
                 case Candidate.QuestionTypes.Procedure:
                     // Procedure Question
                     return PaperUtils.TriggerProcedureType(candidate, StudentID, answer, questionOrder);
@@ -86,6 +97,18 @@ namespace DBI_Grading.Model
         /// </summary>
         public void GetPoint()
         {
+            foreach (var candidate in ListCandidates)
+            {
+                MaxPoint += candidate.Point;
+            }
+            if (MaxPoint > 10)
+            {
+                MaxPoint = Math.Floor(MaxPoint);
+            }
+            else
+            {
+                MaxPoint = Math.Ceiling(MaxPoint);
+            }
             // Count number of candidate
             var numberOfQuestion = ListCandidates.Count;
             // Wrong PaperNo
@@ -107,7 +130,7 @@ namespace DBI_Grading.Model
                         //Exactly -> Log true and return 0 point
                         if (res != null)
                         {
-                            Points[questionOrder] = double.Parse(res["Point"]);
+                            Points[questionOrder] = Math.Round(double.Parse(res["Point"]), 4);
                             Logs[questionOrder] = res["Comment"];
                         }
                         else

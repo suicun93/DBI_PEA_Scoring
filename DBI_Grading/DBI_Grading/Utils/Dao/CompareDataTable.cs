@@ -115,7 +115,7 @@ namespace DBI_Grading.Utils.Dao
         /// <returns>
         ///     true = same
         /// </returns>
-        internal static bool CompareData(DataTable dataTableAnswer, DataTable dataTableTq)
+        internal static bool CompareData(DataTable dataTableAnswer, DataTable dataTableTq, bool isRotate)
         {
             //Get First Column from TQ
             string firstColumnName = dataTableTq.Columns[0].ColumnName;
@@ -143,7 +143,10 @@ namespace DBI_Grading.Utils.Dao
             //Compare Data
             DataTable rotateTableTq = RotateTable(distinctTableTq);
             DataTable rotateTableAnswer = RotateTable(distinctTableAnswer);
-
+            if (isRotate)
+            {
+                return CompareTwoDataTablesByExceptOneDirection(rotateTableAnswer, rotateTableTq);
+            }
             return CompareTwoDataTablesByExceptOneDirection(rotateTableTq, rotateTableAnswer);
         }
 
@@ -182,15 +185,16 @@ namespace DBI_Grading.Utils.Dao
         /// </summary>
         /// <param name="dataSetAnswer"></param>
         /// <param name="dataSetSolution"></param>
+        /// <param name="isRotate"></param>
         /// <returns></returns>
-        internal static bool CompareTwoDataSetsByRow(DataSet dataSetAnswer, DataSet dataSetSolution)
+        internal static bool CompareTwoDataSets(DataSet dataSetAnswer, DataSet dataSetSolution, bool isRotate)
         {
             var countComparison = 0;
             foreach (DataTable dataTableSolution in dataSetSolution.Tables)
             {
                 foreach (DataTable dataTableAnswer in dataSetAnswer.Tables)
                 {
-                    if (CompareTwoDataTablesByRow(dataTableAnswer, dataTableSolution))
+                    if (CompareData(dataTableAnswer, dataTableSolution, isRotate))
                         break;
                     countComparison++;
                 }

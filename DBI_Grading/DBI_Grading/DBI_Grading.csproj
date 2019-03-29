@@ -138,7 +138,7 @@
     </Compile>
     <Compile Include="Utils\CompareUtils.cs" />
     <Compile Include="Utils\ExcelUtils.cs" />
-    <Compile Include="Utils\Dao\General+Compare.cs" />
+    <Compile Include="Utils\Dao\CompareDataTable.cs" />
     <Compile Include="Utils\Dao\General.cs" />
     <Compile Include="Utils\FileUtils.cs" />
     <Compile Include="Utils\JsonUtils.cs" />

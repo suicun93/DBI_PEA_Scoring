@@ -29,11 +29,11 @@ namespace DBI_Grading.Utils
             return distance;
         }
 
-        public static List<TestCase> GetTestCases(Candidate candidate)
+        public static List<TestCase> GetTestCases(string input, Candidate candidate)
         {
-            var matchPoint = Regex.Match(candidate.TestQuery, @"(/\*(.|[\r\n])*?\*/)|(--(.*|[\r\n]))",
+            var matchPoint = Regex.Match(input, @"(/\*(.|[\r\n])*?\*/)|(--(.*|[\r\n]))",
                 RegexOptions.Singleline);
-            var matchQuery = Regex.Match(candidate.TestQuery + "/*", @"(\*/(.|[\r\n])*?/\*)|(--(.*|[\r\n]))",
+            var matchQuery = Regex.Match(input + "/*", @"(\*/(.|[\r\n])*?/\*)|(--(.*|[\r\n]))",
                 RegexOptions.Multiline);
             var queryList = new List<string>();
             while (matchQuery.Success)
@@ -50,7 +50,7 @@ namespace DBI_Grading.Utils
                 var matchFormatted = matchPoint.Value.Split('*')[1];
                 if (count++ % 2 == 0)
                 {
-                    tcp.Point = Double.Parse(matchFormatted, CultureInfo.InvariantCulture);
+                    tcp.ratePoint = Double.Parse(matchFormatted, CultureInfo.InvariantCulture);
                 }
                 else
                 {
@@ -64,16 +64,16 @@ namespace DBI_Grading.Utils
             if (tcpList.Count == 0)
                 tcpList.Add(new TestCase
                 {
-                    TestQuery = candidate.TestQuery,
+                    TestQuery = input,
                     Description = "",
-                    Point = candidate.Point
+                    ratePoint = candidate.Point
                 });
             return tcpList;
         }
 
         public class TestCase
         {
-            public double Point { get; set; }
+            public double ratePoint { get; set; }
             public string Description { get; set; }
             public string TestQuery { get; set; }
         }
