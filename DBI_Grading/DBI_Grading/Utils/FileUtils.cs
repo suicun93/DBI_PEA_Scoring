@@ -7,8 +7,8 @@ namespace DBI_Grading.Utils
     internal class FileUtils
     {
         internal static string[] GetAllSql(string rootPath) {
-            string[] front = Directory.EnumerateFiles(rootPath, "*.sql", SearchOption.AllDirectories);
-            string[] back = Directory.EnumerateFiles(rootPath, "*.txt", SearchOption.AllDirectories);
+            string[] front = Directory.GetFiles(rootPath, "*.sql", SearchOption.AllDirectories);
+            string[] back = Directory.GetFiles(rootPath, "*.txt", SearchOption.AllDirectories);
             string[] combined = new string[front.Length + back.Length];
 			Array.Copy(front, combined, front.Length);
 			Array.Copy(back, 0, combined, front.Length, back.Length);
