@@ -161,6 +161,8 @@ namespace DBI_Grading.UI
                             };
                             try
                             {
+                                var answerPathsBackUp = FileUtils.GetAllSql(rollNumberPath);
+
                                 if (!Directory.Exists(rollNumberPath + @"\0"))
                                     throw new Exception("Folder 0 not found with " + rollNumber);
 
@@ -178,6 +180,10 @@ namespace DBI_Grading.UI
                                     Directory.Delete(extractPath, true);
                                 ZipFile.ExtractToDirectory(zipSolutionPath, extractPath);
                                 var answerPaths = FileUtils.GetAllSql(extractPath);
+                                if (answerPaths.Length == 0 && answerPathsBackUp.Length > 0)
+                                {
+                                    answerPaths = answerPathsBackUp;
+                                }
 
                                 // Add the answer
                                 foreach (var answerPath in answerPaths)
