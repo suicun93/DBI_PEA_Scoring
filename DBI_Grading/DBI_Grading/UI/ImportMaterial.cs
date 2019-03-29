@@ -199,7 +199,7 @@ namespace DBI_Grading.UI
                                         var fileName =
                                             Path.GetFileNameWithoutExtension(answerPath); // Get q1,q2,...
                                         var questionOrder =
-                                            int.Parse(StringUtils.GetNumbers(fileName)) - 1; // remove all non-numeric characters
+                                            int.Parse(fileName.GetNumbers()) - 1; // remove all non-numeric characters
                                         submission.ListAnswer[questionOrder] = File.ReadAllText(answerPath);
                                         submission.AnswerPaths[questionOrder] = answerPath.Substring(rollNumberPath.Length + 1); // substring without /extract
                                     }
