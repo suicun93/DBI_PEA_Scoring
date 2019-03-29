@@ -12,8 +12,22 @@ namespace DBI_Grading.Utils
     {
         
 
-        internal static string GetNumbers(string input) => new string(input.Where(c => Char.IsDigit(c)).ToArray());
-
+        internal static string GetNumbers(this string input) {
+		while(!Char.IsDigit(input[input.Length-1])) {
+			input = input.RemoveAt(input.Length-1);
+		}
+		int position = input.Length -1;
+		while(Char.IsDigit(input[position])) {
+			position--;
+		}
+		return input.Remove(0,position +1);
+	}
+	
+	internal static string RemoveAt(this string s, int index)
+        {
+         return s.Remove(index, 1);
+        }
+        
         internal static int GetHammingDistance(string s, string t)
         {
             if (s.Length != t.Length)
