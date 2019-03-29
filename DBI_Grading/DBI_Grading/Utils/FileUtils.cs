@@ -6,8 +6,14 @@ namespace DBI_Grading.Utils
 {
     internal class FileUtils
     {
-        internal static string[] GetAllSql(string rootPath) => Directory.EnumerateFiles(rootPath, "*.*", SearchOption.AllDirectories)
-            .Where(s => s.EndsWith(".sql") || s.EndsWith(".txt"));
+        internal static string[] GetAllSql(string rootPath) {
+            string[] front = Directory.EnumerateFiles(rootPath, "*.sql", SearchOption.AllDirectories);
+            string[] back = Directory.EnumerateFiles(rootPath, "*.txt", SearchOption.AllDirectories);
+            string[] combined = new string[front.Length + back.Length];
+			Array.Copy(front, combined, front.Length);
+			Array.Copy(back, 0, combined, front.Length, back.Length);
+            return combined;
+        }
 
         public static string SaveFileToLocation()
         {
