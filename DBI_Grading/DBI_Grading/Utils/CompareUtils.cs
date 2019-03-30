@@ -317,7 +317,7 @@ namespace DBI_Grading.Utils
                     if (General.CompareTwoDataSets(dataSetAnswer, dataSetSolution, false))
                     {
                         var decreaseRate = (double)dataSetSolution.Tables.Count / dataSetAnswer.Tables.Count;
-                        var maxTcPoint = Math.Round(testCase.ratePoint * decreaseRate * candidate.Point, 4);
+                        var maxTcPoint = Math.Round(testCase.RatePoint * decreaseRate * candidate.Point, 4);
                         if (dataSetAnswer.Tables.Count > dataSetSolution.Tables.Count)
                         {
                             comment += string.Concat("Answer has more tables than Solution's database (",
@@ -394,14 +394,14 @@ namespace DBI_Grading.Utils
 
                     if (General.CompareTwoDataSets(dataSetAnswer, dataSetSolution, true))
                     {
-                        var tcPoint = Math.Round(testCase.ratePoint * maxPoint, 4);
+                        var tcPoint = Math.Round(testCase.RatePoint * maxPoint, 4);
                         gradePoint += tcPoint;
                         comment += string.Concat("Passed => +", tcPoint, "\n");
                         countTrueTc++;
                     }
                     else if (General.CompareTwoDataSets(dataSetAnswer, dataSetSolution, false))
                     {
-                        var tcPoint = Math.Round(testCase.ratePoint * maxPoint, 4);
+                        var tcPoint = Math.Round(testCase.RatePoint * maxPoint, 4);
                         gradePoint += tcPoint;
                         comment += string.Concat("Passed => +", tcPoint, "\n");
                         countTrueTc++;

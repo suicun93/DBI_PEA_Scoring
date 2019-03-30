@@ -21,11 +21,13 @@ namespace DBI_Grading.Utils
             int position = input.Length - 1;
             if (position == -1)
                 return input;
-            while (char.IsDigit(input[position]) && position != 0)
+            while (position != 0 && char.IsDigit(input[position]))
             {
                 position--;
             }
-            return position == 0 ? input : input.Remove(0, position + 1);
+            return position == 0 ? 
+                char.IsDigit(input[position]) ? input :input.RemoveAt(0) 
+                : input.Remove(0, position + 1);
         }
 
         internal static string RemoveAt(this string s, int index)
@@ -69,7 +71,7 @@ namespace DBI_Grading.Utils
                 var matchFormatted = matchPoint.Value.Split('*')[1];
                 if (count++ % 2 == 0)
                 {
-                    tcp.ratePoint = Double.Parse(matchFormatted, CultureInfo.InvariantCulture);
+                    tcp.RatePoint = Double.Parse(matchFormatted, CultureInfo.InvariantCulture);
                 }
                 else
                 {
@@ -85,14 +87,14 @@ namespace DBI_Grading.Utils
                 {
                     TestQuery = input,
                     Description = "",
-                    ratePoint = candidate.Point
+                    RatePoint = candidate.Point
                 });
             return tcpList;
         }
 
         public class TestCase
         {
-            public double ratePoint { get; set; }
+            public double RatePoint { get; set; }
             public string Description { get; set; }
             public string TestQuery { get; set; }
         }
