@@ -198,12 +198,19 @@ namespace DBI_Grading.UI
                                             string[] zipfiles = Directory.GetFiles(extractPath, "*.zip", SearchOption.AllDirectories);
                                             foreach (string zipFile in zipfiles)
                                             {
-                                                ZipFile.ExtractToDirectory(zipFile, extractPath);
+                                                try
+                                                {
+                                                    ZipFile.ExtractToDirectory(zipFile, extractPath);
+                                                }
+                                                catch (Exception)
+                                                {
+                                                    // De phong chuyen ban da lam Q1, Q2, Q3,... roi nhung nen lai roi de o trong folder nop bai
+                                                }
                                             }
                                         }
-                                        catch (Exception)
+                                        catch (Exception ex)
                                         {
-                                            // skip
+                                            errorLog += ex.Message + "\n";
                                         }
                                     }
                                 }
@@ -219,11 +226,36 @@ namespace DBI_Grading.UI
                                     try
                                     {
                                         var fileName =
-                                            Path.GetFileNameWithoutExtension(answerPath); // Get q1,q2,...
+                                            Path.GetFileNameWithoutExtension(answerPath);
                                         var questionOrder =
-                                            int.Parse(fileName.GetNumbers()) - 1; // remove all non-numeric characters
-                                        submission.ListAnswer[questionOrder] = File.ReadAllText(answerPath);
-                                        submission.AnswerPaths[questionOrder] = answerPath.Substring(rollNumberPath.Length + 1); // substring without /extract
+                                            int.Parse(fileName.GetNumbers()) - 1; // remove all non-numeric characters to get the last number in file name
+                                        if (string.IsNullOrEmpty(submission.ListAnswer[questionOrder]))
+                                        {
+                                            // Chua thay ghi nhan cau tra loi.
+                                            submission.ListAnswer[questionOrder] = File.ReadAllText(answerPath);
+                                            submission.AnswerPaths[questionOrder] = answerPath.Substring(rollNumberPath.Length + 1); // substring without /extract
+                                        }
+                                        else
+                                        {
+                                            // Phat hien ra co 2 cau Qx.sql or Qx.txt
+                                            string currentFilename = Path.GetFileNameWithoutExtension(submission.AnswerPaths[questionOrder]);
+                                            string newFilename = Path.GetFileNameWithoutExtension(answerPath);
+                                            // Lay cau nao giong Qx.sql || Qx.txt hon, neu khong cau nao giong thi huy ket qua ca 2 cau
+                                            string mauFilename = "Q" + (questionOrder + 1);
+                                            if (currentFilename.ToUpper().Equals(mauFilename))
+                                                submission.AnswerPaths[questionOrder] = "Duplicate detected and choose " + submission.AnswerPaths[questionOrder] + " to get mark";
+                                            else if (newFilename.ToUpper().Equals(mauFilename))
+                                            {
+                                                // Thay the bang file sau nhung them thong bao duplicate
+                                                submission.ListAnswer[questionOrder] = File.ReadAllText(answerPath);
+                                                submission.AnswerPaths[questionOrder] = "Duplicate detected and choose " + answerPath.Substring(rollNumberPath.Length + 1) + " to get mark";
+                                            } else
+                                            {
+                                                // Dat 2 file trung nhau nhung deu khong dung dinh dang ten => reject ca 2 bai
+                                                submission.ListAnswer[questionOrder] = "";
+                                                submission.AnswerPaths[questionOrder] = "Duplicate detected but name format not matched => Reject";
+                                            }
+                                        }
                                     }
                                     catch (Exception)
                                     {
