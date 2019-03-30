@@ -172,29 +172,39 @@ namespace DBI_Grading.UI
                                 {
                                     // Nop thanh cong thi di vao \0\Solution.zip
                                     var solutionPath = rollNumberPath + @"\0"; // "0" folder
-                                                                               // Check tool cua thay co bi thieu Solution.zip khong
-                                    if (!File.Exists(solutionPath + @"\Solution.zip"))
+                                    if (!File.Exists(solutionPath + @"\Solution.zip"))  // Check tool cua thay co bi thieu Solution.zip khong
                                     {
                                         errorLog += "Solution.zip was not found with " + rollNumber + "\n";
                                     }
                                     else
                                     {
-                                        var zipSolutionPath = solutionPath + @"\Solution.zip";
                                         extractPath = solutionPath + @"\extract";
                                         // Delete extract folder if it is already
-                                        try{
+                                        try
+                                        {
                                             if (Directory.Exists(extractPath))
                                                 Directory.Delete(extractPath, true);
-                                        }catch(Exception) {// skip}
+                                        }
+                                        catch (Exception)
+                                        {
+                                            // skip
+                                        }
                                         // Extract zip
-                                        try {
+                                        try
+                                        {
+                                            var zipSolutionPath = solutionPath + @"\Solution.zip";
                                             ZipFile.ExtractToDirectory(zipSolutionPath, extractPath);
-                                            // Extract zip inside
+                                            // Extract all zip file inside \extract
                                             string[] zipfiles = Directory.GetFiles(extractPath, "*.zip", SearchOption.AllDirectories);
-                                            foreach(string zipFile in zipfiles) {
+                                            foreach (string zipFile in zipfiles)
+                                            {
                                                 ZipFile.ExtractToDirectory(zipFile, extractPath);
                                             }
-                                        }catch(Exception){// skip}
+                                        }
+                                        catch (Exception)
+                                        {
+                                            // skip
+                                        }
                                     }
                                 }
 
@@ -202,7 +212,7 @@ namespace DBI_Grading.UI
                                 answerPaths = FileUtils.GetAllSql(rollNumberPath);
                                 if (answerPaths.Length == 0)
                                 {
-                                    throw new Exception(errorLog);
+                                    throw new Exception(message: errorLog);
                                 }
                                 // Add the answer
                                 foreach (var answerPath in answerPaths)
@@ -223,6 +233,7 @@ namespace DBI_Grading.UI
                                 if (!string.IsNullOrEmpty(extractPath))
                                     Directory.Delete(extractPath, true);
                             }
+
                             catch (Exception)
                             {
                                 // Skip exception

@@ -8,7 +8,7 @@ using DBI_Grading.Model.Teacher;
 
 namespace DBI_Grading.Utils
 {
-    internal class StringUtils
+    internal static class StringUtils
     {
         
 
