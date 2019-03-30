@@ -21,13 +21,16 @@ namespace DBI_Grading.Utils
             int position = input.Length - 1;
             if (position == -1)
                 return input;
-            while (position != 0 && char.IsDigit(input[position]))
+            while (position != -1)
             {
                 position--;
+                if (position == -1) break;
+                if (!char.IsNumber(input[position]))
+                {
+                    break;
+                }
             }
-            return position == 0 ? 
-                char.IsDigit(input[position]) ? input :input.RemoveAt(0) 
-                : input.Remove(0, position + 1);
+            return position == -1 ? input : input.Remove(0, position + 1);
         }
 
         internal static string RemoveAt(this string s, int index)
