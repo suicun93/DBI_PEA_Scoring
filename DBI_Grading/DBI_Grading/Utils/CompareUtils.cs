@@ -384,14 +384,13 @@ namespace DBI_Grading.Utils
                 {
                     if (countTesting == 0)
                     {
-                        comment += "======= Grading case 1 =======";
+                        comment += "======= Grading case 1 =======\n";
                     }
                     else if (countTesting == testCases.Count / 2)
                     {
-                        comment += "======= Grading case 2 =======";
+                        comment += "======= Grading case 2 =======\n";
                     }
-                    comment += string.Concat("TC ", ++countTesting, ": ",
-                        testCase.Description, "- ");
+                    comment += string.Concat("TC ", ++countTesting, ": ",testCase.Description.Trim(), " - ");
                     // Prepare query
                     var queryAnswer = "USE [" + dbAnswerName + "] \n" + testCase.TestQuery;
                     var querySolution = "USE [" + dbSolutionName + "] \n" + testCase.TestQuery;
