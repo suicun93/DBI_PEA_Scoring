@@ -138,7 +138,7 @@ namespace DBI_Grading.Utils
                 if (gradePoint > maxPoint) gradePoint = maxPoint;
                 return new Dictionary<string, string>
                 {
-                    {"Point", gradePoint.ToString()},
+                    {"Point", Math.Round(gradePoint, 2).ToString()},
                     {"Comment", comment}
                 };
             }
@@ -269,7 +269,7 @@ namespace DBI_Grading.Utils
             comment = string.Concat("Total Point: ", gradePoint, "/", candidate.Point, "\n", comment);
             return new Dictionary<string, string>
             {
-                {"Point", gradePoint.ToString()},
+                {"Point", Math.Round(gradePoint, 2).ToString()},
                 {"Comment", comment}
             };
         }
@@ -347,7 +347,7 @@ namespace DBI_Grading.Utils
             if (gradePoint > maxPoint) gradePoint = maxPoint;
             return new Dictionary<string, string>
             {
-                {"Point", gradePoint.ToString()},
+                {"Point", Math.Round(gradePoint, 2).ToString()},
                 {"Comment", comment}
             };
         }
@@ -429,7 +429,7 @@ namespace DBI_Grading.Utils
             if (gradePoint > maxPoint) gradePoint = maxPoint;
             return new Dictionary<string, string>
             {
-                {"Point", gradePoint.ToString()},
+                {"Point", Math.Round(gradePoint, 2).ToString()},
                 {"Comment", comment}
             };
         }
