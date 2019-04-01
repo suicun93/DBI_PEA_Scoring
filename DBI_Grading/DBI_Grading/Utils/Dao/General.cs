@@ -64,7 +64,6 @@ namespace DBI_Grading.Utils.Dao
                     }
                     throw;
                 }
-
             }
             return dts;
         }
@@ -94,7 +93,7 @@ namespace DBI_Grading.Utils.Dao
                     }
                     catch
                     {
-                        if (query.ToLower().Contains("\ngo") || query.ToLower().Contains("go\n"))
+                        if (query.ToLower().Replace(" ", "").Contains("\ngo") || query.ToLower().Replace(" ", "").Contains("go\n"))
                         {
                             query = query.ToLower().Replace("\ngo", "\n");
                             query = query.ToLower().Replace("go\n", "\n");

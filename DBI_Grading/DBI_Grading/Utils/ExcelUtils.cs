@@ -222,9 +222,10 @@ namespace DBI_Grading.Utils
                     var hyper = "02_Detail!" + (char)(61 + i) + lastRow + "";
                     sheetResult.Cells[lastRow, i] = result.Points[i - 8];
                     sheetResult.Hyperlinks.Add(sheetResult.Cells[lastRow, i], "", hyper);
-                    if (result.ListAnswers[i - 8].ToLower().Contains("go\n") || result.ListAnswers[i - 8].ToLower().Contains("\ngo"))
+                    if (result.ListAnswers[i - 8].ToLower().Replace(" ", "").Contains("go\n") || result.ListAnswers[i - 8].ToLower().Replace(" ", "").Contains("\ngo"))
                     {
                         sheetResult.Cells[lastRow, i].Interior.Color = System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.PaleVioletRed);
+                        sheetResult.Cells[lastRow, numOfQuestion + 10] = "Answer includes GO statement";
                     }
                 }
                 sheetResult.Cells[lastRow, numOfQuestion + 8] = "View Details";
@@ -246,7 +247,6 @@ namespace DBI_Grading.Utils
             }
             //Fit columns
             sheetResult.Columns.AutoFit();
-            //sheetResult.Range["A:G"].VerticalAlignment = XlVAlign.xlVAlignTop;
             LastRowOfResultSheet = lastRow;
         }
     }
