@@ -44,8 +44,8 @@ namespace DBI_Grading.Utils.Dao
 
         public static bool CompareColumnName(DataTable dtSchemaAnswer, DataTable dtSchemaTQ)
         {
-            List<string> columnNameListAnswer = GetColumnsName(dtSchemaAnswer);//6 thuoc tinh
-            List<string> columnNameListTQ = GetColumnsName(dtSchemaTQ);//4 thuoc 
+            List<string> columnNameListAnswer = GetColumnsName(dtSchemaAnswer);
+            List<string> columnNameListTQ = GetColumnsName(dtSchemaTQ);
             return !columnNameListTQ.Except(columnNameListAnswer).Any();
         }
 

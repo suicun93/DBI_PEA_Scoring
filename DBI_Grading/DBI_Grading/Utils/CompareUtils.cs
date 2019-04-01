@@ -382,6 +382,14 @@ namespace DBI_Grading.Utils
             {
                 try
                 {
+                    if (countTesting == 0)
+                    {
+                        comment += "======= Grading case 1 =======";
+                    }
+                    else if (countTesting == testCases.Count / 2)
+                    {
+                        comment += "======= Grading case 2 =======";
+                    }
                     comment += string.Concat("TC ", ++countTesting, ": ",
                         testCase.Description, "- ");
                     // Prepare query
@@ -408,12 +416,12 @@ namespace DBI_Grading.Utils
                     }
                     else
                     {
-                        comment += "Skip this testcase\n";
+                        comment += "Skip/Not Pass\n";
                     }
                 }
                 catch
                 {
-                    comment = comment + "Skip this testcase\n";
+                    comment = comment + "Skip/Not Pass\n";
                 }
             }
             comment = string.Concat("Total Point: ", gradePoint, "/", candidate.Point, "\n", comment);

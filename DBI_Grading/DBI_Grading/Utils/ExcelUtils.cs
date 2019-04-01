@@ -82,6 +82,15 @@ namespace DBI_Grading.Utils
                 {
                     sheetAnswerPath.Cells[lastRow, j + 4] = submission.AnswerPaths[j];
                 }
+                int countEmpty = 0;
+                while (countEmpty < submission.AnswerPaths.Count && submission.AnswerPaths[countEmpty].Equals("Cannot found"))
+                {
+                    countEmpty++;
+                    if (countEmpty >= submission.AnswerPaths.Count)
+                    {
+                        sheetAnswerPath.Rows[lastRow].Interior.Color = System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.Yellow);
+                    }
+                }
             }
             //Fit columns
             sheetAnswerPath.Columns.AutoFit();
@@ -196,7 +205,7 @@ namespace DBI_Grading.Utils
                 sheetResult.Cells[lastRow, i] = string.Concat("Q", i - 7);
             sheetResult.Cells[lastRow, numOfQuestion + 8] = "Log Details";
             sheetResult.Cells[lastRow, numOfQuestion + 9] = "Answer Path";
-
+            sheetResult.Cells[lastRow, numOfQuestion + 10] = "Note";
             //Insert Data
             foreach (var result in results)
             {
@@ -221,6 +230,16 @@ namespace DBI_Grading.Utils
                 sheetResult.Cells[lastRow, numOfQuestion + 9] = "View AnswerPath";
                 sheetResult.Hyperlinks.Add(sheetResult.Cells[lastRow, numOfQuestion + 9], "",
                     "03_AnswerPath!C" + lastRow + "", "View AnswerPath");
+                int countEmpty = 0;
+                while (countEmpty < result.ListAnswers.Count && result.ListAnswers[countEmpty].Equals(""))
+                {
+                    countEmpty++;
+                    if (countEmpty >= result.ListAnswers.Count)
+                    {
+                        sheetResult.Rows[lastRow].Interior.Color = System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.Yellow);
+                        sheetResult.Cells[lastRow, numOfQuestion + 10] = "Cannot found any answer";
+                    }
+                }
             }
             //Fit columns
             sheetResult.Columns.AutoFit();
