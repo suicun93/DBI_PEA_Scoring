@@ -23,7 +23,7 @@ namespace DBI_Grading.Utils.Dao
                 connection.Open();
                 using (var command = new SqlCommand(query, connection))
                 {
-                    return (int) command.ExecuteScalar();
+                    return (int)command.ExecuteScalar();
                 }
             }
         }
@@ -43,10 +43,28 @@ namespace DBI_Grading.Utils.Dao
             {
                 connection.Open();
                 //1. Check number of tables
-                using (var sqlDataAdapter = new SqlDataAdapter(query, connection))
+                try
                 {
-                    sqlDataAdapter.Fill(dts);
+                    using (var sqlDataAdapter = new SqlDataAdapter(query, connection))
+                    {
+
+                        sqlDataAdapter.Fill(dts);
+                    }
                 }
+                catch
+                {
+                    if (query.ToLower().Contains("go"))
+                    {
+                        query = query.ToLower().Replace("go", "\n");
+                        using (var sqlDataAdapter = new SqlDataAdapter(query, connection))
+                        {
+                            sqlDataAdapter.Fill(dts);
+                        }
+                        return dts;
+                    }
+                    throw;
+                }
+
             }
             return dts;
         }
@@ -69,7 +87,26 @@ namespace DBI_Grading.Utils.Dao
                 using (var sqlCommandAnswer = new SqlCommand(query, connection))
                 {
                     sqlCommandAnswer.CommandTimeout = Constant.TimeOutInSecond;
-                    var sqlReaderAnswer = sqlCommandAnswer.ExecuteReader();
+                    SqlDataReader sqlReaderAnswer;
+                    try
+                    {
+                        sqlReaderAnswer = sqlCommandAnswer.ExecuteReader();
+                    }
+                    catch
+                    {
+                        if (query.ToLower().Contains("\ngo") || query.ToLower().Contains("go\n"))
+                        {
+                            query = query.ToLower().Replace("\ngo", "\n");
+                            query = query.ToLower().Replace("go\n", "\n");
+                            using (var sqlCommandAnswerBackup = new SqlCommand(query, connection))
+                            {
+                                dataTable.Load(sqlCommandAnswerBackup.ExecuteReader());
+                                return dataTable;
+                            }
+                        }
+                        throw;
+                    }
+
                     dataTable.Load(sqlReaderAnswer);
                 }
                 return dataTable;

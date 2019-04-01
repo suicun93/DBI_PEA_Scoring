@@ -32,8 +32,7 @@ namespace DBI_Grading.Utils
                     AddResultSheet(book.Worksheets[1], results, maxPoint, numOfQuestion);
 
                     //Add Detail Sheet
-                    AddDetailSheet(book.Sheets.Add(After: book.Sheets[book.Sheets.Count]), results,
-                        numOfQuestion);
+                    AddDetailSheet(book.Sheets.Add(After: book.Sheets[book.Sheets.Count]), results, numOfQuestion);
 
                     //Add Answer Sheet
                     AddAnswerPathSheet(book.Sheets.Add(After: book.Sheets[book.Sheets.Count]), submissions,
@@ -223,6 +222,10 @@ namespace DBI_Grading.Utils
                     var hyper = "02_Detail!" + (char)(61 + i) + lastRow + "";
                     sheetResult.Cells[lastRow, i] = result.Points[i - 8];
                     sheetResult.Hyperlinks.Add(sheetResult.Cells[lastRow, i], "", hyper);
+                    if (result.ListAnswers[i - 8].ToLower().Contains("go\n") || result.ListAnswers[i - 8].ToLower().Contains("\ngo"))
+                    {
+                        sheetResult.Cells[lastRow, i].Interior.Color = System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.PaleVioletRed);
+                    }
                 }
                 sheetResult.Cells[lastRow, numOfQuestion + 8] = "View Details";
                 sheetResult.Hyperlinks.Add(sheetResult.Cells[lastRow, numOfQuestion + 8], "",
