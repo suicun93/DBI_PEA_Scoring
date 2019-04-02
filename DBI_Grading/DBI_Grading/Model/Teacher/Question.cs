@@ -7,7 +7,7 @@ namespace DBI_Grading.Model.Teacher
     public class Question
     {
         public string QuestionId { get; set; }
-        public double Point { get; set; }
+        public decimal Point { get; set; }
         public List<Candidate> Candidates { get; set; }
     }
 }

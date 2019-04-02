@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace DBI_Grading.Model.Teacher
 {
+    [Serializable]
     public class QuestionSet
     {
         public QuestionSet()

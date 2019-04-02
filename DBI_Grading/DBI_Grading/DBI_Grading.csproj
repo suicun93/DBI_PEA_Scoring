@@ -143,6 +143,7 @@
     <Compile Include="Utils\FileUtils.cs" />
     <Compile Include="Utils\JsonUtils.cs" />
     <Compile Include="Utils\PaperUtils.cs" />
+    <Compile Include="Utils\PreMergeToMergedDeserializationBinder.cs" />
     <Compile Include="Utils\StringUtils.cs" />
     <Compile Include="Utils\ThreadUtils.cs" />
     <Compile Include="Utils\Utilities.cs" />

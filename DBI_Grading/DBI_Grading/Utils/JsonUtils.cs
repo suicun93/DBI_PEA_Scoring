@@ -1,4 +1,6 @@
 ﻿using System.IO;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 using DBI_Grading.Model.Student;
 using DBI_Grading.Model.Teacher;
 using Newtonsoft.Json;
@@ -18,7 +20,7 @@ namespace DBI_Grading.Utils
         {
             try
             {
-//path with name of file, remember
+                //path with name of file, remember
                 File.WriteAllText(path, SerializeJson(obj));
                 return true;
             }
@@ -28,10 +30,12 @@ namespace DBI_Grading.Utils
             }
         }
 
-        public static object LoadQuestion(string path)
+        public static object LoadQuestion(string localPath)
         {
-            var jsonQuestion = File.ReadAllText(path);
-            return JsonConvert.DeserializeObject<PaperSet>(jsonQuestion);
+            var stream = new FileStream(localPath, FileMode.Open, FileAccess.Read);
+            BinaryFormatter formatter = new BinaryFormatter();
+            formatter.Binder = new PreMergeToMergedDeserializationBinder();
+            return formatter.Deserialize(stream) as PaperSet;
         }
 
         //public static PaperSet PaperSetFromJson(string localPath)
