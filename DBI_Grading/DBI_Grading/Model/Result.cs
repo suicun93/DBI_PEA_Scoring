@@ -9,6 +9,8 @@ namespace DBI_Grading.Model
 {
     public class Result
     {
+        private double MaxPoint;
+
         public Result()
         {
             Points = new double[Constant.PaperSet.QuestionSet.QuestionList.Count];
@@ -24,7 +26,6 @@ namespace DBI_Grading.Model
         public List<Candidate> ListCandidates { get; set; }
         public double[] Points { get; set; }
         public string[] Logs { get; set; }
-        private double MaxPoint = 0;
 
         /// <summary>
         ///     Get Sum of point
@@ -37,7 +38,7 @@ namespace DBI_Grading.Model
                 sum += point;
             sum = Math.Round(sum, 2);
             if (sum >= MaxPoint) sum = MaxPoint;
-                return sum;
+            return sum;
         }
 
         /// <summary>
@@ -70,15 +71,7 @@ namespace DBI_Grading.Model
                     return PaperUtils.SelectType(candidate, StudentID, answer, questionOrder);
                 case Candidate.QuestionTypes.DML:
                     // DML: Insert/Delete/Update Question
-                    string schemaAnswer = null;
-                    for (int i = 0; i < ListCandidates.Count; i++)
-                    {
-                        if (ListCandidates[i].QuestionType == Candidate.QuestionTypes.Schema)
-                        {
-                            schemaAnswer = ListAnswers[i];
-                        }
-                    }
-                    return PaperUtils.DmlType(candidate, StudentID, answer, questionOrder, ListCandidates, schemaAnswer);
+                    return PaperUtils.TriggerProcedureType(candidate, StudentID, answer, questionOrder);
                 case Candidate.QuestionTypes.Procedure:
                     // Procedure Question
                     return PaperUtils.TriggerProcedureType(candidate, StudentID, answer, questionOrder);
@@ -91,24 +84,17 @@ namespace DBI_Grading.Model
             }
         }
 
-
         /// <summary>
         ///     Get GradeAnswer function
         /// </summary>
         public void GetPoint()
         {
             foreach (var candidate in ListCandidates)
-            {
                 MaxPoint += candidate.Point;
-            }
             if (MaxPoint > 10)
-            {
                 MaxPoint = Math.Floor(MaxPoint);
-            }
             else
-            {
                 MaxPoint = Math.Ceiling(MaxPoint);
-            }
             // Count number of candidate
             var numberOfQuestion = ListCandidates.Count;
             // Wrong PaperNo

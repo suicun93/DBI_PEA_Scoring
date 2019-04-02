@@ -12,6 +12,10 @@ namespace DBI_Grading.Utils.Dao
 {
     public partial class General
     {
+        /// <summary>
+        /// </summary>
+        /// <param name="databaseName"></param>
+        /// <returns></returns>
         public static int GetNumberOfTablesInDatabase(string databaseName)
         {
             var query = string.Concat("USE [", databaseName,
@@ -23,7 +27,7 @@ namespace DBI_Grading.Utils.Dao
                 connection.Open();
                 using (var command = new SqlCommand(query, connection))
                 {
-                    return (int)command.ExecuteScalar();
+                    return (int) command.ExecuteScalar();
                 }
             }
         }
@@ -47,16 +51,15 @@ namespace DBI_Grading.Utils.Dao
                 {
                     using (var sqlDataAdapter = new SqlDataAdapter(query, connection))
                     {
-
                         sqlDataAdapter.Fill(dts);
                     }
                 }
-                catch
+                catch (Exception e)
                 {
-                    if (query.ToLower().Contains("go"))
+                    if (e.Message.Contains(@"Incorrect syntax near 'GO'."))
                     {
-                        query = query.ToLower().Replace("go", "\n");
-                        using (var sqlDataAdapter = new SqlDataAdapter(query, connection))
+                        using (var sqlDataAdapter =
+                            new SqlDataAdapter(StringUtils.ReplaceByLine(query, "go", "\n"), connection))
                         {
                             sqlDataAdapter.Fill(dts);
                         }
@@ -91,21 +94,17 @@ namespace DBI_Grading.Utils.Dao
                     {
                         sqlReaderAnswer = sqlCommandAnswer.ExecuteReader();
                     }
-                    catch
+                    catch (Exception e)
                     {
-                        if (query.ToLower().Replace(" ", "").Contains("\ngo") || query.ToLower().Replace(" ", "").Contains("go\n"))
-                        {
-                            query = query.ToLower().Replace("\ngo", "\n");
-                            query = query.ToLower().Replace("go\n", "\n");
-                            using (var sqlCommandAnswerBackup = new SqlCommand(query, connection))
+                        if (e.Message.Contains(@"Incorrect syntax near 'GO'."))
+                            using (var sqlCommandAnswerBackup =
+                                new SqlCommand(StringUtils.ReplaceByLine(query, "go", "\n"), connection))
                             {
                                 dataTable.Load(sqlCommandAnswerBackup.ExecuteReader());
                                 return dataTable;
                             }
-                        }
                         throw;
                     }
-
                     dataTable.Load(sqlReaderAnswer);
                 }
                 return dataTable;
@@ -117,7 +116,7 @@ namespace DBI_Grading.Utils.Dao
         /// <returns></returns>
         public static bool PrepareSpCompareDatabase()
         {
-            ResourceManager rm = new ResourceManager("DBI_Grading.Properties.Resources", Assembly.GetExecutingAssembly());
+            var rm = new ResourceManager("DBI_Grading.Properties.Resources", Assembly.GetExecutingAssembly());
             try
             {
                 ExecuteSingleQuery("ALTER " + rm.GetString("ImportMaterialStartCompareDb"), "master");
@@ -237,7 +236,7 @@ namespace DBI_Grading.Utils.Dao
         {
             try
             {
-                var queryKillNow = "use master ";
+                var queryKill = "use master ";
                 var builder = new SqlConnectionStringBuilder
                 {
                     ConnectTimeout = Constant.TimeOutInSecond,
@@ -255,7 +254,6 @@ namespace DBI_Grading.Utils.Dao
                                           "   ON sess.session_id = conn.session_id\n" +
                                           "   WHERE program_name = '.Net SqlClient Data Provider' " +
                                           "AND login_name = '" + ConfigurationManager.AppSettings["username"] + "'";
-                    var countSession = 0;
                     using (var command = new SqlCommand(queryGetSession, conn))
                     {
                         using (var reader = command.ExecuteReader())
@@ -263,12 +261,11 @@ namespace DBI_Grading.Utils.Dao
                             while (reader.Read())
                             {
                                 var id = reader.GetInt32(0);
-                                queryKillNow += " KILL " + id + " ";
-                                countSession++;
+                                queryKill += " KILL " + id + " ";
                             }
                         }
                     }
-                    using (var command = new SqlCommand(queryKillNow, conn))
+                    using (var command = new SqlCommand(queryKill, conn))
                     {
                         command.ExecuteNonQuery();
                     }

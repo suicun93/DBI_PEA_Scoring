@@ -31,6 +31,5 @@ namespace DBI_Grading.Model.Teacher
         public List<string> Illustration { get; set; }
 
         public double Point { get; set; }
-
     }
 }

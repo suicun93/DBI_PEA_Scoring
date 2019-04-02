@@ -13,8 +13,8 @@ namespace DBI_Grading.UI
     public partial class Grading : Form
     {
         private int count;
+        private readonly List<Submission> ListSubmissions;
         private bool scored;
-        private List<Submission> ListSubmissions;
 
         public Grading(List<Submission> listsubmissions)
         {
@@ -178,7 +178,8 @@ namespace DBI_Grading.UI
                 double maxPoint = 0;
                 foreach (var candidate in ListResults.ElementAt(0).ListCandidates)
                     maxPoint += candidate.Point;
-                ExcelUtils.ExportResultsExcel(ListResults, ListSubmissions, maxPoint, ListResults.ElementAt(0).ListCandidates.Count);
+                ExcelUtils.ExportResultsExcel(ListResults, ListSubmissions, maxPoint,
+                    ListResults.ElementAt(0).ListCandidates.Count);
             }
             catch (Exception ex)
             {
@@ -195,5 +196,17 @@ namespace DBI_Grading.UI
         {
             Application.Exit();
         }
+    }
+
+    internal class Input
+    {
+        public Input(int row, Result result)
+        {
+            Row = row;
+            Result = result;
+        }
+
+        public Result Result { get; set; }
+        public int Row { get; set; }
     }
 }

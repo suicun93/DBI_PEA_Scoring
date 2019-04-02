@@ -48,7 +48,7 @@ namespace DBI_Grading.Utils
             comment += "Count Tables in database: ";
             if (countAnswerTables > countSolutionTables)
             {
-                var ratePoint = (double)countSolutionTables / countAnswerTables;
+                var ratePoint = (double) countSolutionTables / countAnswerTables;
                 maxPoint = Math.Round(candidate.Point * ratePoint, 4);
                 comment += string.Concat("Answer has more tables than Solution's database (", countAnswerTables, ">",
                     countSolutionTables, ") => Decrease Max Point by ", Math.Round(ratePoint * 100, 4),
@@ -163,10 +163,12 @@ namespace DBI_Grading.Utils
             var dataTableAnswer = General.GetDataTableFromReader("USE [" + dbAnswerName + "];\n" + answer + "");
 
             //Running Tq 
-            var dataTableTq = General.GetDataTableFromReader("USE [" + dbSolutionName + "];\n" + candidate.TestQuery + "");
+            var dataTableTq =
+                General.GetDataTableFromReader("USE [" + dbSolutionName + "];\n" + candidate.TestQuery + "");
 
             //Running Tq 
-            var dataTableSolution = General.GetDataTableFromReader("USE [" + dbSolutionName + "];\n" + candidate.Solution + "");
+            var dataTableSolution =
+                General.GetDataTableFromReader("USE [" + dbSolutionName + "];\n" + candidate.Solution + "");
 
             //Number of testcases
             var numOfTc = 0;
@@ -316,13 +318,14 @@ namespace DBI_Grading.Utils
 
                     if (General.CompareTwoDataSets(dataSetAnswer, dataSetSolution, false))
                     {
-                        var decreaseRate = (double)dataSetSolution.Tables.Count / dataSetAnswer.Tables.Count;
+                        var decreaseRate = (double) dataSetSolution.Tables.Count / dataSetAnswer.Tables.Count;
                         var maxTcPoint = Math.Round(testCase.RatePoint * decreaseRate * candidate.Point, 4);
                         if (dataSetAnswer.Tables.Count > dataSetSolution.Tables.Count)
                         {
                             comment += string.Concat("Answer has more tables than Solution's database (",
                                 dataSetAnswer.Tables.Count, ">",
-                                dataSetSolution.Tables.Count, ") => Decrease Max Point by ", Math.Round(decreaseRate * 100, 4),
+                                dataSetSolution.Tables.Count, ") => Decrease Max Point by ",
+                                Math.Round(decreaseRate * 100, 4),
                                 "% => Max TC Point = ", maxTcPoint,
                                 "\n");
                             countTesting--;
@@ -342,87 +345,6 @@ namespace DBI_Grading.Utils
                 throw new Exception(comment + e.Message);
             }
 
-            comment = string.Concat("Total Point: ", gradePoint, "/", candidate.Point, "\n", comment);
-            gradePoint = countTrueTc == testCases.Count ? maxPoint : gradePoint;
-            if (gradePoint > maxPoint) gradePoint = maxPoint;
-            return new Dictionary<string, string>
-            {
-                {"Point", Math.Round(gradePoint, 2).ToString()},
-                {"Comment", comment}
-            };
-        }
-
-        /// <summary>
-        ///     Insert/Update/Delete Type
-        /// </summary>
-        /// <param name="dbAnswerName">DB Name to check student query</param>
-        /// <param name="dbSolutionName">DB Name to check teacher query</param>
-        /// <param name="candidate">Candidate</param>
-        /// <param name="errorMessage"></param>
-        /// <exception cref="Exception"></exception>
-        /// <returns>
-        ///     "true" if correct
-        ///     "false" if wrong
-        ///     message error from sqlserver if error
-        /// </returns>
-        public static Dictionary<string, string> CompareDmlType(string dbAnswerName, string dbSolutionName, Candidate candidate, string testQuery, string errorMessage)
-        {
-            //Get testcases from comment in test query
-            var testCases = StringUtils.GetTestCases(testQuery, candidate);
-
-            //Commnet
-            var comment = errorMessage;
-            var countTesting = 0;
-            var countTrueTc = 0;
-
-            double gradePoint = 0;
-            var maxPoint = candidate.Point;
-
-            foreach (var testCase in testCases)
-            {
-                try
-                {
-                    if (countTesting == 0)
-                    {
-                        comment += "======= Grading case 1 =======\n";
-                    }
-                    else if (countTesting == testCases.Count / 2)
-                    {
-                        comment += "======= Grading case 2 =======\n";
-                    }
-                    comment += string.Concat("TC ", ++countTesting, ": ",testCase.Description.Trim(), " - ");
-                    // Prepare query
-                    var queryAnswer = "USE [" + dbAnswerName + "] \n" + testCase.TestQuery;
-                    var querySolution = "USE [" + dbSolutionName + "] \n" + testCase.TestQuery;
-
-                    // Prepare DataSet  
-                    var dataSetAnswer = General.GetDataSetFromReader(queryAnswer);
-                    var dataSetSolution = General.GetDataSetFromReader(querySolution);
-
-                    if (General.CompareTwoDataSets(dataSetAnswer, dataSetSolution, true))
-                    {
-                        var tcPoint = Math.Round(testCase.RatePoint * maxPoint, 4);
-                        gradePoint += tcPoint;
-                        comment += string.Concat("Passed => +", tcPoint, "\n");
-                        countTrueTc++;
-                    }
-                    else if (General.CompareTwoDataSets(dataSetAnswer, dataSetSolution, false))
-                    {
-                        var tcPoint = Math.Round(testCase.RatePoint * maxPoint, 4);
-                        gradePoint += tcPoint;
-                        comment += string.Concat("Passed => +", tcPoint, "\n");
-                        countTrueTc++;
-                    }
-                    else
-                    {
-                        comment += "Skip/Not Pass\n";
-                    }
-                }
-                catch
-                {
-                    comment = comment + "Skip/Not Pass\n";
-                }
-            }
             comment = string.Concat("Total Point: ", gradePoint, "/", candidate.Point, "\n", comment);
             gradePoint = countTrueTc == testCases.Count ? maxPoint : gradePoint;
             if (gradePoint > maxPoint) gradePoint = maxPoint;

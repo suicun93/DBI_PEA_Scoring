@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Reflection;
 using DBI_Grading.Model;
@@ -13,7 +14,8 @@ namespace DBI_Grading.Utils
         private static WorksheetFunction _wsf;
         public static int LastRowOfResultSheet { get; private set; }
 
-        public static void ExportResultsExcel(List<Result> results, List<Submission> submissions, double maxPoint, int numOfQuestion)
+        public static void ExportResultsExcel(List<Result> results, List<Submission> submissions, double maxPoint,
+            int numOfQuestion)
         {
             //Open Excel
             try
@@ -59,7 +61,8 @@ namespace DBI_Grading.Utils
             }
         }
 
-        private static void AddAnswerPathSheet(Worksheet sheetAnswerPath, List<Submission> submissions, int numOfQuestion)
+        private static void AddAnswerPathSheet(Worksheet sheetAnswerPath, List<Submission> submissions,
+            int numOfQuestion)
         {
             sheetAnswerPath.Name = "03_AnswerPath";
             //Insert Title
@@ -70,25 +73,22 @@ namespace DBI_Grading.Utils
             for (var i = 4; i < 4 + numOfQuestion; i++)
                 sheetAnswerPath.Cells[lastRow, i] = string.Concat("Q", i - 3);
             //Insert Data
-            for (int i = 0; i < submissions.Count; i++)
+            for (var i = 0; i < submissions.Count; i++)
             {
-                Submission submission = submissions[i];
+                var submission = submissions[i];
                 lastRow++;
                 sheetAnswerPath.Cells[lastRow, 1] = lastRow - 1;
                 sheetAnswerPath.Cells[lastRow, 2] = submission.PaperNo;
                 sheetAnswerPath.Cells[lastRow, 3] = submission.StudentID;
                 for (var j = 0; j < submission.AnswerPaths.Count; j++)
-                {
                     sheetAnswerPath.Cells[lastRow, j + 4] = submission.AnswerPaths[j];
-                }
-                int countEmpty = 0;
-                while (countEmpty < submission.AnswerPaths.Count && submission.AnswerPaths[countEmpty].Equals("Cannot found"))
+                var countEmpty = 0;
+                while (countEmpty < submission.AnswerPaths.Count &&
+                       submission.AnswerPaths[countEmpty].Equals("Cannot found"))
                 {
                     countEmpty++;
                     if (countEmpty >= submission.AnswerPaths.Count)
-                    {
-                        sheetAnswerPath.Rows[lastRow].Interior.Color = System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.Yellow);
-                    }
+                        sheetAnswerPath.Rows[lastRow].Interior.Color = ColorTranslator.ToOle(Color.Yellow);
                 }
             }
             //Fit columns
@@ -219,12 +219,13 @@ namespace DBI_Grading.Utils
                 sheetResult.Cells[lastRow, 7].Formula = $"=E{lastRow}/F{lastRow}*10";
                 for (var i = 8; i < 8 + numOfQuestion; i++)
                 {
-                    var hyper = "02_Detail!" + (char)(61 + i) + lastRow + "";
+                    var hyper = "02_Detail!" + (char) (61 + i) + lastRow + "";
                     sheetResult.Cells[lastRow, i] = result.Points[i - 8];
                     sheetResult.Hyperlinks.Add(sheetResult.Cells[lastRow, i], "", hyper);
-                    if (result.ListAnswers[i - 8].ToLower().Replace(" ", "").Contains("go\n") || result.ListAnswers[i - 8].ToLower().Replace(" ", "").Contains("\ngo"))
+                    if (result.ListAnswers[i - 8].ToLower().Replace(" ", "").Contains("go\n") ||
+                        result.ListAnswers[i - 8].ToLower().Replace(" ", "").Contains("\ngo"))
                     {
-                        sheetResult.Cells[lastRow, i].Interior.Color = System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.PaleVioletRed);
+                        sheetResult.Cells[lastRow, i].Interior.Color = ColorTranslator.ToOle(Color.PaleVioletRed);
                         sheetResult.Cells[lastRow, numOfQuestion + 10] = "Answer includes GO statement";
                     }
                 }
@@ -234,13 +235,13 @@ namespace DBI_Grading.Utils
                 sheetResult.Cells[lastRow, numOfQuestion + 9] = "View AnswerPath";
                 sheetResult.Hyperlinks.Add(sheetResult.Cells[lastRow, numOfQuestion + 9], "",
                     "03_AnswerPath!C" + lastRow + "", "View AnswerPath");
-                int countEmpty = 0;
+                var countEmpty = 0;
                 while (countEmpty < result.ListAnswers.Count && result.ListAnswers[countEmpty].Equals(""))
                 {
                     countEmpty++;
                     if (countEmpty >= result.ListAnswers.Count)
                     {
-                        sheetResult.Rows[lastRow].Interior.Color = System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.Yellow);
+                        sheetResult.Rows[lastRow].Interior.Color = ColorTranslator.ToOle(Color.Yellow);
                         sheetResult.Cells[lastRow, numOfQuestion + 10] = "Cannot found any answer";
                     }
                 }

@@ -91,9 +91,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Microsoft.SqlServer.SqlClrProvider.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net40\Newtonsoft.Json.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
@@ -114,7 +111,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common\Constant.cs" />
-    <Compile Include="Model\Input.cs" />
     <Compile Include="Model\Teacher\Question.cs" />
     <Compile Include="Model\Teacher\QuestionSet.cs" />
     <Compile Include="Model\Teacher\Candidate.cs" />
@@ -141,9 +137,8 @@
     <Compile Include="Utils\Dao\CompareDataTable.cs" />
     <Compile Include="Utils\Dao\General.cs" />
     <Compile Include="Utils\FileUtils.cs" />
-    <Compile Include="Utils\JsonUtils.cs" />
+    <Compile Include="Utils\SerializationUtils.cs" />
     <Compile Include="Utils\PaperUtils.cs" />
-    <Compile Include="Utils\PreMergeToMergedDeserializationBinder.cs" />
     <Compile Include="Utils\StringUtils.cs" />
     <Compile Include="Utils\ThreadUtils.cs" />
     <Compile Include="Utils\Utilities.cs" />

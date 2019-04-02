@@ -59,7 +59,7 @@ namespace DBI_Grading.UI
                 //Set Number of Questions
 
                 // Get QuestionPackage from file
-                Constant.PaperSet = JsonUtils.LoadQuestion(QuestionPath) as PaperSet;
+                Constant.PaperSet = SerializationUtils.LoadQuestion(QuestionPath) as PaperSet;
 
                 if (Constant.PaperSet == null || Constant.PaperSet.Papers.Count == 0)
                     throw new Exception("No question was found!");
@@ -142,7 +142,7 @@ namespace DBI_Grading.UI
                     if (!paperNoPaths.Any())
                         throw new Exception("No PaperNo was found in " + directory);
                     // Update UI
-                    answerTextBox.Invoke((MethodInvoker)(() => { answerTextBox.Text = AnswerPath; }));
+                    answerTextBox.Invoke((MethodInvoker) (() => { answerTextBox.Text = AnswerPath; }));
                     // PaperNo Found
                     foreach (var paperNoPath in paperNoPaths)
                     {
@@ -161,18 +161,21 @@ namespace DBI_Grading.UI
                             };
                             try
                             {
-                                string errorLog = "Answer not found.\n";
-                                string[] answerPaths = new string[0];
-                                string extractPath = "";
+                                var errorLog = "Answer not found.\n";
+                                var answerPaths = new string[0];
+                                var extractPath = "";
                                 // Student co nop answers khong
                                 if (!Directory.Exists(rollNumberPath + @"\0"))
                                     // Khong nop duoc phai nho khao thi copy file len
+                                {
                                     errorLog += "Folder 0 not found with " + rollNumber + "\n";
+                                }
                                 else
                                 {
                                     // Nop thanh cong thi di vao \0\Solution.zip
                                     var solutionPath = rollNumberPath + @"\0"; // "0" folder
-                                    if (!File.Exists(solutionPath + @"\Solution.zip"))  // Check tool cua thay co bi thieu Solution.zip khong
+                                    if (!File.Exists(solutionPath + @"\Solution.zip")
+                                    ) // Check tool cua thay co bi thieu Solution.zip khong
                                     {
                                         errorLog += "Solution.zip was not found with " + rollNumber + "\n";
                                     }
@@ -195,9 +198,9 @@ namespace DBI_Grading.UI
                                             var zipSolutionPath = solutionPath + @"\Solution.zip";
                                             ZipFile.ExtractToDirectory(zipSolutionPath, extractPath);
                                             // Extract all zip file inside \extract
-                                            string[] zipfiles = Directory.GetFiles(extractPath, "*.zip", SearchOption.AllDirectories);
-                                            foreach (string zipFile in zipfiles)
-                                            {
+                                            var zipfiles = Directory.GetFiles(extractPath, "*.zip",
+                                                SearchOption.AllDirectories);
+                                            foreach (var zipFile in zipfiles)
                                                 try
                                                 {
                                                     ZipFile.ExtractToDirectory(zipFile, extractPath);
@@ -206,7 +209,6 @@ namespace DBI_Grading.UI
                                                 {
                                                     // De phong chuyen ban da lam Q1, Q2, Q3,... roi nhung nen lai roi de o trong folder nop bai
                                                 }
-                                            }
                                         }
                                         catch (Exception ex)
                                         {
@@ -218,9 +220,7 @@ namespace DBI_Grading.UI
                                 // Get all sql file
                                 answerPaths = FileUtils.GetAllSql(rollNumberPath);
                                 if (answerPaths.Length == 0)
-                                {
-                                    throw new Exception(message: errorLog);
-                                }
+                                    throw new Exception(errorLog);
                                 // Add the answer
                                 foreach (var answerPath in answerPaths)
                                     try
@@ -228,32 +228,44 @@ namespace DBI_Grading.UI
                                         var fileName =
                                             Path.GetFileNameWithoutExtension(answerPath);
                                         var questionOrder =
-                                            int.Parse(fileName.GetNumbers()) - 1; // remove all non-numeric characters to get the last number in file name
+                                            int.Parse(fileName.GetNumbers()) -
+                                            1; // remove all non-numeric characters to get the last number in file name
                                         if (string.IsNullOrEmpty(submission.ListAnswer[questionOrder]))
                                         {
                                             // Chua thay ghi nhan cau tra loi.
                                             submission.ListAnswer[questionOrder] = File.ReadAllText(answerPath);
-                                            submission.AnswerPaths[questionOrder] = answerPath.Substring(rollNumberPath.Length + 1); // substring without /extract
+                                            submission.AnswerPaths[questionOrder] =
+                                                answerPath.Substring(
+                                                    rollNumberPath.Length + 1); // substring without /extract
                                         }
                                         else
                                         {
                                             // Phat hien ra co 2 cau Qx.sql or Qx.txt
-                                            string currentFilename = Path.GetFileNameWithoutExtension(submission.AnswerPaths[questionOrder]);
-                                            string newFilename = Path.GetFileNameWithoutExtension(answerPath);
+                                            var currentFilename =
+                                                Path.GetFileNameWithoutExtension(submission.AnswerPaths[questionOrder]);
+                                            var newFilename = Path.GetFileNameWithoutExtension(answerPath);
                                             // Lay cau nao giong Qx.sql || Qx.txt hon, neu khong cau nao giong thi huy ket qua ca 2 cau
-                                            string mauFilename = "Q" + (questionOrder + 1);
+                                            var mauFilename = "Q" + (questionOrder + 1);
                                             if (currentFilename.ToUpper().Equals(mauFilename))
-                                                submission.AnswerPaths[questionOrder] = "Duplicate detected and choose " + submission.AnswerPaths[questionOrder] + " to get mark";
+                                            {
+                                                submission.AnswerPaths[questionOrder] =
+                                                    "Duplicate detected and choose " +
+                                                    submission.AnswerPaths[questionOrder] + " to get mark";
+                                            }
                                             else if (newFilename.ToUpper().Equals(mauFilename))
                                             {
                                                 // Thay the bang file sau nhung them thong bao duplicate
                                                 submission.ListAnswer[questionOrder] = File.ReadAllText(answerPath);
-                                                submission.AnswerPaths[questionOrder] = "Duplicate detected and choose " + answerPath.Substring(rollNumberPath.Length + 1) + " to get mark";
-                                            } else
+                                                submission.AnswerPaths[questionOrder] =
+                                                    "Duplicate detected and choose " +
+                                                    answerPath.Substring(rollNumberPath.Length + 1) + " to get mark";
+                                            }
+                                            else
                                             {
                                                 // Dat 2 file trung nhau nhung deu khong dung dinh dang ten => reject ca 2 bai
                                                 submission.ListAnswer[questionOrder] = "";
-                                                submission.AnswerPaths[questionOrder] = "Duplicate detected but name format not matched => Reject";
+                                                submission.AnswerPaths[questionOrder] =
+                                                    "Duplicate detected but name format not matched => Reject";
                                             }
                                         }
                                     }
@@ -285,13 +297,13 @@ namespace DBI_Grading.UI
             }
             finally
             {
-                Invoke((MethodInvoker)(() =>
-               {
-                   Application.UseWaitCursor = false;
-                   Text = "Import Material";
-                   ImportAnswerButton.Enabled = true;
-                   GetMarkButton.Enabled = true;
-               }));
+                Invoke((MethodInvoker) (() =>
+                {
+                    Application.UseWaitCursor = false;
+                    Text = "Import Material";
+                    ImportAnswerButton.Enabled = true;
+                    GetMarkButton.Enabled = true;
+                }));
             }
         }
 
@@ -359,7 +371,5 @@ namespace DBI_Grading.UI
         {
             Application.Exit();
         }
-
-
     }
 }

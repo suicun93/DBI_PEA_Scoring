@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 
 namespace DBI_Grading.Utils
 {
-    class ThreadUtils
+    internal class ThreadUtils
     {
         public static T WithTimeout<T>(Func<T> proc, int duration)
         {

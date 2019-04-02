@@ -30,9 +30,7 @@ namespace DBI_Grading.Utils.Dao
             dt.Columns.CopyTo(columnArray, 0);
             var ordinal = -1;
             foreach (var orderedColumn in columnArray.OrderBy(c => c.ColumnName))
-            {
                 orderedColumn.SetOrdinal(++ordinal);
-            }
             return dt;
         }
 
@@ -44,14 +42,14 @@ namespace DBI_Grading.Utils.Dao
 
         public static bool CompareColumnName(DataTable dtSchemaAnswer, DataTable dtSchemaTQ)
         {
-            List<string> columnNameListAnswer = GetColumnsName(dtSchemaAnswer);
-            List<string> columnNameListTQ = GetColumnsName(dtSchemaTQ);
+            var columnNameListAnswer = GetColumnsName(dtSchemaAnswer);
+            var columnNameListTQ = GetColumnsName(dtSchemaTQ);
             return !columnNameListTQ.Except(columnNameListAnswer).Any();
         }
 
         public static List<string> GetColumnsName(DataTable dt)
         {
-            List<string> columnNameList = new List<string>();
+            var columnNameList = new List<string>();
             for (var i = 0; i < dt.Columns.Count; i++)
                 columnNameList.Add(dt.Columns[i].ColumnName);
             return columnNameList;
@@ -59,51 +57,43 @@ namespace DBI_Grading.Utils.Dao
 
         public static DataTable DistinctTable(DataTable dt, List<string> columns)
         {
-            DataTable dtUniqRecords = new DataTable();
+            var dtUniqRecords = new DataTable();
             dtUniqRecords = dt.DefaultView.ToTable(true, columns.ToArray());
             return dtUniqRecords;
         }
 
-        internal static bool CompareTwoDataTablesByExceptOneDirection(DataTable dataTableAnswer, DataTable dataTableSolution)
+        internal static bool CompareTwoDataTablesByExceptOneDirection(DataTable dataTableAnswer,
+            DataTable dataTableSolution)
         {
             return !dataTableAnswer.AsEnumerable().Except(dataTableSolution.AsEnumerable(), DataRowComparer.Default)
-                       .Any();
+                .Any();
         }
 
         public static DataTable RotateTable(DataTable dt)
         {
-            DataTable dt2 = new DataTable();
-            for (int i = 0; i < dt.Rows.Count; i++)
-            {
+            var dt2 = new DataTable();
+            for (var i = 0; i < dt.Rows.Count; i++)
                 dt2.Columns.Add();
-            }
-            for (int i = 0; i < dt.Columns.Count; i++)
-            {
+            for (var i = 0; i < dt.Columns.Count; i++)
                 dt2.Rows.Add();
-            }
-            for (int i = 0; i < dt.Columns.Count; i++)
-            {
-                for (int j = 0; j < dt.Rows.Count; j++)
-                {
-                    dt2.Rows[i][j] = dt.Rows[j][i];
-                }
-            }
+            for (var i = 0; i < dt.Columns.Count; i++)
+            for (var j = 0; j < dt.Rows.Count; j++)
+                dt2.Rows[i][j] = dt.Rows[j][i];
             return dt2;
         }
 
         internal static bool CheckDataTableSort(DataTable dataTableAnswer, DataTable dataTableTq)
         {
-            string firstColumnName = dataTableTq.Columns[0].ColumnName;
-            return CompareTwoDataTablesByRow(SortDataTable(DistinctTable(dataTableAnswer, GetColumnsName(dataTableAnswer)), firstColumnName),
+            var firstColumnName = dataTableTq.Columns[0].ColumnName;
+            return CompareTwoDataTablesByRow(
+                SortDataTable(DistinctTable(dataTableAnswer, GetColumnsName(dataTableAnswer)), firstColumnName),
                 SortDataTable(DistinctTable(dataTableTq, GetColumnsName(dataTableTq)), firstColumnName));
         }
 
         public static DataTable LowerCaseColumnName(DataTable dt)
         {
             foreach (DataColumn dataColumn in dt.Columns)
-            {
                 dataColumn.ColumnName = dataColumn.ColumnName.ToLower();
-            }
             return dt;
         }
 
@@ -118,7 +108,7 @@ namespace DBI_Grading.Utils.Dao
         internal static bool CompareData(DataTable dataTableAnswer, DataTable dataTableTq, bool isRotate)
         {
             //Get First Column from TQ
-            string firstColumnName = dataTableTq.Columns[0].ColumnName;
+            var firstColumnName = dataTableTq.Columns[0].ColumnName;
 
             //Sort Column Name
             SortColumnNameTable(dataTableAnswer);
@@ -137,16 +127,14 @@ namespace DBI_Grading.Utils.Dao
             }
 
             //Distinct
-            DataTable distinctTableTq = DistinctTable(sortedTableTq, GetColumnsName(dataTableTq));
-            DataTable distinctTableAnswer = DistinctTable(sortedTableAnswer, GetColumnsName(dataTableAnswer));
+            var distinctTableTq = DistinctTable(sortedTableTq, GetColumnsName(dataTableTq));
+            var distinctTableAnswer = DistinctTable(sortedTableAnswer, GetColumnsName(dataTableAnswer));
 
             //Compare Data
-            DataTable rotateTableTq = RotateTable(distinctTableTq);
-            DataTable rotateTableAnswer = RotateTable(distinctTableAnswer);
+            var rotateTableTq = RotateTable(distinctTableTq);
+            var rotateTableAnswer = RotateTable(distinctTableAnswer);
             if (isRotate)
-            {
                 return CompareTwoDataTablesByExceptOneDirection(rotateTableAnswer, rotateTableTq);
-            }
             return CompareTwoDataTablesByExceptOneDirection(rotateTableTq, rotateTableAnswer);
         }
 
